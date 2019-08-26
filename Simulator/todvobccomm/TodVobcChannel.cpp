@@ -396,17 +396,17 @@ bool TodVobcChannel::checkTelegram(const TodVobcTelegram &telegram)
     //    return false;
 
     if (telegram.interfaceType() != 1004) {
-//        qWarning("TodVobcChannel: the interface type invalid");
+        qWarning("TodVobcChannel: the interface type invalid");
         return false;
     }
 
     if (telegram.receiverClass() != 1) {
-//        qWarning("TodVobcChannel: the receiver class invalid");
+        qWarning("TodVobcChannel: the receiver class invalid");
         return false;
     }
 
     if (telegram.receiverID() != m_todId) {
-//        qWarning("TodVobcChannel: the receiver id invalid");
+        qWarning("TodVobcChannel: the receiver id invalid");
         qDebug() << "Receiver id : " << telegram.receiverID();
         qDebug() << "Tod id : " << m_todId;
         return false;
@@ -416,6 +416,6 @@ bool TodVobcChannel::checkTelegram(const TodVobcTelegram &telegram)
         qWarning("TodVobcChannel: the transmitter class invalid");
         return false;
     }
-    qDebug() << "TodVobcChannel::checkTelegram end!";
+
     return true;
 }
