@@ -17,8 +17,6 @@ MainWindow::MainWindow(QWidget *parent) :
     m_telegram = new Telegram();
     m_sendRFCTimer = new QTimer(this);
 
-    initDefaultConfig();
-
     connect(m_sendRFCTimer, SIGNAL(timeout()), this, SLOT(sendRTFTimeout()));
 
     m_checkConnectState =new QTimer(this);
@@ -32,6 +30,9 @@ MainWindow::MainWindow(QWidget *parent) :
 
     m_infoLayout = new QGridLayout(ui->infoTab);
     m_faultLayout = new QGridLayout(ui->faultTab);
+    initDefaultConfig();
+
+    this->setWindowTitle(QString("VOBC Simulator"));
 }
 
 MainWindow::~MainWindow()
@@ -395,6 +396,20 @@ void MainWindow::initDefaultConfig()
         m_sendTelegramType = SendTelegramType::Manual;
 
     m_sendCycle = cycleStr.toInt();
+
+    m_configFileName = m_theSettingsPtr->value("SOURCE", "").toString();
+
+    if(!m_configFileName.isEmpty())
+    {
+        if(parseConfigurationFile())
+        {
+            drawTableWidget();
+
+            drawInfoFaultCheckTab();
+
+            drawTcmsTableWidget();
+        }
+    }
 }
 
 void MainWindow::modifyDefaultConfig()
@@ -415,7 +430,7 @@ void MainWindow::on_action_Open_triggered()
         {
             drawTableWidget();
 
-            drawInfoFaultRadioTab();
+            drawInfoFaultCheckTab();
 
             drawTcmsTableWidget();
         }
@@ -433,6 +448,8 @@ bool MainWindow::openConfigurationFile()
     }
 
     qDebug() << "fileName = " << configFileName;
+
+    m_theSettingsPtr->setValue("SOURCE", configFileName);
     m_configFileName = configFileName;
 
     return true;
@@ -447,6 +464,12 @@ bool MainWindow::parseConfigurationFile()
         qDebug("Can't open configuration file : %s", m_configFileName.toLatin1().data());
         return false;
     }
+
+    QStringList Path = m_configFileName.split("/");
+
+    QString fileName = Path.at(Path.size() - 1);
+
+    this->setStatusTip(fileName);
 
     QDomDocument doc;
 
@@ -624,6 +647,10 @@ void MainWindow::drawTableWidget()
             {
                 ui->sendTableWidget->item(i,j)->setText(signal->getValueType());
             }
+            else if (j == 5)    // Value
+            {
+                ui->sendTableWidget->item(i,j)->setText(QString::number(signal->getValue()));
+            }
         }
     }
 
@@ -701,6 +728,10 @@ void MainWindow::drawTableWidget()
             {
                 ui->receiveTableWidget->item(i,j)->setText(signal->getValueType());
             }
+            else if (j == 5)    // Value
+            {
+                ui->receiveTableWidget->item(i,j)->setText(QString::number(signal->getValue()));
+            }
         }
     }
 
@@ -722,7 +753,7 @@ void MainWindow::drawTableWidget()
     ui->receiveTableWidget->resizeRowsToContents();
 }
 
-void MainWindow::drawInfoFaultRadioTab()
+void MainWindow::drawInfoFaultCheckTab()
 {
     int infoCount = m_infoList.size();
     int infoBoxCount = m_infoCheckBoxList.size();
@@ -730,10 +761,12 @@ void MainWindow::drawInfoFaultRadioTab()
     int faultCount = m_faultList.size();
     int faultBoxCount = m_faultCheckBoxList.size();
     int addBox = 0;
+
     if(infoCount > infoBoxCount)
     {
         addBox = infoCount - infoBoxCount;
     }
+
     if(faultCount > faultBoxCount)
     {
         addBox += (faultCount - faultBoxCount);
@@ -743,6 +776,7 @@ void MainWindow::drawInfoFaultRadioTab()
     {
         CheckBox* checkbox = new CheckBox(RADIO_W, RADIO_H);
         QObject::connect(checkbox, SIGNAL(stateChanged(int)), this, SLOT(updateInfoFaultId(int)));
+
         if(i < (infoCount - infoBoxCount))
         {
             checkbox->setCheckBoxType(CheckBox::boxType::INFO);
@@ -778,7 +812,6 @@ void MainWindow::drawInfoFaultRadioTab()
         }
     }
 
-
     for(int i = 0; i < m_infoList.size(); ++i)
     {
         QStringList info = m_infoList[i].split(":");
@@ -787,9 +820,9 @@ void MainWindow::drawInfoFaultRadioTab()
 
         m_infoCheckBoxList[i]->setId((info[1]).toInt());
         m_infoCheckBoxList[i]->setLabelText(info[0]);
-
         m_infoLayout->addWidget(m_infoCheckBoxList[i], i / LINECOUNT, i % LINECOUNT, 1, 1);
     }
+
     m_infoLayout->setHorizontalSpacing(5);
     m_infoLayout->setVerticalSpacing(2);
     m_infoLayout->setContentsMargins(10, 10, 10, 10);
@@ -806,6 +839,7 @@ void MainWindow::drawInfoFaultRadioTab()
 
         m_faultLayout->addWidget(m_faultCheckBoxList[i], i / LINECOUNT, i % LINECOUNT, 1, 1);
     }
+
     m_faultLayout->setHorizontalSpacing(5);
     m_faultLayout->setVerticalSpacing(2);
     m_faultLayout->setContentsMargins(10, 10, 10, 10);
@@ -814,17 +848,15 @@ void MainWindow::drawInfoFaultRadioTab()
 
 void MainWindow::drawTcmsTableWidget()
 {
-    int itemWidth = ui->tcmsTableWidget->width() / 16;
-    int itemHeight = ui->tcmsTableWidget->height() / 6;
-    ui->tcmsTableWidget->setColumnCount(16);
-    ui->tcmsTableWidget->setRowCount(6);
+    ui->tcmsTableWidget->setColumnCount(tcmsItem::COLUMN_COUNT);
+    ui->tcmsTableWidget->setRowCount(tcmsItem::ROW_COUNT);
     for(int i = 0; i < 16; i++)
     {
-        ui->tcmsTableWidget->setColumnWidth(i, itemWidth);
+        ui->tcmsTableWidget->setColumnWidth(i, tcmsItem::ITEM_W);
     }
     for (int i = 0; i < ui->tcmsTableWidget->rowCount(); ++i)
     {
-        ui->tcmsTableWidget->setRowHeight(i, itemHeight);
+        ui->tcmsTableWidget->setRowHeight(i, tcmsItem::ITEM_H);
 
         for (int j = 0; j < ui->tcmsTableWidget->columnCount(); ++j)
         {

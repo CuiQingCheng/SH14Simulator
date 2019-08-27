@@ -33,6 +33,13 @@ typedef enum Optional_Frame_Id
     Info_Frame_Id = 2
 }Optional_Frame_Id;
 
+typedef struct Tcms_Item{
+    static const int ROW_COUNT = 6;
+    static const int COLUMN_COUNT = 16;
+    static const int ITEM_W = 70;
+    static const int ITEM_H = 28;
+}tcmsItem;
+
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -51,7 +58,7 @@ protected:
     bool openConfigurationFile();
     bool parseConfigurationFile();
     void drawTableWidget();
-    void drawInfoFaultRadioTab();
+    void drawInfoFaultCheckTab();
     void drawTcmsTableWidget();
     void sendTableWidgetValue();
     void setInputFrameEnable(bool enable);
