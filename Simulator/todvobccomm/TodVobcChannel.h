@@ -81,7 +81,7 @@ private:
 
     QByteArray m_receiveAppData;
 
-    static const int MAX_SIZE = 260;
+    static const int MAX_SIZE = 291;
     static const int FIX_SIZE = 79;
     unsigned char m_pucData[MAX_SIZE];
 

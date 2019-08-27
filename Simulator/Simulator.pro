@@ -48,3 +48,8 @@ HEADERS += \
 
 FORMS += \
         mainwindow.ui
+
+DISTFILES +=
+
+RESOURCES += \
+    resource.qrc
