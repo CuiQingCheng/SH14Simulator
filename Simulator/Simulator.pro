@@ -34,7 +34,11 @@ SOURCES += \
     todvobccomm/Todvobctelegram.cpp \
     Gui/CheckBox.cpp \
     Gui/TextEdit.cpp \
-    Gui/LineEdit.cpp
+    Gui/LineEdit.cpp \
+    Core/Parser.cpp \
+    Core/Factory/Factory.cpp \
+    Core/Handler/AutoTestHandler.cpp \
+    Core/Handler/WidgetHandler.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -44,7 +48,11 @@ HEADERS += \
     todvobccomm/Todvobctelegram.h \
     Gui/CheckBox.h \
     Gui/TextEdit.h \
-    Gui/LineEdit.h
+    Gui/LineEdit.h \
+    Core/Parser.h \
+    Core/Factory/Factory.h \
+    Core/Handler/AutoTestHandler.h \
+    Core/Handler/WidgetHandler.h
 
 FORMS += \
         mainwindow.ui

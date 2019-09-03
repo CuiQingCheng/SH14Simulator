@@ -2,23 +2,23 @@
 
 <CommDataDefine protocol="udpSocket" description="vobc-tod_communication">
 	<communication processType="poll" sendType="vobc-tod">
-		<signal fieldName="NumberOfCars" type="UNSIGNED.8" byteOffset="0" bitOffset="0" defaultValue="255"/>
-		<signal fieldName="ActiveCab" type="UNSIGNED.8" byteOffset="1" bitOffset="0" defaultValue="255"/>
+		<signal fieldName="NumberOfCars" type="UNSIGNED.8" byteOffset="0" bitOffset="0" defaultValue="255" valueType="Dec"/>
+		<signal fieldName="ActiveCab" type="UNSIGNED.8" byteOffset="1" bitOffset="0" defaultValue="255" />
 		<signal fieldName="CurrentOperatingMode" type="UNSIGNED.8" byteOffset="2" bitOffset="0" defaultValue="255"/>
 		<signal fieldName="PersistentModeSelectInput" type="UNSIGNED.8" byteOffset="3" bitOffset="0" defaultValue="255"/>
 		<signal fieldName="ATOModeAvaliability" type="UNSIGNED.8" byteOffset="4" bitOffset="0" defaultValue="255"/>
 		<signal fieldName="ATPMModeAvaliability" type="UNSIGNED.8" byteOffset="5" bitOffset="0" defaultValue="255"/>
 		<signal fieldName="Direction" type="UNSIGNED.8" byteOffset="6" bitOffset="0" defaultValue="255"/>
 		<signal fieldName="OverspeedAlarm" type="UNSIGNED.8" byteOffset="7" bitOffset="0" defaultValue="0"/>
-		<signal fieldName="ActualSpeed" type="UNSIGNED.16" byteOffset="8" bitOffset="0" defaultValue="0"/>
-		<signal fieldName="TargetSpeed" type="UNSIGNED.16" byteOffset="10" bitOffset="0" defaultValue="0"/>
-		<signal fieldName="PermittedSpeed" type="UNSIGNED.16" byteOffset="12" bitOffset="0" defaultValue="0"/>
-		<signal fieldName="EbTriggerSpeed" type="UNSIGNED.16" byteOffset="14" bitOffset="0" defaultValue="0"/>
-		<signal fieldName="DistanceToStoppingPoint" type="UNSIGNED.32" byteOffset="16" bitOffset="0" defaultValue="0"/>
-		<signal fieldName="NextPlatformID" type="UNSIGNED.16" byteOffset="20" bitOffset="0" defaultValue="0"/>
-		<signal fieldName="TerminusPlatformID" type="UNSIGNED.16" byteOffset="22" bitOffset="0" defaultValue="0"/>
-		<signal fieldName="StationDwell" type="UNSIGNED.32" byteOffset="24" bitOffset="0" defaultValue="65535"/>
-		<signal fieldName="NextPlatformDoorSide" type="UNSIGNED.8" byteOffset="28" bitOffset="0" defaultValue="255"/>
+		<signal fieldName="ActualSpeed" type="UNSIGNED.16" byteOffset="8" bitOffset="0" defaultValue="0" valueType="Dec"/>
+		<signal fieldName="TargetSpeed" type="UNSIGNED.16" byteOffset="10" bitOffset="0" defaultValue="0" valueType="Dec"/>
+		<signal fieldName="PermittedSpeed" type="UNSIGNED.16" byteOffset="12" bitOffset="0" defaultValue="0" valueType="Dec"/>
+		<signal fieldName="EbTriggerSpeed" type="UNSIGNED.16" byteOffset="14" bitOffset="0" defaultValue="0" valueType="Dec"/>
+		<signal fieldName="DistanceToStoppingPoint" type="UNSIGNED.32" byteOffset="16" bitOffset="0" defaultValue="0" valueType="Dec"/>
+		<signal fieldName="NextPlatformID" type="UNSIGNED.16" byteOffset="20" bitOffset="0" defaultValue="0" valueType="Dec"/>
+		<signal fieldName="TerminusPlatformID" type="UNSIGNED.16" byteOffset="22" bitOffset="0" defaultValue="0" valueType="Dec"/>
+		<signal fieldName="StationDwell" type="UNSIGNED.32" byteOffset="24" bitOffset="0" defaultValue="65535" valueType="Dec"/>
+		<signal fieldName="NextPlatformDoorSide" type="UNSIGNED.8" byteOffset="28" bitOffset="0" defaultValue="0"/>
 		<signal fieldName="PlatformDoorEnableStatus" type="UNSIGNED.8" byteOffset="29" bitOffset="0" defaultValue="255"/>
 		<signal fieldName="LeftPSDClosedAndLockedStatus" type="UNSIGNED.8" byteOffset="30" bitOffset="0" defaultValue="255"/>
 		<signal fieldName="RightPSDClosedAndLockedStatus" type="UNSIGNED.8" byteOffset="31" bitOffset="0" defaultValue="255"/>
@@ -28,7 +28,7 @@
 		<signal fieldName="AlignmentStatus" type="UNSIGNED.8" byteOffset="35" bitOffset="0" defaultValue="255"/>
 		<signal fieldName="CrawlbackDistance" type="UNSIGNED.32" byteOffset="36" bitOffset="0" defaultValue="0"/>
 		<signal fieldName="StoppingPointType" type="UNSIGNED.8" byteOffset="40" bitOffset="0" defaultValue="0"/>
-		<signal fieldName="NumberOfAvailableVOBCs" type="UNSIGNED.8" byteOffset="41" bitOffset="0" defaultValue="255"/>
+		<signal fieldName="NumberOfAvailableVOBCs" type="UNSIGNED.8" byteOffset="41" bitOffset="0" defaultValue="0"/>
 		<signal fieldName="TrainDoorsMode" type="UNSIGNED.8" byteOffset="42" bitOffset="0" defaultValue="255"/>
 		<signal fieldName="WSPModeAvailability" type="UNSIGNED.8" byteOffset="43" bitOffset="0" defaultValue="255"/>
 		<signal fieldName="WheelCalibrationStatus" type="UNSIGNED.8" byteOffset="44" bitOffset="0" defaultValue="255"/>
@@ -81,6 +81,42 @@
 		<signal fieldName="Reserved" type="BOOLEAN.1" byteOffset="77" bitOffset="6" defaultValue="0"/>
 		<signal fieldName="Reserved" type="BOOLEAN.1" byteOffset="77" bitOffset="7" defaultValue="0"/>
 	</communication>
+	
+	<communication processType="Response" sendType="tod-vobc">
+		<signal fieldName="TodSelfTestStatus" type="UNSIGNED.8" byteOffset="0" bitOffset="0" defaultValue="0"/>
+		<signal fieldName="TodFaultCode" type="UNSIGNED.8" byteOffset="1" bitOffset="0" defaultValue="0"/>
+		<signal fieldName="ConfirmedMsgLineNumber" type="UNSIGNED.8" byteOffset="2" bitOffset="0" defaultValue="0" property="queued"/>
+		<signal fieldName="ConfirmedMsgNumber" type="UNSIGNED.8" byteOffset="3" bitOffset="0" defaultValue="0" property="queued"/>
+		<signal fieldName="TrainId" type="UNSIGNED.16" byteOffset="4" bitOffset="0" defaultValue="0" valueType="Dec"/>
+		<signal fieldName="CrewId" type="UNSIGNED.16" byteOffset="6" bitOffset="0" defaultValue="0" valueType="Dec"/>
+		<signal fieldName="TODTCMSCommunicationStatus" type="UNSIGNED.8" byteOffset="8" bitOffset="0" defaultValue="0"/>
+
+		<!--signal fieldName="TCMSFaultStatus" type="UNSIGNED." byteOffset="9-16" bitOffset="0" defaultValue="0"/>
+
+		<signal fieldName="TCMSKilometreCount" type="UNSIGNED.32" byteOffset="17" bitOffset="0" defaultValue="0"/>
+		<signal fieldName="CarWeightTc1" type="UNSIGNED.16" byteOffset="25" bitOffset="0" defaultValue="0"/>
+		<signal fieldName="CarWeightMp1" type="UNSIGNED.16" byteOffset="27" bitOffset="0" defaultValue="0"/>
+		<signal fieldName="CarWeightM1" type="UNSIGNED.16" byteOffset="29" bitOffset="0" defaultValue="0"/>
+		<signal fieldName="CarWeightM2" type="UNSIGNED.16" byteOffset="31" bitOffset="0" defaultValue="0"/>
+		<signal fieldName="CarWeightMp2" type="UNSIGNED.16" byteOffset="33" bitOffset="0" defaultValue="0"/>
+		<signal fieldName="CarWeightTc2" type="UNSIGNED.16" byteOffset="35" bitOffset="0" defaultValue="0"/>
+		<signal fieldName="TractionEffort" type="UNSIGNED.16" byteOffset="37" bitOffset="0" defaultValue="0"/>
+		<signal fieldName="BrakingEffort" type="UNSIGNED.16" byteOffset="39" bitOffset="0" defaultValue="0"/>
+		<signal fieldName="DoorEnableBypassStatus" type="UNSIGNED.8" byteOffset="41" bitOffset="0" defaultValue="0"/>
+		<signal fieldName="PATestCommand" type="UNSIGNED.8" byteOffset="42" bitOffset="0" defaultValue="0"/>
+		<signal fieldName="RSTAOMStatus" type="UNSIGNED.8" byteOffset="43" bitOffset="0" defaultValue="0"/>
+
+		<signal fieldName="IndividualDoorCutoutStatus" type="UNSIGNED." byteOffset="45-60" bitOffset="0" defaultValue="0"/>
+
+		<signal fieldName="ObstacleDetectionStatus" type="UNSIGNED.8" byteOffset="61" bitOffset="0" defaultValue="0"/>
+		<signal fieldName="VehicleCAMRequestStatus" type="UNSIGNED.8" byteOffset="62" bitOffset="0" defaultValue="0"/>
+		<signal fieldName="TCMSEEDAssociatedStatus" type="UNSIGNED.8" byteOffset="63" bitOffset="0" defaultValue="0"/>
+
+		<signal fieldName="PEHActivatedStatus" type="UNSIGNED." byteOffset="64-79" bitOffset="0" defaultValue="0"/-->
+
+		<signal fieldName="PA Test" type="UNSIGNED.8" byteOffset="9" bitOffset="0" defaultValue="0"/>
+	</communication>
+
 	<checkboxList elemtype="checkbox" id="InfoModule" >
 		<checkbox name = "SPEED WARNING" id = "1"/>
 		<checkbox name = "CRAWLBACK AVAIL" id = "2"/>
@@ -116,6 +152,7 @@
 		<checkbox name = "FAM MODE DISALLOWED NOT APPLIED" id = "34"/>
 		<checkbox name = "MDZ SP" id = "35"/>
 	</checkboxList>
+	
 	<checkboxList elemtype="checkbox" id="FaultModule" >
 		<checkbox name = "VCU FAILURE" id = "1"/>
 		<checkbox name = "ATO FAILURE" id = "2"/>
@@ -166,41 +203,206 @@
 		<checkbox name = "TRAIN DOOR RE-CLOSE FAILED" id = "50"/>
 		<checkbox name = "PES WRONG ACTVIE" id = "51"/>
 	</checkboxList>
-	<communication processType="Response" sendType="tod-vobc">
-		<signal fieldName="TodSelfTestStatus" type="UNSIGNED.8" byteOffset="0" bitOffset="0" defaultValue="0"/>
-		<signal fieldName="TodFaultCode" type="UNSIGNED.8" byteOffset="1" bitOffset="0" defaultValue="0"/>
-		<signal fieldName="ConfirmedMsgLineNumber" type="UNSIGNED.8" byteOffset="2" bitOffset="0" defaultValue="0" property="queued"/>
-		<signal fieldName="ConfirmedMsgNumber" type="UNSIGNED.8" byteOffset="3" bitOffset="0" defaultValue="0" property="queued"/>
-		<signal fieldName="TrainId" type="UNSIGNED.16" byteOffset="4" bitOffset="0" defaultValue="0" valueType="Dec"/>
-		<signal fieldName="CrewId" type="UNSIGNED.16" byteOffset="6" bitOffset="0" defaultValue="0" valueType="Dec"/>
-		<signal fieldName="TODTCMSCommunicationStatus" type="UNSIGNED.8" byteOffset="8" bitOffset="0" defaultValue="0"/>
+	
+    <StationName>
+		<param value="1:XZS:莘庄站" name="stationId" />
+        <param value="2:XZS:莘庄站" name="stationId" />
+        <param value="3:CSR:春申路站" name="stationId" />
+        <param value="4:CSR:春申路站" name="stationId" />
+        <param value="5:YDR:银都路站" name="stationId" />
+        <param value="6:YDR:银都路站" name="stationId" />
+        <param value="9:ZQS:颛桥站" name="stationId" />
+        <param value="10:ZQS:颛桥站" name="stationId" />
+        <param value="13:BQS:北桥站" name="stationId" />
+        <param value="14:BQS:北桥站" name="stationId" />
+        <param value="15:JCR:剑川路站" name="stationId" />
+        <param value="16:JCR:剑川路站" name="stationId" />
+        <param value="17:DCR:东川路站" name="stationId" />
+        <param value="18:DCR:东川路站" name="stationId" />
+        <param value="19:JPR:金平路站" name="stationId" />
+        <param value="20:JPR:金平路站" name="stationId" />
+        <param value="21:HNR:华宁路站" name="stationId" />
+        <param value="22:HNR:华宁路站" name="stationId" />
+        <param value="23:WJR:文井路站" name="stationId" />
+        <param value="24:WJR:文井路站" name="stationId" />
+        <param value="25:MHD:闵行开发区站" name="stationId" />
+        <param value="26:MHD:闵行开发区站" name="stationId" />
+        <param value="27:JCL:江川路站" name="stationId" />
+        <param value="28:JCL:江川路站" name="stationId" />
+        <param value="29:XDS:西渡站" name="stationId" />
+        <param value="30:XDS:西渡站" name="stationId" />
+        <param value="33:XTS:萧塘站" name="stationId" />
+        <param value="34:XTS:萧塘站" name="stationId" />
+        <param value="37:FPA:奉浦大道站" name="stationId" />
+        <param value="38:FPA:奉浦大道站" name="stationId" />
+        <param value="39:HDR:环城东路站" name="stationId" />
+        <param value="40:HDR:环城东路站" name="stationId" />
+        <param value="41:WYR:望园路站" name="stationId" />
+        <param value="42:WYR:望园路站" name="stationId" />
+        <param value="43:JHL:金海湖站" name="stationId" />
+        <param value="44:JHL:金海湖站" name="stationId" />
+        <param value="45:FXX:奉贤新城站" name="stationId" />
+        <param value="46:FXX:奉贤新城站" name="stationId" />
+        <param value="47:DCR:东川路站" name="stationId" />
+        <param value="48:DCR:东川路站" name="stationId" />
+        <param value="49:TTP1:试车1" name="stationId" />
+        <param value="50:TTP2:试车2" name="stationId" />
+        <param value="51:TTP3:试车3" name="stationId" />
+        <param value="52:TTP4:试车4" name="stationId" />
+        <param value="53:TTP5:试车5" name="stationId" />
+        <param value="54:TTP6:试车6" name="stationId" />
+        <param value="55:PS1:虚拟站" name="stationId" />
+        <param value="56:PS2:虚拟站" name="stationId" />
+        <param value="57:PS3:虚拟站" name="stationId" />
+        <param value="58:PS4:虚拟站" name="stationId" />
+        <param value="59:PS5:虚拟站" name="stationId" />
+        <param value="60:PS6:虚拟站" name="stationId" />
+        <param value="61:PS7:虚拟站" name="stationId" />
+        <param value="62:PS8:虚拟站" name="stationId" />
+        <param value="63:PS9:虚拟站" name="stationId" />
+        <param value="64:PS10:虚拟站" name="stationId" />
+        <param value="65:PS11:虚拟站" name="stationId" />
+        <param value="66:PS12:虚拟站" name="stationId" />
+        <param value="67:PS13:虚拟站" name="stationId" />
+        <param value="68:PS14:虚拟站" name="stationId" />
+        <param value="69:PS15:虚拟站" name="stationId" />
+        <param value="70:PS16:虚拟站" name="stationId" />
+        <param value="71:PS17:虚拟站" name="stationId" />
+        <param value="72:PS18:虚拟站" name="stationId" />
+        <param value="73:PS19:虚拟站" name="stationId" />
+        <param value="74:PS20:虚拟站" name="stationId" />
+        <param value="75:PS21:虚拟站" name="stationId" />
+        <param value="76:PS22:虚拟站" name="stationId" />
+        <param value="77:PS23:虚拟站" name="stationId" />
+        <param value="78:PS24:虚拟站" name="stationId" />
+        <param value="79:PS25:虚拟站" name="stationId" />
+        <param value="80:XZA6:莘庄库6" name="stationId" />
+        <param value="81:XZA6:莘庄库5" name="stationId" />
+        <param value="82:XZA6:莘庄库4" name="stationId" />
+        <param value="83:XZA6:莘庄库3" name="stationId" />
+        <param value="84:XZA6:莘庄库2" name="stationId" />
+        <param value="85:XZA6:莘庄库1" name="stationId" />
+        <param value="86:PS32:虚拟站" name="stationId" />
+        <param value="87:PZQC1:平庄迁出1" name="stationId" />
+        <param value="88:PZQC2:平庄迁出2" name="stationId" />
+        <param value="89:PZ3A:平庄3A" name="stationId" />
+        <param value="90:PZ3B:平庄3B" name="stationId" />
+        <param value="91:PZ4A:平庄4A" name="stationId" />
+        <param value="92:PZ4B:平庄4B" name="stationId" />
+        <param value="93:PZ5A:平庄5A" name="stationId" />
+        <param value="94:PZ5B:平庄5B" name="stationId" />
+        <param value="95:PZ6A:平庄6A" name="stationId" />
+        <param value="96:PZ6B:平庄6B" name="stationId" />
+        <param value="97:PZ7A:平庄7A" name="stationId" />
+        <param value="98:PZ7B:平庄7B" name="stationId" />
+        <param value="99:PZ8A:平庄8A" name="stationId" />
+        <param value="100:PZ8B:平庄8B" name="stationId" />
+        <param value="101:PZ9A:平庄9A" name="stationId" />
+        <param value="102:PZ9B:平庄9B" name="stationId" />
+        <param value="103:PZ10A:平庄10A" name="stationId" />
+        <param value="104:PZ10B:平庄10B" name="stationId" />
+        <param value="105:PZ10A:平庄11A" name="stationId" />
+        <param value="106:PZ10B:平庄11B" name="stationId" />
+        <param value="107:PZ12A:平庄12A" name="stationId" />
+        <param value="108:PZ12B:平庄12B" name="stationId" />
+        <param value="109:PZ13A:平庄13A" name="stationId" />
+        <param value="110:PZ13B:平庄13B" name="stationId" />
+        <param value="111:PZ14A:平庄14A" name="stationId" />
+        <param value="112:PZ14B:平庄14B" name="stationId" />
+        <param value="113:PZ15A:平庄15A" name="stationId" />
+        <param value="114:PZ15B:平庄15B" name="stationId" />
+        <param value="115:PZ16A:平庄16A" name="stationId" />
+        <param value="116:PZ16B:平庄16B" name="stationId" />
+        <param value="117:PZ19A:平庄19A" name="stationId" />
+        <param value="118:PZ20A:平庄20A" name="stationId" />
+        <param value="119:PZ21A:平庄21A" name="stationId" />
+        <param value="120:PS33:虚拟站" name="stationId" />
+        <param value="121:PZXC1:虚拟站" name="stationId" />
+    </StationName>
+	
+	<station id="1" >
+        <param name="StationSkipStatus" value="1" />
+        <param name="StationHoldStatus" value="2" />
+        <param name="StationDwell" value="25" />
+        <param name="PlatformDoorSides" value="2" />
+        <param name="DistanceToStoppingPoint" value="5000000" />
+        <param name="TrainDoorsEnableLeftStatus" value="1" />
+        <param name="TrainDoorsEnableRightStatus" value="1" />
+        <param name="LeftTrainDoorsClosedStatus" value="0" />
+        <param name="RightTrainDoorsClosedStatus" value="1" />
+        <param name="LeftDoorCloseCommandStatus" value="1" />
+        <param name="RightDoorCloseCommandStatus" value="0" />
+		<param name="LeftPSDClosedAndLockedStatus" value="0" />
+        <param name="RightPSDClosedAndLockedStatus" value="1" />
+        <param name="NextStationId" value="3" />
+    </station>
+    <station id="3" >
+        <param name="StationSkipStatus" value="1" />
+        <param name="StationHoldStatus" value="2" />
+        <param name="StationDwell" value="25" />
+        <param name="PlatformDoorSides" value="2" />
+        <param name="DistanceToStoppingPoint" value="5000000" />
+        <param name="TrainDoorsEnableLeftStatus" value="1" />
+        <param name="TrainDoorsEnableRightStatus" value="1" />
+        <param name="LeftTrainDoorsClosedStatus" value="0" />
+        <param name="RightTrainDoorsClosedStatus" value="1" />
+        <param name="LeftDoorCloseCommandStatus" value="1" />
+        <param name="RightDoorCloseCommandStatus" value="0" />
+		<param name="LeftPSDClosedAndLockedStatus" value="0" />
+        <param name="RightPSDClosedAndLockedStatus" value="1" />
+        <param name="NextStationId" value="5" />
+    </station>
+    <station id="5" >
+        <param name="StationSkipStatus" value="1" />
+        <param name="StationHoldStatus" value="2" />
+        <param name="StationDwell" value="25" />
+        <param name="PlatformDoorSides" value="2" />
+        <param name="DistanceToStoppingPoint" value="5000000" />
+        <param name="TrainDoorsEnableLeftStatus" value="1" />
+        <param name="TrainDoorsEnableRightStatus" value="1" />
+        <param name="LeftTrainDoorsClosedStatus" value="0" />
+        <param name="RightTrainDoorsClosedStatus" value="1" />
+        <param name="LeftDoorCloseCommandStatus" value="1" />
+        <param name="RightDoorCloseCommandStatus" value="0" />
+		<param name="LeftPSDClosedAndLockedStatus" value="0" />
+        <param name="RightPSDClosedAndLockedStatus" value="1" />
+        <param name="NextStationId" value="7" />
+    </station>
+    <station id="7" >
+        <param name="StationSkipStatus" value="1" />
+        <param name="StationHoldStatus" value="2" />
+        <param name="StationDwell" value="25" />
+        <param name="PlatformDoorSides" value="2" />
+        <param name="DistanceToStoppingPoint" value="5000000" />
+        <param name="TrainDoorsEnableLeftStatus" value="1" />
+        <param name="TrainDoorsEnableRightStatus" value="1" />
+        <param name="LeftTrainDoorsClosedStatus" value="0" />
+        <param name="RightTrainDoorsClosedStatus" value="1" />
+        <param name="LeftDoorCloseCommandStatus" value="1" />
+        <param name="RightDoorCloseCommandStatus" value="0" />
+		<param name="LeftPSDClosedAndLockedStatus" value="0" />
+        <param name="RightPSDClosedAndLockedStatus" value="1" />
+        <param name="NextStationId" value="9" />
+    </station>
+    <station id="9" >
+        <param name="StationSkipStatus" value="1" />
+        <param name="StationHoldStatus" value="2" />
+        <param name="StationDwell" value="25" />
+        <param name="PlatformDoorSides" value="2" />
+        <param name="DistanceToStoppingPoint" value="5000000" />
+        <param name="TrainDoorsEnableLeftStatus" value="1" />
+        <param name="TrainDoorsEnableRightStatus" value="1" />
+        <param name="LeftTrainDoorsClosedStatus" value="0" />
+        <param name="RightTrainDoorsClosedStatus" value="1" />
+        <param name="LeftDoorCloseCommandStatus" value="1" />
+        <param name="RightDoorCloseCommandStatus" value="0" />
+		<param name="LeftPSDClosedAndLockedStatus" value="0" />
+        <param name="RightPSDClosedAndLockedStatus" value="1" />
+        <param name="NextStationId" value="9" />
+    </station>
 
-		<!--signal fieldName="TCMSFaultStatus" type="UNSIGNED." byteOffset="9-16" bitOffset="0" defaultValue="0"/>
-
-		<signal fieldName="TCMSKilometreCount" type="UNSIGNED.32" byteOffset="17" bitOffset="0" defaultValue="0"/>
-		<signal fieldName="CarWeightTc1" type="UNSIGNED.16" byteOffset="25" bitOffset="0" defaultValue="0"/>
-		<signal fieldName="CarWeightMp1" type="UNSIGNED.16" byteOffset="27" bitOffset="0" defaultValue="0"/>
-		<signal fieldName="CarWeightM1" type="UNSIGNED.16" byteOffset="29" bitOffset="0" defaultValue="0"/>
-		<signal fieldName="CarWeightM2" type="UNSIGNED.16" byteOffset="31" bitOffset="0" defaultValue="0"/>
-		<signal fieldName="CarWeightMp2" type="UNSIGNED.16" byteOffset="33" bitOffset="0" defaultValue="0"/>
-		<signal fieldName="CarWeightTc2" type="UNSIGNED.16" byteOffset="35" bitOffset="0" defaultValue="0"/>
-		<signal fieldName="TractionEffort" type="UNSIGNED.16" byteOffset="37" bitOffset="0" defaultValue="0"/>
-		<signal fieldName="BrakingEffort" type="UNSIGNED.16" byteOffset="39" bitOffset="0" defaultValue="0"/>
-		<signal fieldName="DoorEnableBypassStatus" type="UNSIGNED.8" byteOffset="41" bitOffset="0" defaultValue="0"/>
-		<signal fieldName="PATestCommand" type="UNSIGNED.8" byteOffset="42" bitOffset="0" defaultValue="0"/>
-		<signal fieldName="RSTAOMStatus" type="UNSIGNED.8" byteOffset="43" bitOffset="0" defaultValue="0"/>
-
-		<signal fieldName="IndividualDoorCutoutStatus" type="UNSIGNED." byteOffset="45-60" bitOffset="0" defaultValue="0"/>
-
-		<signal fieldName="ObstacleDetectionStatus" type="UNSIGNED.8" byteOffset="61" bitOffset="0" defaultValue="0"/>
-		<signal fieldName="VehicleCAMRequestStatus" type="UNSIGNED.8" byteOffset="62" bitOffset="0" defaultValue="0"/>
-		<signal fieldName="TCMSEEDAssociatedStatus" type="UNSIGNED.8" byteOffset="63" bitOffset="0" defaultValue="0"/>
-
-		<signal fieldName="PEHActivatedStatus" type="UNSIGNED." byteOffset="64-79" bitOffset="0" defaultValue="0"/-->
-
-		<signal fieldName="PA Test" type="UNSIGNED.8" byteOffset="9" bitOffset="0" defaultValue="0"/>
-	</communication>
-
+	
+	
 	<telegram type="UDP" id="header">	
 		<param name="InterfaceType" type="UNSIGNED.16" byteOffset="0" bitOffset="0" defaultValue="1004"/>
 		<param name="InterfaceVersion" type="UNSIGNED.8" byteOffset="2" bitOffset="0" defaultValue="0"/>

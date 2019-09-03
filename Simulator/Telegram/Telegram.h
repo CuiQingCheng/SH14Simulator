@@ -2,8 +2,12 @@
 #define TELEGRAM_H
 
 #include "Signal/SignalValue.h"
-class Telegram
+
+#include<QObject>
+
+class Telegram:public QObject
 {
+     Q_OBJECT
 public:
     Telegram();
     ~Telegram();
