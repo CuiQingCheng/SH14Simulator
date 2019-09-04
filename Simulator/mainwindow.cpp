@@ -10,8 +10,7 @@
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
-    ui(new Ui::MainWindow),
-    m_variableSize(0)
+    ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
     m_todChannel = new TodVobcChannel();
@@ -22,23 +21,29 @@ MainWindow::MainWindow(QWidget *parent) :
 
     connect(m_sendRFCTimer, SIGNAL(timeout()), this, SLOT(sendRTFTimeout()));
     connect(m_checkConnectState, SIGNAL(timeout()), this, SLOT(checkConnectState()));
+    connect(this, SIGNAL(sendTelegramUpdated()), this, SLOT(checkConnectAndSendPoolData()));
     connect(m_sendPoolDataTimer, SIGNAL(timeout()), this, SLOT(sendPoolData()));
     connect(m_receiveDataTimer, SIGNAL(timeout()), this, SLOT(receiveData()));
 
-    m_infoLayout = new QGridLayout(ui->infoTab);
-    m_faultLayout = new QGridLayout(ui->faultTab);
     m_factory = new Factory;
     m_parserPtr = new Parser;
-//    WidgetHandler::addWidget("sendTableWidget", ui->sendTableWidget);
-//    WidgetHandler::addWidget("reciverTableWidget", ui->receiveTableWidget);
-//    WidgetHandler::addWidget("infoTab", ui->infoTab);
-//    WidgetHandler::addWidget("faultTab", ui->faultTab);
-//    WidgetHandler::addWidget("sendTcmsWidget", ui->tcmsTableWidget);
-//    WidgetHandler::addWidget("reciverTcmsWidget", ui->recTCMSData_TextEdit);
+
+    m_widgetHandler = m_factory->get<WidgetHandler>("WidgetHandler");
+
+    m_widgetHandler->addWidget(QString("sendTableWidget"), ui->sendTableWidget);
+    m_widgetHandler->addWidget(QString("infoTab"), ui->infoTab);
+    m_widgetHandler->addWidget(QString("faultTab"), ui->faultTab);
+    m_widgetHandler->addWidget(QString("sendTcmsTableWidget"), ui->tcmsTableWidget);
+    m_widgetHandler->addWidget(QString("receiveTableWidget"), ui->receiveTableWidget);
+    m_widgetHandler->addWidget(QString("recTCMSData_TextEdit"), ui->recTCMSData_TextEdit);
+
+
+    connect(m_parserPtr, SIGNAL(parseFinished()), m_widgetHandler, SLOT(showGuiDefData()));
 
     initDefaultConfig();
 
     this->setWindowTitle(QString("VOBC Simulator"));
+    ui->autotestBtn->setDisabled(true);
 }
 
 MainWindow::~MainWindow()
@@ -131,6 +136,7 @@ void MainWindow::sendRTFTimeout()
 
         ui->tipsLabel->setText("Connect Success.");
         ui->tipsLabel->setStyleSheet("color:green; font:bold");
+        ui->autotestBtn->setEnabled(true);
 
         if(!m_sendPoolDataTimer->isActive())
         {
@@ -156,6 +162,7 @@ void MainWindow::checkConnectState()
 
         ui->tipsLabel->setText("Disconnect !!!      Trying to reconnect ...");
         ui->tipsLabel->setStyleSheet("color:red; font:bold");
+        ui->autotestBtn->setDisabled(true);
     }
 }
 
@@ -167,16 +174,19 @@ void MainWindow::sendPoolData()
 
     int optionalTag = 0;
 
-    if(m_infoIdLst.size() > 0)
+    QList<int> infoIdLst = m_widgetHandler->getInfoFaultIdLst(true);
+    QList<int> faultIdLst = m_widgetHandler->getInfoFaultIdLst(false);
+
+    if(infoIdLst.size() > 0)
     {
-        m_todChannel->setDataByInfoFault(m_infoIdLst, 0, Info_Frame_Id);
-        offset = (m_infoIdLst.size() + 2);
+        m_todChannel->setDataByInfoFault(infoIdLst, 0, Info_Frame_Id);
+        offset = (infoIdLst.size() + 2);
         ++optionalTag;
     }
-    if(m_faultIdLst.size() > 0)
+    if(faultIdLst.size() > 0)
     {
-        m_todChannel->setDataByInfoFault(m_faultIdLst, offset, Fault_Frame_Id);
-        offset += (m_faultIdLst.size() + 2);
+        m_todChannel->setDataByInfoFault(faultIdLst, offset, Fault_Frame_Id);
+        offset += (faultIdLst.size() + 2);
         ++optionalTag;
     }
 
@@ -184,7 +194,7 @@ void MainWindow::sendPoolData()
     {
         m_todChannel->setOptionTag(optionalTag);
     }
-    getTcmsValueLst(lst);
+    m_widgetHandler->getTcmsValueLst(lst);
 
     m_todChannel->setDataByTCMS(lst, offset);
 
@@ -291,65 +301,14 @@ void MainWindow::receiveData()
     m_checkConnectState->start(3000);
 }
 
-void MainWindow::updateInfoFaultId(int state)
+void MainWindow::checkConnectAndSendPoolData()
 {
-    CheckBox* checkbox = qobject_cast<CheckBox *>(QObject::sender());
-    int id = checkbox->getId();
-    int type = checkbox->getCheckBoxType();
-
-    if(state == Qt::Checked)
+    if(m_todChannel->getComConnectState())
     {
-        if(m_variableSize + 1 > TextEdit::MAX_SEND_VARIABLE_SIZE)
-        {
-            checkbox->setCheck(false);
-            return;
-        }
-        else
-        {
-            checkbox->setCheck(true);
-            ++m_variableSize;
-        }
-        if(0 == type)
-        {
-            if(!m_infoIdLst.contains(id))
-            {
-                m_infoIdLst.append(id);
-            }
-        }
-        else if(1 == type)
-        {
-            if(!m_faultIdLst.contains(id))
-            {
-                m_faultIdLst.append(id);
-            }
-        }
+        sendPoolData();
     }
-    else if(state == Qt::Unchecked)
-    {
-        if(0 == type)
-        {
-            if(m_infoIdLst.contains(id))
-            {
-                m_infoIdLst.removeOne(id);
-            }
-        }
-        else if(1 == type)
-        {
-            if(m_faultIdLst.contains(id))
-            {
-                m_faultIdLst.removeOne(id);
-            }
-        }
-        checkbox->setChecked(false);
-        --m_variableSize;
-    }
-
 }
 
-void MainWindow::clear()
-{
-
-}
 
 void MainWindow::initDefaultConfig()
 {
@@ -397,14 +356,6 @@ void MainWindow::initDefaultConfig()
     if(!m_configFileName.isEmpty())
     {
         parseConfigurationFile();
-//        if(parseConfigurationFile())
-//        {
-//            drawTableWidget();
-
-//            drawInfoFaultCheckTab();
-
-//            drawTcmsTableWidget();
-//        }
     }
 }
 
@@ -445,11 +396,12 @@ bool MainWindow::openConfigurationFile()
 void MainWindow::parseConfigurationFile()
 {
 
-//    clear();
-//    m_telegram->clear();
+    m_widgetHandler->clear();
+    (m_factory->get<Telegram>("Telegram"))->clear();
+    m_widgetHandler->setTelegram( (m_factory->get<Telegram>("Telegram")));
     m_parserPtr->setConfigFile(m_configFileName);
     int ret = m_parserPtr->parse(m_factory);
-    (m_factory->get<Telegram>("Telegram"))->clear();
+
 
     if(ret != 0)
     {
@@ -460,306 +412,8 @@ void MainWindow::parseConfigurationFile()
     QString fileName = Path.at(Path.size() - 1);
     this->setStatusTip(fileName);
 
-    drawGui();
-}
-
-void MainWindow::drawGui()
-{
-    WidgetHandler* widgetHandler = m_factory->get<WidgetHandler>("WidgetHandler");
-
-
 
 }
-/*
-void MainWindow::drawTableWidget()
-{
-    QList<QString> rowHeaderList;
-    rowHeaderList.append("FieldName");
-    rowHeaderList.append("ByteOffset");
-    rowHeaderList.append("BitOffset");
-    rowHeaderList.append("DataType");
-    rowHeaderList.append("ValueType");
-    rowHeaderList.append("Value");
-
-    // the FiledName's num plus 1 is equal to the all of line num
-//    quint16 sendDataRowCount = m_SendSignalList.count();
-    quint8 sendDataColumnCount = rowHeaderList.count();
-
-    ui->sendTableWidget->setRowCount(sendDataRowCount);
-    ui->sendTableWidget->setColumnCount(sendDataColumnCount);
-    ui->sendTableWidget->setColumnWidth(0,300);
-    ui->sendTableWidget->setColumnWidth(3,150);
-    ui->sendTableWidget->setColumnWidth(4,150);
-
-    ui->sendTableWidget->setHorizontalHeaderLabels(rowHeaderList);
-
-    for (int i = 0; i < ui->sendTableWidget->rowCount(); ++i)
-    {
-        for (int j = 0; j < ui->sendTableWidget->columnCount(); ++j)
-        {
-            QTableWidgetItem* newItem = new QTableWidgetItem("");
-            ui->sendTableWidget->setItem(i,j,newItem);
-
-            ui->sendTableWidget->item(i,j)->setTextAlignment(Qt::AlignCenter);
-
-            if ((j == (sendDataColumnCount-1)))
-            {
-                ui->sendTableWidget->item(i,j)->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable);
-            }
-            else
-            {
-                ui->sendTableWidget->item(i,j)->setFlags(Qt::ItemIsEnabled);
-                ui->sendTableWidget->item(i,j)->setBackgroundColor(Qt::gray);
-            }
-            // SignalValue* signal = m_SendSignalMap.value(m_SendSignalList[i]);
-            SignalValue* signal = m_telegram->getSendSignalValue(m_SendSignalList[i]);
-            if(NULL == signal)
-            {
-                qDebug() << "get Send Signal Value by key: " << m_SendSignalList[i] << " failed !!!";
-                return;
-            }
-            if (j == 0)    // FieldName
-            {
-                ui->sendTableWidget->item(i,j)->setText(signal->getName());
-            }
-            else if (j == 1)    // ByteOffset
-            {
-                ui->sendTableWidget->item(i,j)->setText(QString::number(signal->getByteOffset()));
-            }
-            else if (j == 2)    // BitOffset
-            {
-                ui->sendTableWidget->item(i,j)->setText(QString::number(signal->getBitOffset()));
-            }
-            else if (j == 3)    // DataType
-            {
-                ui->sendTableWidget->item(i,j)->setText(signal->getDataType());
-            }
-            else if (j == 4)    // ValueType
-            {
-                ui->sendTableWidget->item(i,j)->setText(signal->getValueType());
-            }
-            else if (j == 5)    // Value
-            {
-                ui->sendTableWidget->item(i,j)->setText(QString::number(signal->getValue()));
-            }
-        }
-    }
-
-    for (int i = 0; i < ui->sendTableWidget->rowCount(); ++i)
-    {
-        QTableWidgetItem *itemFirstColumn = ui->sendTableWidget->item(i,0);
-        QString FirstColumnStr =  itemFirstColumn->text();
-        if( FirstColumnStr.contains("Reserved") || FirstColumnStr.contains("Not Used"))
-        {
-            for(int j = 0;j < ui->sendTableWidget->columnCount(); ++j)
-            {
-                QTableWidgetItem *itemNeedDisable = ui->sendTableWidget->item(i,j);
-                itemNeedDisable->setFlags(itemNeedDisable->flags() & (~Qt::ItemIsEnabled));
-                itemNeedDisable->setBackgroundColor(Qt::gray);
-            }
-        }
-    }
-
-    ui->sendTableWidget->resizeRowsToContents();             // adjust to many lines to show when a line can't show all the content.
-
-//    quint16 receivedDataRowCount = m_receiveSignalList.count();
-    quint8 receivedDataColumnCount = rowHeaderList.count();
-
-    ui->receiveTableWidget->setRowCount(receivedDataRowCount);
-    ui->receiveTableWidget->setColumnCount(receivedDataColumnCount);
-    ui->receiveTableWidget->setColumnWidth(0,300);
-    ui->receiveTableWidget->setColumnWidth(3,150);
-    ui->receiveTableWidget->setColumnWidth(4,150);
-    ui->receiveTableWidget->setHorizontalHeaderLabels(rowHeaderList);
-
-    for (int i = 0; i < ui->receiveTableWidget->rowCount(); ++i)
-    {
-        for (int j = 0; j < ui->receiveTableWidget->columnCount(); ++j)
-        {
-            QTableWidgetItem* newItem = new QTableWidgetItem("");
-            ui->receiveTableWidget->setItem(i,j,newItem);
-
-            ui->receiveTableWidget->item(i,j)->setTextAlignment(Qt::AlignCenter);
-
-            if ((j == (receivedDataColumnCount-1)))
-            {
-                ui->receiveTableWidget->item(i,j)->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable );
-            }
-            else
-            {
-                ui->receiveTableWidget->item(i,j)->setFlags(Qt::ItemIsEnabled);
-                ui->receiveTableWidget->item(i,j)->setBackgroundColor(Qt::gray);
-            }
-
-            // SignalValue* signal = m_receiveSignalMap.value(m_receiveSignalList[i]);
-            SignalValue* signal = m_telegram->getReceiveSignalValue(m_receiveSignalList[i]);
-            if(NULL == signal)
-            {
-                qDebug() << "get Receive Signal Value by key: " << m_receiveSignalList[i] << " failed !!!";
-                return;
-            }
-            if (j == 0)    // FieldName
-            {
-                ui->receiveTableWidget->item(i,j)->setText(signal->getName());
-            }
-            else if (j == 1)    // ByteOffset
-            {
-                ui->receiveTableWidget->item(i,j)->setText(QString::number(signal->getByteOffset()));
-            }
-            else if (j == 2)    // BitOffset
-            {
-                ui->receiveTableWidget->item(i,j)->setText(QString::number(signal->getBitOffset()));
-            }
-            else if (j == 3)    // DataType
-            {
-                ui->receiveTableWidget->item(i,j)->setText(signal->getDataType());
-            }
-            else if (j == 4)    // ValueType
-            {
-                ui->receiveTableWidget->item(i,j)->setText(signal->getValueType());
-            }
-            else if (j == 5)    // Value
-            {
-                ui->receiveTableWidget->item(i,j)->setText(QString::number(signal->getValue()));
-            }
-        }
-    }
-
-    for (int i = 0; i < ui->receiveTableWidget->rowCount(); ++i)
-    {
-        QTableWidgetItem *itemFirstColumn = ui->receiveTableWidget->item(i,0);
-        QString FirstColumnStr =  itemFirstColumn->text();
-        if( FirstColumnStr.contains("Reserved") || FirstColumnStr.contains("Not Used"))
-        {
-            for(int j = 0;j < ui->receiveTableWidget->columnCount(); ++j)
-            {
-                QTableWidgetItem *itemNeedDisable = ui->receiveTableWidget->item(i,j);
-                itemNeedDisable->setFlags(itemNeedDisable->flags() & (~Qt::ItemIsEnabled));
-                itemNeedDisable->setBackgroundColor(Qt::gray);
-            }
-        }
-    }
-
-    ui->receiveTableWidget->resizeRowsToContents();
-}
-
-void MainWindow::drawInfoFaultCheckTab()
-{
-    int infoCount = m_infoList.size();
-    int infoBoxCount = m_infoCheckBoxList.size();
-
-    int faultCount = m_faultList.size();
-    int faultBoxCount = m_faultCheckBoxList.size();
-    int addBox = 0;
-
-    if(infoCount > infoBoxCount)
-    {
-        addBox = infoCount - infoBoxCount;
-    }
-
-    if(faultCount > faultBoxCount)
-    {
-        addBox += (faultCount - faultBoxCount);
-    }
-
-    for(int i = 0; i < addBox; ++i)
-    {
-        CheckBox* checkbox = new CheckBox(RADIO_W, RADIO_H);
-        QObject::connect(checkbox, SIGNAL(stateChanged(int)), this, SLOT(updateInfoFaultId(int)));
-
-        if(i < (infoCount - infoBoxCount))
-        {
-            checkbox->setCheckBoxType(CheckBox::boxType::INFO);
-            m_infoCheckBoxList.append(checkbox);
-        }
-
-        if((faultCount > faultBoxCount) && (i >= (infoCount - infoBoxCount)))
-        {
-            checkbox->setCheckBoxType(CheckBox::boxType::FAULT);
-            m_faultCheckBoxList.append(checkbox);
-        }
-    }
-
-    if(infoCount < infoBoxCount)
-    {
-        for(int i = 0; i< infoBoxCount - infoCount; ++i)
-        {
-            CheckBox* checkbox = m_infoCheckBoxList[infoBoxCount - (i+1)];
-            m_infoCheckBoxList.removeLast();
-            delete checkbox;
-            checkbox = NULL;
-        }
-    }
-
-    if(faultCount < faultBoxCount)
-    {
-        for(int i = 0; i < faultBoxCount - faultCount; ++i)
-        {
-            CheckBox* checkbox = m_faultCheckBoxList[faultBoxCount - (i+1)];
-            m_faultCheckBoxList.removeLast();
-            delete checkbox;
-            checkbox = NULL;
-        }
-    }
-
-    for(int i = 0; i < m_infoList.size(); ++i)
-    {
-        QStringList info = m_infoList[i].split(":");
-        if(info.size() != 2)
-            return;
-
-        m_infoCheckBoxList[i]->setId((info[1]).toInt());
-        m_infoCheckBoxList[i]->setLabelText(info[0]);
-        m_infoLayout->addWidget(m_infoCheckBoxList[i], i / LINECOUNT, i % LINECOUNT, 1, 1);
-    }
-
-    m_infoLayout->setHorizontalSpacing(5);
-    m_infoLayout->setVerticalSpacing(2);
-    m_infoLayout->setContentsMargins(10, 10, 10, 10);
-    ui->infoTab->setLayout(m_infoLayout);
-
-    for(int i = 0; i < m_faultList.size(); i++)
-    {
-        QStringList falut = m_faultList[i].split(":");
-        if(falut.size() != 2)
-            return;
-
-        m_faultCheckBoxList[i]->setId((falut[1]).toInt());
-        m_faultCheckBoxList[i]->setLabelText(falut[0]);
-
-        m_faultLayout->addWidget(m_faultCheckBoxList[i], i / LINECOUNT, i % LINECOUNT, 1, 1);
-    }
-
-    m_faultLayout->setHorizontalSpacing(5);
-    m_faultLayout->setVerticalSpacing(2);
-    m_faultLayout->setContentsMargins(10, 10, 10, 10);
-    ui->faultTab->setLayout(m_faultLayout);
-}
-
-void MainWindow::drawTcmsTableWidget()
-{
-    ui->tcmsTableWidget->setColumnCount(tcmsItem::COLUMN_COUNT);
-    ui->tcmsTableWidget->setRowCount(tcmsItem::ROW_COUNT);
-    for(int i = 0; i < 16; i++)
-    {
-        ui->tcmsTableWidget->setColumnWidth(i, tcmsItem::ITEM_W);
-    }
-    for (int i = 0; i < ui->tcmsTableWidget->rowCount(); ++i)
-    {
-        ui->tcmsTableWidget->setRowHeight(i, tcmsItem::ITEM_H);
-
-        for (int j = 0; j < ui->tcmsTableWidget->columnCount(); ++j)
-        {
-            QTableWidgetItem* newItem = new QTableWidgetItem("0");
-            ui->tcmsTableWidget->setItem(i,j,newItem);
-
-            ui->tcmsTableWidget->item(i,j)->setTextAlignment(Qt::AlignCenter);
-
-            ui->tcmsTableWidget->item(i,j)->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable);
-        }
-    }
-}
-*/
 
 void MainWindow::sendTableWidgetValue()
 {
@@ -818,17 +472,3 @@ void MainWindow::setInputFrameEnable(bool enable)
     ui->setBtn->setEnabled(enable);
 }
 
-void MainWindow::getTcmsValueLst(QStringList& lst)
-{
-    QString itemValue;
-
-    for(int i = 0; i < ui->tcmsTableWidget->rowCount(); ++i)
-    {
-        for(int j = 0; j < ui->tcmsTableWidget->columnCount(); ++j)
-        {
-            itemValue = ui->tcmsTableWidget->item(i, j)->text();
-
-            lst << (itemValue);
-        }
-    }
-}

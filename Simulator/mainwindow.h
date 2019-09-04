@@ -15,7 +15,6 @@
 #include <QDomDocument>
 #include <QFile>
 
-#include <QGridLayout>
 #include <QRegExpValidator>
 #include <QRegExp>
 
@@ -37,12 +36,6 @@ typedef enum Optional_Frame_Id
     Info_Frame_Id = 2
 }Optional_Frame_Id;
 
-typedef struct Tcms_Item{
-    static const int ROW_COUNT = 6;
-    static const int COLUMN_COUNT = 16;
-    static const int ITEM_W = 70;
-    static const int ITEM_H = 28;
-}tcmsItem;
 
 class MainWindow : public QMainWindow
 {
@@ -52,22 +45,17 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
-    static const int RADIO_W = 225;
-    static const int RADIO_H = 22;
-    static const int LINECOUNT = 5;
     static const int FIX_REC_DATASIZE = 10;
     static const int REC_TCMS_DATASIZE = 208;
+
+signals:
+    void sendTelegramUpdated();
 
 protected:
     bool openConfigurationFile();
     void parseConfigurationFile();
-    void drawGui();
-//    void drawTableWidget();
-//    void drawInfoFaultCheckTab();
-//    void drawTcmsTableWidget();
     void sendTableWidgetValue();
     void setInputFrameEnable(bool enable);
-    void getTcmsValueLst(QStringList& lst);
 
 
 private slots:
@@ -85,10 +73,9 @@ private slots:
 
     void receiveData();
 
-    void updateInfoFaultId(int state);
+    void checkConnectAndSendPoolData();
 
 private:
-    void clear();
     void initDefaultConfig();
     void modifyDefaultConfig();
     void setConfig();
@@ -101,10 +88,6 @@ private:
     SignalMap m_receiveSignalMap;
     SignalMap m_telegramHeaderMap;
 
-    QList<CheckBox*> m_infoCheckBoxList;
-    QList<CheckBox*> m_faultCheckBoxList;
-
-    Telegram *m_telegram;
     TodVobcChannel *m_todChannel;
 
     int m_sendTelegramType;
@@ -114,16 +97,12 @@ private:
     QTimer* m_checkConnectState;
     QTimer* m_sendPoolDataTimer;
     QTimer* m_receiveDataTimer;
-    QGridLayout* m_infoLayout;
-    QGridLayout* m_faultLayout;
-    QList<int> m_infoIdLst;
-    QList<int> m_faultIdLst;
 
-    int m_variableSize;
 
     QSettings *m_theSettingsPtr;
     Parser* m_parserPtr;
     Factory* m_factory;
+    WidgetHandler* m_widgetHandler;
 
 };
 #endif // MAINWINDOW_H

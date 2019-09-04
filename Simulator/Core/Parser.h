@@ -5,15 +5,22 @@
 #include "./Factory/Factory.h"
 
 #include <QString>
+#include <QObject>
 
-class Parser
+class Parser : public QObject
 {
+    Q_OBJECT
+
 public:
     Parser();
     ~Parser();
 
+
     void setConfigFile(QString& filePath);
     int parse(Factory* factory);
+
+signals:
+    void parseFinished();
 
 private:
     QString m_configFile;
