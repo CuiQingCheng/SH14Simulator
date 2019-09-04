@@ -142,6 +142,7 @@ int Parser::parse(Factory *factory)
     }
 
     file.close();
+    emit parseFinished();
 
     return 0;
 }

@@ -634,7 +634,7 @@ background-color: rgb(85, 87, 83);</string>
         </spacer>
        </item>
        <item>
-        <widget class="QPushButton" name="autotest">
+        <widget class="QPushButton" name="autotestBtn">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
            <horstretch>0</horstretch>

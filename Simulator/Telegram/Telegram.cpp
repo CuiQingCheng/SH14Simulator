@@ -92,7 +92,6 @@ void Telegram::clear()
         itS = m_sendSignalMap.erase(itS++);
     }
 
-    qDebug() << "check empty:" << m_sendSignalMap.isEmpty();
     SignalMap::iterator itR = m_receiveSignalMap.begin();
     for(; itR != m_receiveSignalMap.end(); )
     {

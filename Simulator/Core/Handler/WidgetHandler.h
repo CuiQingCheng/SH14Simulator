@@ -4,6 +4,7 @@
 #include "Gui/TextEdit.h"
 #include "Gui/CheckBox.h"
 #include "Gui/LineEdit.h"
+#include "Telegram/Telegram.h"
 
 #include <QObject>
 #include <QStringList>
@@ -11,8 +12,17 @@
 #include <QWidget>
 #include <QTableWidget>
 #include <QTabWidget>
+#include <QList>
+#include <QGridLayout>
 
 typedef QMap<QString, QWidget*> WidgetMap;
+
+typedef struct Tcms_Item{
+    static const int ROW_COUNT = 6;
+    static const int COLUMN_COUNT = 16;
+    static const int ITEM_W = 70;
+    static const int ITEM_H = 28;
+}tcmsItem;
 
 class WidgetHandler : public QObject
 {
@@ -20,11 +30,6 @@ class WidgetHandler : public QObject
 public:
     WidgetHandler();
     ~WidgetHandler();
-    void addEleNameList(QString name, int type);
-
-    void addWidget( QString& key, QWidget* widget);
-    WidgetMap* getWidgetMap();
-
     enum SignalType{
         Send_Signal = 0,
         Receiver_Signal = 1,
@@ -32,13 +37,53 @@ public:
         Fault =3
     };
 
+    static const int RADIO_W = 225;
+    static const int RADIO_H = 22;
+    static const int LINECOUNT = 5;
+
+
+    void addEleNameList(QString name, int type);
+
+    void addWidget( QString key, QWidget* widget);
+    WidgetMap* getWidgetMap();
+
+    void setTelegram(Telegram* telegram);
+    void clear();
+
+    QList<int> getInfoFaultIdLst(bool isInfo);
+    void getTcmsValueLst(QStringList& lst);
+
+signals:
+
+
+public slots:
+    void showGuiDefData();
+    void updateInfoFaultId(int state);
+
+protected:
+    void drawTableWidget();
+    void drawInfoFaultCheckTab();
+    void drawTcmsTableWidget();
+
 private:
+    QList<CheckBox*> m_infoCheckBoxList;
+    QList<CheckBox*> m_faultCheckBoxList;
+
+
     QStringList m_sendSignalList;
     QStringList m_receiveSignalList;
     QStringList m_infoList;
     QStringList m_faultList;
+    QList<int> m_infoIdLst;
+    QList<int> m_faultIdLst;
 
+    int m_variableSize;
+
+    Telegram* m_telegram;
     WidgetMap m_widgetMap;
+
+    QGridLayout* m_infoLayout;
+    QGridLayout* m_faultLayout;
 };
 
 #endif
