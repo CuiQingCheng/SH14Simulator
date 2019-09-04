@@ -7,6 +7,10 @@
 #include "Gui/CheckBox.h"
 #include "Gui/TextEdit.h"
 #include "todvobccomm/TodVobcChannel.h"
+#include "Core/Parser.h"
+#include "Core/Factory/Factory.h"
+#include "Core/Handler/WidgetHandler.h"
+
 #include <QtXml>
 #include <QDomDocument>
 #include <QFile>
@@ -56,13 +60,15 @@ public:
 
 protected:
     bool openConfigurationFile();
-    bool parseConfigurationFile();
-    void drawTableWidget();
-    void drawInfoFaultCheckTab();
-    void drawTcmsTableWidget();
+    void parseConfigurationFile();
+    void drawGui();
+//    void drawTableWidget();
+//    void drawInfoFaultCheckTab();
+//    void drawTcmsTableWidget();
     void sendTableWidgetValue();
     void setInputFrameEnable(bool enable);
     void getTcmsValueLst(QStringList& lst);
+
 
 private slots:
     void on_action_Open_triggered();
@@ -95,12 +101,6 @@ private:
     SignalMap m_receiveSignalMap;
     SignalMap m_telegramHeaderMap;
 
-    QList<QString> m_SendSignalList;
-    QList<QString> m_receiveSignalList;
-
-    QList<QString> m_infoList;
-    QList<QString> m_faultList;
-
     QList<CheckBox*> m_infoCheckBoxList;
     QList<CheckBox*> m_faultCheckBoxList;
 
@@ -122,5 +122,8 @@ private:
     int m_variableSize;
 
     QSettings *m_theSettingsPtr;
+    Parser* m_parserPtr;
+    Factory* m_factory;
+
 };
 #endif // MAINWINDOW_H

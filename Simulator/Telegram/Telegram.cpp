@@ -1,5 +1,7 @@
 #include "Telegram.h"
+
 #include <QDebug>
+
 Telegram::Telegram()
 {
 

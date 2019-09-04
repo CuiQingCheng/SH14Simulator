@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
+#include "math.h"
 #include <QFileDialog>
 #include <QDebug>
 #include <QMessageBox>
@@ -14,22 +15,27 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
     m_todChannel = new TodVobcChannel();
-    m_telegram = new Telegram();
     m_sendRFCTimer = new QTimer(this);
+    m_checkConnectState =new QTimer(this);
+    m_sendPoolDataTimer = new QTimer(this);
+    m_receiveDataTimer = new QTimer(this);
 
     connect(m_sendRFCTimer, SIGNAL(timeout()), this, SLOT(sendRTFTimeout()));
-
-    m_checkConnectState =new QTimer(this);
     connect(m_checkConnectState, SIGNAL(timeout()), this, SLOT(checkConnectState()));
-
-    m_sendPoolDataTimer = new QTimer(this);
     connect(m_sendPoolDataTimer, SIGNAL(timeout()), this, SLOT(sendPoolData()));
-
-    m_receiveDataTimer = new QTimer(this);
     connect(m_receiveDataTimer, SIGNAL(timeout()), this, SLOT(receiveData()));
 
     m_infoLayout = new QGridLayout(ui->infoTab);
     m_faultLayout = new QGridLayout(ui->faultTab);
+    m_factory = new Factory;
+    m_parserPtr = new Parser;
+//    WidgetHandler::addWidget("sendTableWidget", ui->sendTableWidget);
+//    WidgetHandler::addWidget("reciverTableWidget", ui->receiveTableWidget);
+//    WidgetHandler::addWidget("infoTab", ui->infoTab);
+//    WidgetHandler::addWidget("faultTab", ui->faultTab);
+//    WidgetHandler::addWidget("sendTcmsWidget", ui->tcmsTableWidget);
+//    WidgetHandler::addWidget("reciverTcmsWidget", ui->recTCMSData_TextEdit);
+
     initDefaultConfig();
 
     this->setWindowTitle(QString("VOBC Simulator"));
@@ -39,15 +45,24 @@ MainWindow::~MainWindow()
 {
     qDebug() << "MainWindow::~MainWindow()";
     delete ui;
-    if(m_telegram != NULL)
-    {
-        delete m_telegram;
-        m_telegram = NULL;
-    }
+
+
     if(m_todChannel != NULL)
     {
         delete m_todChannel;
         m_todChannel = NULL;
+    }
+
+    if(m_factory != NULL)
+    {
+        delete m_factory;
+        m_factory = NULL;
+    }
+
+    if(m_parserPtr != NULL)
+    {
+        delete m_parserPtr;
+        m_parserPtr = NULL;
     }
 }
 
@@ -110,7 +125,6 @@ void MainWindow::on_connectBtn_clicked()
 
 void MainWindow::sendRTFTimeout()
 {
-//    qDebug() << "sendRTFTimeout() -> getComConnectState() : "<< m_todChannel->getComConnectState();
     if(m_todChannel->getComConnectState())
     {
         m_sendRFCTimer->stop();
@@ -271,7 +285,6 @@ void MainWindow::receiveData()
 
     QByteArray tmcsData = receiveAppData.mid(FIX_REC_DATASIZE, REC_TCMS_DATASIZE);
 
-//    qDebug() << "receive tmcs size:" <<tmcsData.size();
     TextEdit* textEdit= ui->recTCMSData_TextEdit;
     textEdit->setShowData(tmcsData);
 
@@ -335,25 +348,7 @@ void MainWindow::updateInfoFaultId(int state)
 
 void MainWindow::clear()
 {
-    if(m_SendSignalList.size() > 0)
-    {
-        m_SendSignalList.clear();
-    }
 
-    if(m_receiveSignalList.size() > 0)
-    {
-        m_receiveSignalList.clear();
-    }
-
-    if(m_infoList.size() > 0)
-    {
-        m_infoList.clear();
-    }
-
-    if(m_faultList.size() > 0)
-    {
-        m_faultList.clear();
-    }
 }
 
 void MainWindow::initDefaultConfig()
@@ -401,14 +396,15 @@ void MainWindow::initDefaultConfig()
 
     if(!m_configFileName.isEmpty())
     {
-        if(parseConfigurationFile())
-        {
-            drawTableWidget();
+        parseConfigurationFile();
+//        if(parseConfigurationFile())
+//        {
+//            drawTableWidget();
 
-            drawInfoFaultCheckTab();
+//            drawInfoFaultCheckTab();
 
-            drawTcmsTableWidget();
-        }
+//            drawTcmsTableWidget();
+//        }
     }
 }
 
@@ -426,14 +422,7 @@ void MainWindow::on_action_Open_triggered()
 {
     if (openConfigurationFile())
     {
-        if(parseConfigurationFile())
-        {
-            drawTableWidget();
-
-            drawInfoFaultCheckTab();
-
-            drawTcmsTableWidget();
-        }
+        parseConfigurationFile();
     }
 }
 
@@ -447,141 +436,43 @@ bool MainWindow::openConfigurationFile()
         return false;
     }
 
-    qDebug() << "fileName = " << configFileName;
-
     m_theSettingsPtr->setValue("SOURCE", configFileName);
     m_configFileName = configFileName;
 
     return true;
 }
 
-bool MainWindow::parseConfigurationFile()
+void MainWindow::parseConfigurationFile()
 {
-    QFile file(m_configFileName);
 
-    if(!file.open(QIODevice::ReadOnly))
+//    clear();
+//    m_telegram->clear();
+    m_parserPtr->setConfigFile(m_configFileName);
+    int ret = m_parserPtr->parse(m_factory);
+    (m_factory->get<Telegram>("Telegram"))->clear();
+
+    if(ret != 0)
     {
-        qDebug("Can't open configuration file : %s", m_configFileName.toLatin1().data());
-        return false;
+        qDebug("Failed to parse configuration file, application abort.");
+        exit(1);
     }
-
     QStringList Path = m_configFileName.split("/");
-
     QString fileName = Path.at(Path.size() - 1);
-
     this->setStatusTip(fileName);
 
-    QDomDocument doc;
-
-    QString error;
-    int row = 0, column = 0;
-
-    if(!doc.setContent(&file, false, &error, &row, &column))
-    {
-        qDebug("Configuration error.");
-        qDebug("xml error : %s; row : %d, column : %d.", error.toLatin1().data(), row, column);
-        file.close();
-        return false;
-    }
-    clear();
-    m_telegram->clear();
-    QDomElement root = doc.documentElement();
-    QDomElement node = root.firstChildElement();
-
-    QString fieldName;
-    QString dataType;
-    quint16 byteOffset;
-    quint8 bitOffset;
-    quint32 defaultValue;
-    QString valueType;
-    QString element;
-    QString elementText;
-    QString elementId;
-
-    while(!node.isNull())
-    {
-        if(node.tagName() == "communication" && node.hasAttribute("processType") && node.hasAttribute("sendType"))
-        {
-            QString sendType = node.attributeNode("sendType").value();
-            QDomElement objNode = node.firstChildElement();
-
-            while(!objNode.isNull())
-            {
-                if(objNode.hasAttribute("fieldName"))
-                    fieldName = objNode.attributeNode("fieldName").value();
-                if(objNode.hasAttribute("type"))
-                    dataType = objNode.attributeNode("type").value();
-                if(objNode.hasAttribute("byteOffset"))
-                    byteOffset = objNode.attributeNode("byteOffset").value().toUInt();
-                if(objNode.hasAttribute("bitOffset"))
-                    bitOffset = objNode.attributeNode("bitOffset").value().toUInt();
-                if(objNode.hasAttribute("defaultValue"))
-                    defaultValue = objNode.attributeNode("defaultValue").value().toUInt();
-                if(objNode.hasAttribute("valueType"))
-                {
-                    valueType = objNode.attributeNode("valueType").value();
-                }
-                else
-                {
-                    valueType = "hexadecimal";
-                }
-
-                SignalValue* signalValue = new SignalValue(fieldName, dataType, byteOffset, bitOffset, defaultValue, valueType);
-
-                if(sendType == "vobc-tod")
-                {
-                    m_telegram->setSendSignalMap(signalValue);
-                    if(!m_SendSignalList.contains(signalValue->getName()))
-                    {
-                        m_SendSignalList.append(signalValue->getName());
-                    }
-                }
-                if(sendType == "tod-vobc")
-                {
-                    m_telegram->setReceiveSignalMap(signalValue);
-                    if(!m_receiveSignalList.contains(signalValue->getName()))
-                    {
-                        m_receiveSignalList.append(signalValue->getName());
-                    }
-                }
-
-                objNode = objNode.nextSiblingElement();
-            }
-        }
-        if(node.tagName() == "checkboxList"&& node.hasAttribute("elemtype") && node.hasAttribute("id"))
-        {
-            QString id = node.attributeNode("id").value();
-            QDomElement objNode = node.firstChildElement();
-
-            while(!objNode.isNull())
-            {
-                if(objNode.hasAttribute("name"))
-                   elementText = objNode.attributeNode("name").value();
-                if(objNode.hasAttribute("id"))
-                   elementId = objNode.attributeNode("id").value();
-
-
-                element = elementText + ":" + elementId;
-                if(id == "InfoModule")
-                {
-                    m_infoList.append(element);
-                }
-
-                if(id == "FaultModule")
-                {
-                    m_faultList.append(element);
-                }
-                objNode = objNode.nextSiblingElement();
-            }
-        }
-        node = node.nextSiblingElement();
-    }
-    return true;
+    drawGui();
 }
 
+void MainWindow::drawGui()
+{
+    WidgetHandler* widgetHandler = m_factory->get<WidgetHandler>("WidgetHandler");
+
+
+
+}
+/*
 void MainWindow::drawTableWidget()
 {
-    /*** Initialize SendDataPage TableWidget***/
     QList<QString> rowHeaderList;
     rowHeaderList.append("FieldName");
     rowHeaderList.append("ByteOffset");
@@ -591,7 +482,7 @@ void MainWindow::drawTableWidget()
     rowHeaderList.append("Value");
 
     // the FiledName's num plus 1 is equal to the all of line num
-    quint16 sendDataRowCount = m_SendSignalList.count();
+//    quint16 sendDataRowCount = m_SendSignalList.count();
     quint8 sendDataColumnCount = rowHeaderList.count();
 
     ui->sendTableWidget->setRowCount(sendDataRowCount);
@@ -671,8 +562,7 @@ void MainWindow::drawTableWidget()
 
     ui->sendTableWidget->resizeRowsToContents();             // adjust to many lines to show when a line can't show all the content.
 
-    /*** Initialize ReceivedDataPage TableWidget***/
-    quint16 receivedDataRowCount = m_receiveSignalList.count();
+//    quint16 receivedDataRowCount = m_receiveSignalList.count();
     quint8 receivedDataColumnCount = rowHeaderList.count();
 
     ui->receiveTableWidget->setRowCount(receivedDataRowCount);
@@ -869,6 +759,7 @@ void MainWindow::drawTcmsTableWidget()
         }
     }
 }
+*/
 
 void MainWindow::sendTableWidgetValue()
 {
@@ -878,6 +769,8 @@ void MainWindow::sendTableWidgetValue()
     QString sendDataType;
     QString sendDataNumType;
     QString sendDataValue;
+
+    QStringList speedNameLst = {"ActualSpeed", "TargetSpeed", "PermittedSpeed", "EbTriggerSpeed"};
 
     // clear the the_pucData before send at next time.
     m_todChannel->clear();
@@ -900,6 +793,16 @@ void MainWindow::sendTableWidgetValue()
                 qDebug() << sendSignalName << " send failed !!! " << sendDataType << " should split by '.'";
                 continue;
             }
+
+            if( speedNameLst.contains(sendSignalName) )
+            {
+                int value = sendDataValue.toInt();
+
+                value = qRound (value * pow(10.0, 6) / 3600);
+
+                sendDataValue = QString::number(value);
+            }
+
             m_todChannel->setDataByByteSize(sendDataByteOffset, sendDataBitOffset, sendDataType, sendDataNumType, sendDataValue);
         }
     }
