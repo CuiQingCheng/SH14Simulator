@@ -204,8 +204,90 @@
 		<checkbox name = "PES WRONG ACTVIE" id = "51"/>
 	</checkboxList>
 	
-    <StationName>
-		<param value="1:XZS:莘庄站" name="stationId" />
+
+    <station id="1" >
+        <param StationSkipStatus="1" />
+        <param StationHoldStatus="2" />
+        <param StationDwell="25" />
+        <param PlatformDoorSides="2" />
+        <param DistanceToStoppingPoint="5000000" />
+        <param TrainDoorsEnableLeftStatus="1" />
+        <param TrainDoorsEnableRightStatus="1" />
+        <param LeftTrainDoorsClosedStatus="0" />
+        <param RightTrainDoorsClosedStatus="1" />
+        <param LeftDoorCloseCommandStatus="1" />
+        <param RightDoorCloseCommandStatus="0" />
+	<param LeftPSDClosedAndLockedStatus="0" />
+        <param RightPSDClosedAndLockedStatus="1" />
+        <param NextStationId="3" />
+    </station>
+    <station id="3" >
+        <param StationSkipStatus="1" />
+        <param StationHoldStatus="2" />
+        <param StationDwell="25" />
+        <param PlatformDoorSides="2" />
+        <param DistanceToStoppingPoint="5000000" />
+        <param TrainDoorsEnableLeftStatus="1" />
+        <param TrainDoorsEnableRightStatus="1" />
+        <param LeftTrainDoorsClosedStatus="0" />
+        <param RightTrainDoorsClosedStatus="1" />
+        <param LeftDoorCloseCommandStatus="1" />
+        <param RightDoorCloseCommandStatus="0" />
+	<param LeftPSDClosedAndLockedStatus="0" />
+        <param RightPSDClosedAndLockedStatus="1" />
+        <param NextStationId="5" />
+    </station>
+    <station id="5" >
+        <param StationSkipStatus="1" />
+        <param StationHoldStatus="2" />
+        <param StationDwell="25" />
+        <param PlatformDoorSides="2" />
+        <param DistanceToStoppingPoint="5000000" />
+        <param TrainDoorsEnableLeftStatus="1" />
+        <param TrainDoorsEnableRightStatus="1" />
+        <param LeftTrainDoorsClosedStatus="0" />
+        <param RightTrainDoorsClosedStatus="1" />
+        <param LeftDoorCloseCommandStatus="1" />
+        <param RightDoorCloseCommandStatus="0" />
+	<param LeftPSDClosedAndLockedStatus="0" />
+        <param RightPSDClosedAndLockedStatus="1" />
+        <param NextStationId="7" />
+    </station>
+    <station id="7" >
+        <param StationSkipStatus="1" />
+        <param StationHoldStatus="2" />
+        <param StationDwell="25" />
+        <param PlatformDoorSides="2" />
+        <param DistanceToStoppingPoint="5000000" />
+        <param TrainDoorsEnableLeftStatus="1" />
+        <param TrainDoorsEnableRightStatus="1" />
+        <param LeftTrainDoorsClosedStatus="0" />
+        <param RightTrainDoorsClosedStatus="1" />
+        <param LeftDoorCloseCommandStatus="1" />
+        <param RightDoorCloseCommandStatus="0" />
+	<param LeftPSDClosedAndLockedStatus="0" />
+        <param RightPSDClosedAndLockedStatus="1" />
+        <param NextStationId="9" />
+    </station>
+    <station id="9" >
+        <param StationSkipStatus="1" />
+        <param StationHoldStatus="2" />
+        <param StationDwell="25" />
+        <param PlatformDoorSides="2" />
+        <param DistanceToStoppingPoint="5000000" />
+        <param TrainDoorsEnableLeftStatus="1" />
+        <param TrainDoorsEnableRightStatus="1" />
+        <param LeftTrainDoorsClosedStatus="0" />
+        <param RightTrainDoorsClosedStatus="1" />
+        <param LeftDoorCloseCommandStatus="1" />
+        <param RightDoorCloseCommandStatus="0" />
+	<param LeftPSDClosedAndLockedStatus="0" />
+        <param RightPSDClosedAndLockedStatus="1" />
+        <param NextStationId="9" />
+    </station>
+
+    <!-- StationName>
+	<param value="1:XZS:莘庄站" name="stationId" />
         <param value="2:XZS:莘庄站" name="stationId" />
         <param value="3:CSR:春申路站" name="stationId" />
         <param value="4:CSR:春申路站" name="stationId" />
@@ -318,89 +400,7 @@
         <param value="119:PZ21A:平庄21A" name="stationId" />
         <param value="120:PS33:虚拟站" name="stationId" />
         <param value="121:PZXC1:虚拟站" name="stationId" />
-    </StationName>
-	
-	<station id="1" >
-        <param name="StationSkipStatus" value="1" />
-        <param name="StationHoldStatus" value="2" />
-        <param name="StationDwell" value="25" />
-        <param name="PlatformDoorSides" value="2" />
-        <param name="DistanceToStoppingPoint" value="5000000" />
-        <param name="TrainDoorsEnableLeftStatus" value="1" />
-        <param name="TrainDoorsEnableRightStatus" value="1" />
-        <param name="LeftTrainDoorsClosedStatus" value="0" />
-        <param name="RightTrainDoorsClosedStatus" value="1" />
-        <param name="LeftDoorCloseCommandStatus" value="1" />
-        <param name="RightDoorCloseCommandStatus" value="0" />
-		<param name="LeftPSDClosedAndLockedStatus" value="0" />
-        <param name="RightPSDClosedAndLockedStatus" value="1" />
-        <param name="NextStationId" value="3" />
-    </station>
-    <station id="3" >
-        <param name="StationSkipStatus" value="1" />
-        <param name="StationHoldStatus" value="2" />
-        <param name="StationDwell" value="25" />
-        <param name="PlatformDoorSides" value="2" />
-        <param name="DistanceToStoppingPoint" value="5000000" />
-        <param name="TrainDoorsEnableLeftStatus" value="1" />
-        <param name="TrainDoorsEnableRightStatus" value="1" />
-        <param name="LeftTrainDoorsClosedStatus" value="0" />
-        <param name="RightTrainDoorsClosedStatus" value="1" />
-        <param name="LeftDoorCloseCommandStatus" value="1" />
-        <param name="RightDoorCloseCommandStatus" value="0" />
-		<param name="LeftPSDClosedAndLockedStatus" value="0" />
-        <param name="RightPSDClosedAndLockedStatus" value="1" />
-        <param name="NextStationId" value="5" />
-    </station>
-    <station id="5" >
-        <param name="StationSkipStatus" value="1" />
-        <param name="StationHoldStatus" value="2" />
-        <param name="StationDwell" value="25" />
-        <param name="PlatformDoorSides" value="2" />
-        <param name="DistanceToStoppingPoint" value="5000000" />
-        <param name="TrainDoorsEnableLeftStatus" value="1" />
-        <param name="TrainDoorsEnableRightStatus" value="1" />
-        <param name="LeftTrainDoorsClosedStatus" value="0" />
-        <param name="RightTrainDoorsClosedStatus" value="1" />
-        <param name="LeftDoorCloseCommandStatus" value="1" />
-        <param name="RightDoorCloseCommandStatus" value="0" />
-		<param name="LeftPSDClosedAndLockedStatus" value="0" />
-        <param name="RightPSDClosedAndLockedStatus" value="1" />
-        <param name="NextStationId" value="7" />
-    </station>
-    <station id="7" >
-        <param name="StationSkipStatus" value="1" />
-        <param name="StationHoldStatus" value="2" />
-        <param name="StationDwell" value="25" />
-        <param name="PlatformDoorSides" value="2" />
-        <param name="DistanceToStoppingPoint" value="5000000" />
-        <param name="TrainDoorsEnableLeftStatus" value="1" />
-        <param name="TrainDoorsEnableRightStatus" value="1" />
-        <param name="LeftTrainDoorsClosedStatus" value="0" />
-        <param name="RightTrainDoorsClosedStatus" value="1" />
-        <param name="LeftDoorCloseCommandStatus" value="1" />
-        <param name="RightDoorCloseCommandStatus" value="0" />
-		<param name="LeftPSDClosedAndLockedStatus" value="0" />
-        <param name="RightPSDClosedAndLockedStatus" value="1" />
-        <param name="NextStationId" value="9" />
-    </station>
-    <station id="9" >
-        <param name="StationSkipStatus" value="1" />
-        <param name="StationHoldStatus" value="2" />
-        <param name="StationDwell" value="25" />
-        <param name="PlatformDoorSides" value="2" />
-        <param name="DistanceToStoppingPoint" value="5000000" />
-        <param name="TrainDoorsEnableLeftStatus" value="1" />
-        <param name="TrainDoorsEnableRightStatus" value="1" />
-        <param name="LeftTrainDoorsClosedStatus" value="0" />
-        <param name="RightTrainDoorsClosedStatus" value="1" />
-        <param name="LeftDoorCloseCommandStatus" value="1" />
-        <param name="RightDoorCloseCommandStatus" value="0" />
-		<param name="LeftPSDClosedAndLockedStatus" value="0" />
-        <param name="RightPSDClosedAndLockedStatus" value="1" />
-        <param name="NextStationId" value="9" />
-    </station>
-
+    </StationName -->
 	
 	
 	<telegram type="UDP" id="header">	
