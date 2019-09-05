@@ -14,6 +14,7 @@
 #include <QTabWidget>
 #include <QList>
 #include <QGridLayout>
+#include <QMap>
 
 typedef QMap<QString, QWidget*> WidgetMap;
 
@@ -59,6 +60,7 @@ signals:
 public slots:
     void showGuiDefData();
     void updateInfoFaultId(int state);
+    void updateSignalValue(QString signal, QString value);
 
 protected:
     void drawTableWidget();
@@ -84,6 +86,9 @@ private:
 
     QGridLayout* m_infoLayout;
     QGridLayout* m_faultLayout;
+
+    QStringList m_autoTestSignalList;
+    QMap<QString , int > m_signalIndexMap;
 };
 
 #endif
