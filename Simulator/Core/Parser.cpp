@@ -175,8 +175,9 @@ int Parser::parse(Factory *factory)
                 if(objNode.hasAttribute("NextStationId"))
                     stationNode->itsNextStationId = objNode.attributeNode("NextStationId").value().toInt();
 
-                autoTestHandler->addStationId(QString::number(stationNode->itsStationid), stationNode);
+                objNode = objNode.nextSiblingElement();
             }
+            autoTestHandler->addStationId(QString::number(stationNode->itsStationid), stationNode);
         }
 
         node = node.nextSiblingElement();
