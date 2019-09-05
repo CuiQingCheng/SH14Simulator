@@ -79,11 +79,9 @@ public:
     };
 
 
-    void addStationId( QString key , Station_Node const * cfgNode);
+    void addStationId( QString key , Station_Node * cfgNode);
 
     void start(); //start Auto Test
-
-    void initializeNodeData();
 
     void changeCurrentStationNode();
 
@@ -96,9 +94,14 @@ public slots:
     void stableRunControl();
 
 private:
-    QMap<QString, Station_Node const*> m_stationNodeMap;
-    const quint8 MAX_SPEED = 65;
+    QMap<QString, Station_Node*> m_stationNodeMap;
+    const quint8 TARGET_SPEED = 65;
+    const quint8 PERMITTED_SPEED = 75;
+    const quint8 EB_SPEED = 85;
+    const quint32 DWELLSEC = 1000;
 
+
+    Station_Node* m_currentNode;
     quint8 m_dwell;
     quint8 m_actualSpeed; //<! km/h
     quint8 m_targetSpeed;
@@ -106,7 +109,7 @@ private:
     quint8 m_ebTriggerSpeed;
 
     quint32 m_distanceToStopPoint;
-    quint8 m_runStatus; // 0: accelerate,  1:decelerate 2: constant speed
+    quint8 m_runStatus; // 0: accelerate,  1:decelerate 2: constant speed 3: Stop
 
     QTimer* m_dwellTimer;
     QTimer* m_variableSpeedRunTimer;
