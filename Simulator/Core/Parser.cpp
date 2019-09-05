@@ -62,7 +62,7 @@ int Parser::parse(Factory *factory)
 
     Telegram* telegram = factory->get<Telegram>("Telegram");
     WidgetHandler* widgetHandler = factory->get<WidgetHandler>("WidgetHandler");
-//    AutoTestHandler* autoTestHandler = factory->get<AutoTestHandler>("AutoTestHandler");
+    AutoTestHandler* autoTestHandler = factory->get<AutoTestHandler>("AutoTestHandler");
 
 
     while(!node.isNull())
@@ -138,6 +138,47 @@ int Parser::parse(Factory *factory)
                 objNode = objNode.nextSiblingElement();
             }
         }
+
+        if(node.tagName() == "station")
+        {
+            AutoTestHandler::Station_Node* const stationNode = new AutoTestHandler::Station_Node;
+            stationNode->itsStationid = node.attributeNode("id").value().toInt();
+
+            QDomElement objNode = node.firstChildElement();
+
+            while (!objNode.isNull())
+            {
+                if(objNode.hasAttribute("StationSkipStatus"))
+                    stationNode->itsSkipStatus = objNode.attributeNode("StationSkipStatus").value().toInt();
+                if(objNode.hasAttribute("StationHoldStatus"))
+                    stationNode->itsHoldStatus = objNode.attributeNode("StationHoldStatus").value().toInt();
+                if(objNode.hasAttribute("StationDwell"))
+                    stationNode->itsDwell = objNode.attributeNode("StationDwell").value().toInt();
+                if(objNode.hasAttribute("PlatformDoorSides"))
+                    stationNode->itsPlatformDoorSides = objNode.attributeNode("PlatformDoorSides").value().toInt();
+                if(objNode.hasAttribute("TrainDoorsEnableLeftStatus"))
+                    stationNode->itsLeftTrainDoorEnabled = objNode.attributeNode("TrainDoorsEnableLeftStatus").value().toInt();
+                if(objNode.hasAttribute("TrainDoorsEnableRightStatus"))
+                    stationNode->itsRightTrainDoorEnabled = objNode.attributeNode("TrainDoorsEnableRightStatus").value().toInt();
+                if(objNode.hasAttribute("LeftTrainDoorsClosedStatus"))
+                    stationNode->itsLeftTrainDoorClosed = objNode.attributeNode("LeftTrainDoorsClosedStatus").value().toInt();
+                if(objNode.hasAttribute("RightTrainDoorsClosedStatus"))
+                    stationNode->itsRightTrainDoorClosed = objNode.attributeNode("RightTrainDoorsClosedStatus").value().toInt();
+                if(objNode.hasAttribute("LeftDoorCloseCommandStatus"))
+                    stationNode->itsLeftDoorCloseCommandStatus = objNode.attributeNode("LeftDoorCloseCommandStatus").value().toInt();
+                if(objNode.hasAttribute("RightDoorCloseCommandStatus"))
+                    stationNode->itsRightDoorCloseCommandStatus = objNode.attributeNode("RightDoorCloseCommandStatus").value().toInt();
+                if(objNode.hasAttribute("LeftPSDClosedAndLockedStatus"))
+                    stationNode->itsLeftPsdCloseAndLockedStatus = objNode.attributeNode("LeftPSDClosedAndLockedStatus").value().toInt();
+                if(objNode.hasAttribute("RightPSDClosedAndLockedStatus"))
+                    stationNode->itsRightPsdCloseAndLockedStatus = objNode.attributeNode("RightPSDClosedAndLockedStatus").value().toInt();
+                if(objNode.hasAttribute("NextStationId"))
+                    stationNode->itsNextStationId = objNode.attributeNode("NextStationId").value().toInt();
+
+                autoTestHandler->addStationId(QString::number(stationNode->itsStationid), stationNode);
+            }
+        }
+
         node = node.nextSiblingElement();
     }
 
