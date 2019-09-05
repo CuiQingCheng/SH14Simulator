@@ -78,6 +78,7 @@ public:
         quint32 itsDistanceToStopPoint;
     };
 
+
     void addStationId( QString key , Station_Node const * cfgNode);
 
     void start(); //start Auto Test
@@ -87,13 +88,7 @@ public:
     void changeCurrentStationNode();
 
  signals:
-    void actualSpeedUpdated(quint8 speed);
-    void dWellValueUpdated(quint8 dwell);
-    void distanceToStopPointUpdated(quint32 distance);
-    void skipStatusUpdated(quint8 skipStatus);
-    void holdStatusUpdated(quint8 holdStatus);
-    void doorsStatusUpdated(QString id, quint8 value);
-    void psdCloseAndLockedStatusUpdated(bool isLeft, quint8 value);
+    void signalValueUpdated(QString signal, QString value);
 
 public slots:
     void actualSpeedControl();

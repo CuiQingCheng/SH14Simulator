@@ -3,7 +3,9 @@
 
 AutoTestHandler::AutoTestHandler()
 {
-
+    m_dwellTimer = new QTimer(this);
+    m_variableSpeedRunTimer = new QTimer(this);
+    m_stableRunTimer = new QTimer(this);
 }
 
 AutoTestHandler::~AutoTestHandler()
@@ -31,6 +33,11 @@ void AutoTestHandler::addStationId(QString key, Station_Node const *cfgNode)
 }
 
 void AutoTestHandler::start()
+{
+
+}
+
+void AutoTestHandler::initializeNodeData()
 {
 
 }
