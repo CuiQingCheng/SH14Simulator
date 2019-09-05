@@ -13,7 +13,7 @@ WidgetHandler::WidgetHandler()
                          << "DistanceToStoppingPoint" << "TrainDoorsEnableLeftStatus" << "TrainDoorsEnableRightStatus"
                          << "LeftTrainDoorsClosedStatus" << "RightTrainDoorsClosedStatus" << "LeftDoorCloseCommandStatus"
                          << "RightDoorCloseCommandStatus" << "LeftPSDClosedAndLockedStatus" << "RightPSDClosedAndLockedStatus"
-                         << "NextPlatformID" << "ActualSpeed" << "TargetSpeed";
+                         << "NextPlatformID" << "TerminusPlatformID" <<"ActualSpeed" << "TargetSpeed" << "PermittedSpeed" << "EbTriggerSpeed";
 }
 
 WidgetHandler::~WidgetHandler()
@@ -185,11 +185,14 @@ void WidgetHandler::updateInfoFaultId(int state)
 
 void WidgetHandler::updateSignalValue(QString signal, QString value)
 {
+//    qDebug( "[WidgetHandler::updateSignalValue] signal: %s value: %s", signal, value);
+
     if(m_autoTestSignalList.contains(signal))
     {
         QTableWidget* sendTableWidget = static_cast<QTableWidget*> (m_widgetMap["sendTableWidget"]);
         int row = m_signalIndexMap.value(signal);
         sendTableWidget->item(row, 5)->setText(value);
+        emit sendTelegramUpdated();
     }
 }
 

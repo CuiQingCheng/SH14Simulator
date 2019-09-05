@@ -82,6 +82,7 @@ public:
     void addStationId( QString key , Station_Node * cfgNode);
 
     void start(); //start Auto Test
+    void stop(); //stop Auto Test
 
     void changeCurrentStationNode();
 
@@ -121,7 +122,7 @@ private:
     QTimer* m_dwellTimer;
     QTimer* m_variableSpeedRunTimer;
     QTimer* m_stableRunTimer;
-
+    bool m_isForward;
 };
 
 #endif

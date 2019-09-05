@@ -10,7 +10,8 @@
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
-    ui(new Ui::MainWindow)
+    ui(new Ui::MainWindow),
+    m_isExecAutoTest(false)
 {
     ui->setupUi(this);
     m_todChannel = new TodVobcChannel();
@@ -21,7 +22,6 @@ MainWindow::MainWindow(QWidget *parent) :
 
     connect(m_sendRFCTimer, SIGNAL(timeout()), this, SLOT(sendRTFTimeout()));
     connect(m_checkConnectState, SIGNAL(timeout()), this, SLOT(checkConnectState()));
-    connect(this, SIGNAL(sendTelegramUpdated()), this, SLOT(checkConnectAndSendPoolData()));
     connect(m_sendPoolDataTimer, SIGNAL(timeout()), this, SLOT(sendPoolData()));
     connect(m_receiveDataTimer, SIGNAL(timeout()), this, SLOT(receiveData()));
 
@@ -37,8 +37,10 @@ MainWindow::MainWindow(QWidget *parent) :
     m_widgetHandler->addWidget(QString("receiveTableWidget"), ui->receiveTableWidget);
     m_widgetHandler->addWidget(QString("recTCMSData_TextEdit"), ui->recTCMSData_TextEdit);
 
-
+    m_autoTestHandler = m_factory->get<AutoTestHandler>("AutoTestHandler");
     connect(m_parserPtr, SIGNAL(parseFinished()), m_widgetHandler, SLOT(showGuiDefData()));
+    connect(m_autoTestHandler, SIGNAL(signalValueUpdated(QString, QString)), m_widgetHandler, SLOT(updateSignalValue(QString,QString)), Qt::QueuedConnection);
+    connect(m_widgetHandler, SIGNAL(sendTelegramUpdated()), this, SLOT(checkConnectAndSendPoolData()));
 
     initDefaultConfig();
 
@@ -209,7 +211,7 @@ void MainWindow::receiveData()
         qDebug() << "Error: the receiving polling telegram is NULL!";
         return;
     }
-    qDebug() << "receive app data size:"<< receiveAppData.size();
+
     quint8 rowCount = ui->receiveTableWidget->rowCount();
 
     // the size of receiveAppData is looked as the all the lenth of the bytes.
@@ -472,3 +474,17 @@ void MainWindow::setInputFrameEnable(bool enable)
     ui->setBtn->setEnabled(enable);
 }
 
+
+void MainWindow::on_autotestBtn_clicked()
+{
+    if(m_isExecAutoTest)
+    {
+        m_autoTestHandler->stop();
+        m_isExecAutoTest = false;
+    }
+    else
+    {
+        m_autoTestHandler->start();
+        m_isExecAutoTest = true;
+    }
+}

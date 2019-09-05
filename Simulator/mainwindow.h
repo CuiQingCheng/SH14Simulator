@@ -10,6 +10,7 @@
 #include "Core/Parser.h"
 #include "Core/Factory/Factory.h"
 #include "Core/Handler/WidgetHandler.h"
+#include "Core/Handler/AutoTestHandler.h"
 
 #include <QtXml>
 #include <QDomDocument>
@@ -49,7 +50,6 @@ public:
     static const int REC_TCMS_DATASIZE = 208;
 
 signals:
-    void sendTelegramUpdated();
 
 protected:
     bool openConfigurationFile();
@@ -74,6 +74,8 @@ private slots:
     void receiveData();
 
     void checkConnectAndSendPoolData();
+
+    void on_autotestBtn_clicked();
 
 private:
     void initDefaultConfig();
@@ -103,6 +105,7 @@ private:
     Parser* m_parserPtr;
     Factory* m_factory;
     WidgetHandler* m_widgetHandler;
-
+    AutoTestHandler* m_autoTestHandler;
+    bool m_isExecAutoTest;
 };
 #endif // MAINWINDOW_H

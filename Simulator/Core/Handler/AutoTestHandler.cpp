@@ -4,6 +4,7 @@
 AutoTestHandler::AutoTestHandler()
     : m_currentNode(NULL)
     , m_isaccelerate(true)
+    , m_isForward(true)
 {
     m_dwellTimer = new QTimer(this);
     m_variableSpeedRunTimer = new QTimer(this);
@@ -69,7 +70,35 @@ void AutoTestHandler::start()
     emit signalValueUpdated("StationDwell", QString::number(m_dwell));
 
     emit signalValueUpdated("DistanceToStoppingPoint", QString::number(m_distanceToStopPoint));
+    QString TerminusId;
+    if(!m_isForward)
+    {
+       TerminusId = m_stationNodeMap.begin().key();
+    }
+    else
+    {
+        TerminusId = (m_stationNodeMap.end()-1).key();
+    }
+    emit signalValueUpdated("TerminusPlatformID", TerminusId);
+    emitChangeNodeSignal();
+}
 
+void AutoTestHandler::stop()
+{
+    if(m_dwellTimer->isActive())
+    {
+        m_dwellTimer->stop();
+    }
+
+    if(m_variableSpeedRunTimer->isActive())
+    {
+        m_variableSpeedRunTimer->stop();
+    }
+
+    if(m_stableRunTimer->isActive())
+    {
+        m_stableRunTimer->stop();
+    }
 }
 
 
@@ -77,28 +106,36 @@ void AutoTestHandler::changeCurrentStationNode()
 {
     quint8 id = m_currentNode->itsStationid;
     QMap<QString, Station_Node*>::iterator iter = m_stationNodeMap.begin();
-    static bool isforward = true;
+
+    if(id == (m_stationNodeMap.begin().value())->itsStationid)
+    {
+        m_isForward = true;
+    }
+    else if(id == ((m_stationNodeMap.end()-1).value())->itsStationid)
+    {
+        m_isForward = false;
+
+    }
 
     while(iter != m_stationNodeMap.end())
     {
         if(iter.key() == QString::number(id))
         {
-            if(iter+1 != m_stationNodeMap.end())
-            {
-                if(isforward)
+                if(m_isForward)
                 {
-                    m_currentNode = (iter++).value();
+                    m_currentNode = (++iter).value();
                 }
                 else
                 {
-                    m_currentNode = (iter--).value();
+                    m_currentNode = (--iter).value();
                 }
-            }
+
             break;
         }
         ++iter;
     }
-
+    m_dwell = m_currentNode->itsDwell;
+    qDebug() << "m_currentNode->itsStationid" << m_currentNode->itsStationid;
 }
 
 void AutoTestHandler::emitChangeNodeSignal()
@@ -120,6 +157,7 @@ void AutoTestHandler::emitChangeNodeSignal()
 
 void AutoTestHandler::actualSpeedControl()
 {
+    qDebug() << "[AutoTestHandler::actualSpeedControl]";
     static int i = 0;
     if(i == 0)
     {
@@ -171,6 +209,7 @@ void AutoTestHandler::actualSpeedControl()
 
 void AutoTestHandler::dwellControl()
 {
+    qDebug() << "[AutoTestHandler::dwellControl()]";
     emit signalValueUpdated("StationDwell", QString::number(m_dwell));
 
     if(m_dwell > 0)
