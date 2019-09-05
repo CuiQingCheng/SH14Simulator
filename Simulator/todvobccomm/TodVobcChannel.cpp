@@ -77,12 +77,12 @@ void TodVobcChannel::receiveTelegrams()
         // m_TSN = tg.TSN();
         m_RSN = tg.TSN();
 
-        qDebug() << "[TodVobcChannel::receiveTelegrams] RSN = " << tg.RSN() << " m_TSN = "<< m_RSN;
+//        qDebug() << "[TodVobcChannel::receiveTelegrams] RSN = " << tg.RSN() << " m_TSN = "<< m_RSN;
 
         // start to wait a Interval time to set connect state false;
         judgeCommStateTimer->start();
 
-        qDebug() << "receive telegram Length:" << bg.length();
+//        qDebug() << "receive telegram Length:" << bg.length();
 //        for (int i = 0; i < tg.size(); i++) {
 //             printf("0x%02x ", (unsigned char)(tg.at(i)));
 //        }
@@ -274,19 +274,19 @@ void TodVobcChannel::sendDataTelegram()
 
     if(++m_TSN == 0)
         ++m_TSN;
-    qDebug() << "-------------send m_RSN = " << m_RSN << " -----------  m_TSN = " << m_TSN;
+//    qDebug() << "-------------send m_RSN = " << m_RSN << " -----------  m_TSN = " << m_TSN;
     telegram.setTSN(m_TSN);
     telegram.setAppDataLength(m_actualDataSize);
     telegram.setAppData(bg);
     telegram.updateCRC();
 
 
-    for (int i = 0; i < 34 + m_actualDataSize; i++)
-    {
-        qDebug("-- m_pucData[%d], %d", i, (int)(telegram.data()[i]));
-    }
+//    for (int i = 0; i < 34 + m_actualDataSize; i++)
+//    {
+//        qDebug("-- m_pucData[%d], %d", i, (int)(telegram.data()[i]));
+//    }
 
-    qDebug() << "send telegram size:" << telegram.size();
+//    qDebug() << "send telegram size:" << telegram.size();
     m_socket->writeDatagram(telegram, m_todAddress, m_todPort);
 }
 

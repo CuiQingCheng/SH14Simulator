@@ -55,7 +55,7 @@ public:
     void getTcmsValueLst(QStringList& lst);
 
 signals:
-
+    void sendTelegramUpdated();
 
 public slots:
     void showGuiDefData();
