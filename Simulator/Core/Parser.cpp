@@ -141,8 +141,8 @@ int Parser::parse(Factory *factory)
 
         if(node.tagName() == "station")
         {
-            AutoTestHandler::Station_Node* stationNode = new AutoTestHandler::Station_Node;
-            stationNode->itsStationid = node.attributeNode("id").value();
+            AutoTestHandler::Station_Node* const stationNode = new AutoTestHandler::Station_Node;
+            stationNode->itsStationid = node.attributeNode("id").value().toInt();
 
             QDomElement objNode = node.firstChildElement();
 
@@ -175,7 +175,7 @@ int Parser::parse(Factory *factory)
                 if(objNode.hasAttribute("NextStationId"))
                     stationNode->itsNextStationId = objNode.attributeNode("NextStationId").value().toInt();
 
-                autoTestHandler->addStationId(stationNode->itsStationid, stationNode->itsStationid);
+                autoTestHandler->addStationId(QString::number(stationNode->itsStationid), stationNode);
             }
         }
 

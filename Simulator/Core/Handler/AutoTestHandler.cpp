@@ -11,7 +11,7 @@ AutoTestHandler::~AutoTestHandler()
 
 }
 
-void AutoTestHandler::addStationId(QString key, const Station_Node *cfgNode)
+void AutoTestHandler::addStationId(QString key, Station_Node const *cfgNode)
 {
     if(cfgNode != NULL)
     {

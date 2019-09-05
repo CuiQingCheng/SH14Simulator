@@ -78,7 +78,7 @@ public:
         quint32 itsDistanceToStopPoint;
     };
 
-    void addStationId( QString key , const Station_Node* cfgNode);
+    void addStationId( QString key , Station_Node const * cfgNode);
 
     void start(); //start Auto Test
 
@@ -101,7 +101,7 @@ public slots:
     void stableRunControl();
 
 private:
-    QMap<QString, Station_Node*> m_stationNodeMap;
+    QMap<QString, Station_Node const*> m_stationNodeMap;
     const quint8 MAX_SPEED = 65;
 
     quint8 m_dwell;
