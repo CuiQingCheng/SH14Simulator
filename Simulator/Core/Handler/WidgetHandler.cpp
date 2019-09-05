@@ -8,6 +8,12 @@ WidgetHandler::WidgetHandler()
 {
     m_infoLayout  = new QGridLayout();
     m_faultLayout = new QGridLayout();
+
+    m_autoTestSignalList << "StationSkipStatus" << "StationHoldStatus" << "StationDwell" << "NextPlatformDoorSide"
+                         << "DistanceToStoppingPoint" << "TrainDoorsEnableLeftStatus" << "TrainDoorsEnableRightStatus"
+                         << "LeftTrainDoorsClosedStatus" << "RightTrainDoorsClosedStatus" << "LeftDoorCloseCommandStatus"
+                         << "RightDoorCloseCommandStatus" << "LeftPSDClosedAndLockedStatus" << "RightPSDClosedAndLockedStatus"
+                         << "NextPlatformID";
 }
 
 WidgetHandler::~WidgetHandler()
@@ -177,6 +183,16 @@ void WidgetHandler::updateInfoFaultId(int state)
     }
 }
 
+void WidgetHandler::updateSignalValue(QString signal, QString value)
+{
+    if(m_autoTestSignalList.contains(signal))
+    {
+        QTableWidget* sendTableWidget = static_cast<QTableWidget*> (m_widgetMap["sendTableWidget"]);
+        int row = m_signalIndexMap.value(signal);
+        sendTableWidget->item(row, 5)->setText(value);
+    }
+}
+
 void WidgetHandler::drawTableWidget()
 {
     QTableWidget* sendTableWidget = static_cast<QTableWidget*> (m_widgetMap["sendTableWidget"]);
@@ -241,6 +257,13 @@ void WidgetHandler::drawTableWidget()
 
             if (j == 0)    // FieldName
             {
+                if(m_autoTestSignalList.contains(signal->getName()))
+                {
+                    if(!m_signalIndexMap.contains(signal->getName()))
+                    {
+                        m_signalIndexMap.insert(signal->getName(), i);
+                    }
+                }
                 sendTableWidget->item(i,j)->setText(signal->getName());
             }
             else if (j == 1)    // ByteOffset
