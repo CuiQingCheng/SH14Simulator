@@ -122,10 +122,11 @@ void MainWindow::on_connectBtn_clicked()
         m_checkConnectState->stop();
         m_sendPoolDataTimer->stop();
         m_receiveDataTimer->stop();
-
+        m_autoTestHandler->stop();
         ui->connectBtn->setText("Connect");
         ui->tipsLabel->setText("End.");
         ui->tipsLabel->setStyleSheet("color:green; font:bold");
+        ui->autotestBtn->setDisabled(true);
         setInputFrameEnable(true);
     }
 }
@@ -399,6 +400,7 @@ void MainWindow::parseConfigurationFile()
 {
 
     m_widgetHandler->clear();
+    m_autoTestHandler->clear();
     (m_factory->get<Telegram>("Telegram"))->clear();
     m_widgetHandler->setTelegram( (m_factory->get<Telegram>("Telegram")));
     m_parserPtr->setConfigFile(m_configFileName);
@@ -477,6 +479,14 @@ void MainWindow::setInputFrameEnable(bool enable)
 
 void MainWindow::on_autotestBtn_clicked()
 {
+    static bool firstclicked = true;
+
+    if(firstclicked)
+    {
+        m_autoTestHandler->initDefSignalValue();
+        firstclicked = true;
+    }
+
     if(m_isExecAutoTest)
     {
         m_autoTestHandler->stop();

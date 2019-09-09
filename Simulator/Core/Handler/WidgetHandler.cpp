@@ -13,7 +13,10 @@ WidgetHandler::WidgetHandler()
                          << "DistanceToStoppingPoint" << "TrainDoorsEnableLeftStatus" << "TrainDoorsEnableRightStatus"
                          << "LeftTrainDoorsClosedStatus" << "RightTrainDoorsClosedStatus" << "LeftDoorCloseCommandStatus"
                          << "RightDoorCloseCommandStatus" << "LeftPSDClosedAndLockedStatus" << "RightPSDClosedAndLockedStatus"
-                         << "NextPlatformID" << "TerminusPlatformID" <<"ActualSpeed" << "TargetSpeed" << "PermittedSpeed" << "EbTriggerSpeed";
+                         << "NextPlatformID" << "TerminusPlatformID" <<"ActualSpeed" << "TargetSpeed" << "PermittedSpeed"
+                         << "EbTriggerSpeed" << "DepartureStatus" << "DockingStatus" << "CurrentOperatingMode" << "NumberOfCars"
+                         << "FAMModeAvailability" << "ATOModeAvaliability" << "ATPMModeAvaliability" << "RunTypeIndication"
+                         << "NumberOfAvailableVOBCs" << "ActiveCab";
 }
 
 WidgetHandler::~WidgetHandler()
