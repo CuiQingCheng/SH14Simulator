@@ -76,10 +76,6 @@
 		<signal fieldName="RightTrainDoorsClosedStatus" type="BOOLEAN.1" byteOffset="77" bitOffset="1" defaultValue="0"/>
 		<signal fieldName="SlideStatus" type="BOOLEAN.1" byteOffset="77" bitOffset="2" defaultValue="0"/>
 		<signal fieldName="Reserved" type="BOOLEAN.1" byteOffset="77" bitOffset="3" defaultValue="0"/>
-		<signal fieldName="Reserved" type="BOOLEAN.1" byteOffset="77" bitOffset="4" defaultValue="0"/>
-		<signal fieldName="Reserved" type="BOOLEAN.1" byteOffset="77" bitOffset="5" defaultValue="0"/>
-		<signal fieldName="Reserved" type="BOOLEAN.1" byteOffset="77" bitOffset="6" defaultValue="0"/>
-		<signal fieldName="Reserved" type="BOOLEAN.1" byteOffset="77" bitOffset="7" defaultValue="0"/>
 	</communication>
 	
 	<communication processType="Response" sendType="tod-vobc">
@@ -208,7 +204,7 @@
     <station id="1" >
         <param StationSkipStatus="1" />
         <param StationHoldStatus="2" />
-        <param StationDwell="25" />
+        <param StationDwell="8" />
         <param PlatformDoorSides="1" />
         <param DistanceToStoppingPoint="5000000" />
         <param TrainDoorsEnableLeftStatus="1" />
@@ -217,7 +213,7 @@
         <param RightTrainDoorsClosedStatus="1" />
         <param LeftDoorCloseCommandStatus="1" />
         <param RightDoorCloseCommandStatus="0" />
-	<param LeftPSDClosedAndLockedStatus="0" />
+		<param LeftPSDClosedAndLockedStatus="0" />
         <param RightPSDClosedAndLockedStatus="1" />
         <param NextStationId="3" />
     </station>
@@ -234,13 +230,14 @@
         <param LeftDoorCloseCommandStatus="1" />
         <param RightDoorCloseCommandStatus="1" />
 	<param LeftPSDClosedAndLockedStatus="0" />
+
         <param RightPSDClosedAndLockedStatus="0" />
         <param NextStationId="5" />
     </station>
     <station id="5" >
         <param StationSkipStatus="1" />
         <param StationHoldStatus="2" />
-        <param StationDwell="25" />
+        <param StationDwell="8" />
         <param PlatformDoorSides="1" />
         <param DistanceToStoppingPoint="5000000" />
         <param TrainDoorsEnableLeftStatus="1" />
@@ -249,14 +246,14 @@
         <param RightTrainDoorsClosedStatus="1" />
         <param LeftDoorCloseCommandStatus="1" />
         <param RightDoorCloseCommandStatus="0" />
-	<param LeftPSDClosedAndLockedStatus="0" />
+		<param LeftPSDClosedAndLockedStatus="0" />
         <param RightPSDClosedAndLockedStatus="1" />
         <param NextStationId="7" />
     </station>
     <station id="9" >
         <param StationSkipStatus="1" />
         <param StationHoldStatus="2" />
-        <param StationDwell="25" />
+        <param StationDwell="8" />
         <param PlatformDoorSides="1" />
         <param DistanceToStoppingPoint="5000000" />
         <param TrainDoorsEnableLeftStatus="1" />
@@ -265,14 +262,15 @@
         <param RightTrainDoorsClosedStatus="1" />
         <param LeftDoorCloseCommandStatus="1" />
         <param RightDoorCloseCommandStatus="0" />
-	<param LeftPSDClosedAndLockedStatus="0" />
+		<param LeftPSDClosedAndLockedStatus="0" />
         <param RightPSDClosedAndLockedStatus="1" />
         <param NextStationId="13" />
     </station>
     <station id="13" >
         <param StationSkipStatus="1" />
         <param StationHoldStatus="2" />
-        <param StationDwell="25" />
+        <param StationDwell="5" />
+
         <param PlatformDoorSides="1" />
         <param DistanceToStoppingPoint="5000000" />
         <param TrainDoorsEnableLeftStatus="1" />
@@ -281,7 +279,7 @@
         <param RightTrainDoorsClosedStatus="1" />
         <param LeftDoorCloseCommandStatus="1" />
         <param RightDoorCloseCommandStatus="0" />
-	<param LeftPSDClosedAndLockedStatus="0" />
+		<param LeftPSDClosedAndLockedStatus="0" />
         <param RightPSDClosedAndLockedStatus="1" />
         <param NextStationId="13" />
     </station>
