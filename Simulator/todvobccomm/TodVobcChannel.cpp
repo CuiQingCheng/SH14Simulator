@@ -281,12 +281,12 @@ void TodVobcChannel::sendDataTelegram()
     telegram.updateCRC();
 
 
-//    for (int i = 0; i < 34 + m_actualDataSize; i++)
-//    {
-//        qDebug("-- m_pucData[%d], %d", i, (int)(telegram.data()[i]));
-//    }
+    for (int i = 0; i < 34 + m_actualDataSize; i++)
+    {
+        qDebug("-- m_pucData[%d], %d", i, (int)(telegram.data()[i]));
+    }
 
-//    qDebug() << "send telegram size:" << telegram.size();
+    qDebug() << "send telegram size:" << telegram.size();
     m_socket->writeDatagram(telegram, m_todAddress, m_todPort);
 }
 
@@ -308,13 +308,17 @@ void TodVobcChannel::sendDataTelegramForRFC()
 
     telegram.setRSN(0);
     telegram.setTSN(m_TSN);
-
     telegram.setAppDataLength(m_actualDataSize);
     telegram.setAppData(bg);
     telegram.updateCRC();
-    m_socket->writeDatagram(telegram, m_todAddress, m_todPort);
-    qDebug() << "-------------send RFC m_RSN = " << m_RSN << "-------------   m_TSN = " << m_TSN;
 
+    for (int i = 0; i < 34 + m_actualDataSize; i++)
+    {
+        qDebug("-- m_pucData[%d], %d", i, (int)(telegram.data()[i]));
+    }
+
+    qDebug() << "send RFC telegram size:" << telegram.size();
+    m_socket->writeDatagram(telegram, m_todAddress, m_todPort);
 }
 
 void TodVobcChannel::setTSN(quint16 TSN)
