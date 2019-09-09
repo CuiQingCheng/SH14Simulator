@@ -38,6 +38,11 @@ public:
         Fault =3
     };
 
+    enum TrainNumber{
+        Shanghai_14 = 0,
+        Wuhan_11 = 1
+    };
+
     static const int RADIO_W = 225;
     static const int RADIO_H = 22;
     static const int LINECOUNT = 5;
@@ -53,6 +58,15 @@ public:
 
     QList<int> getInfoFaultIdLst(bool isInfo);
     void getTcmsValueLst(QStringList& lst);
+
+    void setTrainNumber(TrainNumber num)
+    {
+        m_currentTrainNumber = num;
+    }
+    TrainNumber getTrainNumber()
+    {
+        return m_currentTrainNumber;
+    }
 
 signals:
     void sendTelegramUpdated();
@@ -89,6 +103,8 @@ private:
 
     QStringList m_autoTestSignalList;
     QMap<QString , int > m_signalIndexMap;
+
+    TrainNumber m_currentTrainNumber;
 };
 
 #endif
