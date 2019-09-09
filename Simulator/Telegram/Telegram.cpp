@@ -83,18 +83,18 @@ SignalValue *Telegram::getReceiveSignalValue(QString &key)
 
 void Telegram::clear()
 {
-
-
     SignalMap::iterator itS = m_sendSignalMap.begin();
 
     for(; itS != m_sendSignalMap.end(); )
     {
-        itS = m_sendSignalMap.erase(itS++);
+        itS = m_sendSignalMap.erase(itS);
     }
+    m_sendSignalMap.clear();
 
     SignalMap::iterator itR = m_receiveSignalMap.begin();
     for(; itR != m_receiveSignalMap.end(); )
     {
-        itR = m_receiveSignalMap.erase(itR++);
+        itR = m_receiveSignalMap.erase(itR);
     }
+    m_receiveSignalMap.clear();
 }
