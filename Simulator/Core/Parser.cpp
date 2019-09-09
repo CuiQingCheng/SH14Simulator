@@ -191,6 +191,7 @@ int Parser::parse(Factory *factory)
     if(findCheckBoxlist)
     {
         widgetHandler->getWidgetMap()->value("checkBoxWidget")->show();
+        findCheckBoxlist = false;
     }
     else
     {
