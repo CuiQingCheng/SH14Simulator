@@ -101,6 +101,9 @@ void WidgetHandler::clear()
 
        ++iter;
     }
+
+    m_sendSignalList.clear();
+    m_receiveSignalList.clear();
 }
 
 QList<int> WidgetHandler::getInfoFaultIdLst(bool isInfo)
