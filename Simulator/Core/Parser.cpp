@@ -191,10 +191,13 @@ int Parser::parse(Factory *factory)
     if(findCheckBoxlist)
     {
         widgetHandler->getWidgetMap()->value("checkBoxWidget")->show();
+        widgetHandler->setTrainNumber(WidgetHandler::TrainNumber::Shanghai_14);
+        findCheckBoxlist = false;
     }
     else
     {
         widgetHandler->getWidgetMap()->value("checkBoxWidget")->hide();
+        widgetHandler->setTrainNumber(WidgetHandler::TrainNumber::Wuhan_11);
     }
 
     file.close();

@@ -174,7 +174,6 @@ void MainWindow::sendPoolData()
 {
     sendTableWidgetValue();
     int offset = 0;
-    QStringList lst;
 
     int optionalTag = 0;
 
@@ -194,13 +193,18 @@ void MainWindow::sendPoolData()
         ++optionalTag;
     }
 
-    if(optionalTag)
+    WidgetHandler::TrainNumber currentNumber = m_widgetHandler->getTrainNumber();
+    if(currentNumber = WidgetHandler::TrainNumber::Shanghai_14)
     {
-        m_todChannel->setOptionTag(optionalTag);
-    }
-    m_widgetHandler->getTcmsValueLst(lst);
+        QStringList lst;
+        if(optionalTag)
+        {
+            m_todChannel->setOptionTag(optionalTag);
+        }
+        m_widgetHandler->getTcmsValueLst(lst);
 
-    m_todChannel->setDataByTCMS(lst, offset);
+        m_todChannel->setDataByTCMS(lst, offset);
+    }
 
     m_todChannel->sendDataTelegram();
 }
