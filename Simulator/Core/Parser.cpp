@@ -156,6 +156,8 @@ int Parser::parse(Factory *factory)
                     stationNode->itsDwell = objNode.attributeNode("StationDwell").value().toInt();
                 if(objNode.hasAttribute("PlatformDoorSides"))
                     stationNode->itsPlatformDoorSides = objNode.attributeNode("PlatformDoorSides").value().toInt();
+                if(objNode.hasAttribute("DistanceToStoppingPoint"))
+                    stationNode->itsDistanceToStopPoint = objNode.attributeNode("DistanceToStoppingPoint").value().toInt();
                 if(objNode.hasAttribute("TrainDoorsEnableLeftStatus"))
                     stationNode->itsLeftTrainDoorEnabled = objNode.attributeNode("TrainDoorsEnableLeftStatus").value().toInt();
                 if(objNode.hasAttribute("TrainDoorsEnableRightStatus"))

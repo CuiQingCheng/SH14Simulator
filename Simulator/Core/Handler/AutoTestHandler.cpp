@@ -5,6 +5,18 @@ AutoTestHandler::AutoTestHandler()
     : m_currentNode(NULL)
     , m_isaccelerate(true)
     , m_isForward(true)
+    , m_skipStatus(1)
+    , m_holdStatus(2)
+    , m_platformDoorSides(1)
+    , m_leftTrainDoorEnabled(1)
+    , m_rightTrainDoorEnabled(1)
+    , m_leftTrainDoorClosed(0)
+    , m_rightTrainDoorClosed(1)
+    , m_leftDoorCloseCommandStatus(0)
+    , m_rightDoorCloseCommandStatus(0)
+    , m_leftPsdCloseAndLockedStatus(0)
+    , m_rightPsdCloseAndLockedStatus(1)
+    , m_nextStationId(1)
 {
     m_dwellTimer = new QTimer(this);
     m_variableSpeedRunTimer = new QTimer(this);
@@ -24,9 +36,9 @@ void AutoTestHandler::addStationId(QString key, Station_Node *cfgNode)
 {
     if(cfgNode != NULL)
     {
-        if(!m_stationNodeMap.contains(key))
+        if(!m_stationNodeMap.contains(key.toInt()))
         {
-            m_stationNodeMap.insert(key, cfgNode);
+            m_stationNodeMap.insert(key.toInt(), cfgNode);
         }
         else
         {
@@ -51,26 +63,21 @@ void AutoTestHandler::start()
     {
         m_currentNode = (m_stationNodeMap.begin()).value();
     }
+
     m_dwell = m_currentNode->itsDwell;
     m_actualSpeed = 0;
-    m_targetSpeed = TARGET_SPEED;
-    m_permittedSpeed = PERMITTED_SPEED;
-    m_ebTriggerSpeed = EB_SPEED;
-
     m_distanceToStopPoint = 0;
-
     m_dwellTimer->start(DWELLSEC);
     m_isaccelerate = true;
 
     emit signalValueUpdated("ActualSpeed", QString::number(m_actualSpeed));
-    emit signalValueUpdated("TargetSpeed", QString::number(m_targetSpeed));
-    emit signalValueUpdated("PermittedSpeed", QString::number(m_permittedSpeed));
-    emit signalValueUpdated("EbTriggerSpeed", QString::number(m_ebTriggerSpeed));
 
     emit signalValueUpdated("StationDwell", QString::number(m_dwell));
 
     emit signalValueUpdated("DistanceToStoppingPoint", QString::number(m_distanceToStopPoint));
-    QString TerminusId;
+
+    int TerminusId;
+
     if(!m_isForward)
     {
        TerminusId = m_stationNodeMap.begin().key();
@@ -79,7 +86,22 @@ void AutoTestHandler::start()
     {
         TerminusId = (m_stationNodeMap.end()-1).key();
     }
-    emit signalValueUpdated("TerminusPlatformID", TerminusId);
+
+    emit signalValueUpdated("TerminusPlatformID", QString::number(TerminusId));
+
+    m_skipStatus = m_currentNode->itsSkipStatus;
+    m_holdStatus = m_currentNode->itsHoldStatus;
+    m_platformDoorSides = m_currentNode->itsPlatformDoorSides;
+    m_leftTrainDoorEnabled = m_currentNode->itsLeftTrainDoorEnabled;
+    m_rightTrainDoorEnabled = m_currentNode->itsRightTrainDoorEnabled;
+    m_leftTrainDoorClosed = m_currentNode->itsLeftTrainDoorClosed;
+    m_rightTrainDoorClosed = m_currentNode->itsRightTrainDoorClosed;
+    m_leftDoorCloseCommandStatus = m_currentNode->itsLeftDoorCloseCommandStatus;
+    m_rightDoorCloseCommandStatus = m_currentNode->itsRightDoorCloseCommandStatus;
+    m_leftPsdCloseAndLockedStatus = m_currentNode->itsLeftPsdCloseAndLockedStatus;
+    m_rightPsdCloseAndLockedStatus = m_currentNode->itsRightPsdCloseAndLockedStatus;
+    m_nextStationId = m_currentNode->itsStationid;
+
     emitChangeNodeSignal();
 }
 
@@ -101,70 +123,135 @@ void AutoTestHandler::stop()
     }
 }
 
+void AutoTestHandler::clear()
+{
+    if(m_currentNode != NULL)
+    {
+        delete m_currentNode;
+        m_currentNode = NULL;
+    }
+    QMap<int, Station_Node*>::iterator iter = m_stationNodeMap.begin();
+    while(iter != m_stationNodeMap.end())
+    {
+        iter = m_stationNodeMap.erase(iter);
+    }
+
+}
+
+void AutoTestHandler::initDefSignalValue()
+{
+    emit signalValueUpdated("TargetSpeed", QString::number(TARGET_SPEED));
+    emit signalValueUpdated("PermittedSpeed", QString::number(PERMITTED_SPEED));
+    emit signalValueUpdated("EbTriggerSpeed", QString::number(EB_SPEED));
+    emit signalValueUpdated("CurrentOperatingMode", QString::number(ATO));
+    emit signalValueUpdated("NumberOfCars", QString::number(NUMOFCAR));
+    emit signalValueUpdated("CurrentOperatingMode", QString::number(ATO));
+    emit signalValueUpdated("NumberOfCars", QString::number(NUMOFCAR));
+    emit signalValueUpdated("FAMModeAvailability", "0");
+    emit signalValueUpdated("ATPMModeAvaliability", "0");
+    emit signalValueUpdated("RunTypeIndication", "2");
+    emit signalValueUpdated("NumberOfAvailableVOBCs", "1");
+    emit signalValueUpdated("ActiveCab", "1");
+}
+
 
 void AutoTestHandler::changeCurrentStationNode()
 {
     quint8 id = m_currentNode->itsStationid;
-    QMap<QString, Station_Node*>::iterator iter = m_stationNodeMap.begin();
+    QMap<int, Station_Node*>::iterator iter = m_stationNodeMap.begin();
 
     if(id == (m_stationNodeMap.begin().value())->itsStationid)
     {
         m_isForward = true;
+
+        emit signalValueUpdated("TerminusPlatformID", QString::number((m_stationNodeMap.end()-1).key()));
     }
     else if(id == ((m_stationNodeMap.end()-1).value())->itsStationid)
     {
         m_isForward = false;
+        emit signalValueUpdated("TerminusPlatformID", QString::number(m_stationNodeMap.begin().key()));
 
     }
 
     while(iter != m_stationNodeMap.end())
     {
-        if(iter.key() == QString::number(id))
+        if(iter.key() == id)
         {
-                if(m_isForward)
-                {
-                    m_currentNode = (++iter).value();
-                }
-                else
-                {
-                    m_currentNode = (--iter).value();
-                }
-
+            if(m_isForward)
+            {
+               m_currentNode = (++iter).value();
+            }
+            else
+            {
+               m_currentNode = (--iter).value();
+            }
+            qDebug() << "current id" << m_currentNode->itsStationid;
             break;
         }
         ++iter;
     }
-    m_dwell = m_currentNode->itsDwell;
-    qDebug() << "m_currentNode->itsStationid" << m_currentNode->itsStationid;
+
+    m_skipStatus = m_currentNode->itsSkipStatus;
+    m_holdStatus = m_currentNode->itsHoldStatus;
+    m_platformDoorSides = m_currentNode->itsPlatformDoorSides;
+    m_nextStationId = m_currentNode->itsStationid;
 }
 
 void AutoTestHandler::emitChangeNodeSignal()
 {
-    emit signalValueUpdated("StationSkipStatus", QString::number(m_currentNode->itsSkipStatus));
-    emit signalValueUpdated("StationHoldStatus", QString::number(m_currentNode->itsHoldStatus));
-    emit signalValueUpdated("NextPlatformDoorSide", QString::number(m_currentNode->itsHoldStatus));
-    emit signalValueUpdated("TrainDoorsEnableLeftStatus", QString::number(m_currentNode->itsLeftTrainDoorEnabled));
-    emit signalValueUpdated("TrainDoorsEnableRightStatus", QString::number(m_currentNode->itsRightTrainDoorEnabled));
-    emit signalValueUpdated("LeftTrainDoorsClosedStatus", QString::number(m_currentNode->itsLeftTrainDoorClosed));
-    emit signalValueUpdated("RightTrainDoorsClosedStatus", QString::number(m_currentNode->itsRightTrainDoorClosed));
-    emit signalValueUpdated("LeftDoorCloseCommandStatus", QString::number(m_currentNode->itsLeftDoorCloseCommandStatus));
-    emit signalValueUpdated("RightDoorCloseCommandStatus", QString::number(m_currentNode->itsRightDoorCloseCommandStatus));
+    emit signalValueUpdated("StationSkipStatus", QString::number(m_skipStatus));
+    emit signalValueUpdated("StationHoldStatus", QString::number(m_holdStatus));
 
-    emit signalValueUpdated("LeftPSDClosedAndLockedStatus", QString::number(m_currentNode->itsLeftPsdCloseAndLockedStatus));
-    emit signalValueUpdated("RightPSDClosedAndLockedStatus", QString::number(m_currentNode->itsRightPsdCloseAndLockedStatus));
-    emit signalValueUpdated("NextPlatformID", QString::number(m_currentNode->itsStationid));
+    emit signalValueUpdated("NextPlatformDoorSide", QString::number(m_platformDoorSides));
+
+    emit signalValueUpdated("TrainDoorsEnableLeftStatus", QString::number(m_leftTrainDoorEnabled));
+    emit signalValueUpdated("TrainDoorsEnableRightStatus", QString::number(m_rightTrainDoorEnabled));
+
+    emit signalValueUpdated("LeftTrainDoorsClosedStatus", QString::number(m_leftTrainDoorClosed));
+    emit signalValueUpdated("RightTrainDoorsClosedStatus", QString::number(m_rightTrainDoorClosed));
+    emit signalValueUpdated("LeftDoorCloseCommandStatus", QString::number(m_leftDoorCloseCommandStatus));
+    emit signalValueUpdated("RightDoorCloseCommandStatus", QString::number(m_rightDoorCloseCommandStatus));
+
+    emit signalValueUpdated("LeftPSDClosedAndLockedStatus", QString::number(m_leftPsdCloseAndLockedStatus));
+    emit signalValueUpdated("RightPSDClosedAndLockedStatus", QString::number(m_rightPsdCloseAndLockedStatus));
+
+    emit signalValueUpdated("NextPlatformID", QString::number(m_nextStationId));
 }
 
 void AutoTestHandler::actualSpeedControl()
 {
-    qDebug() << "[AutoTestHandler::actualSpeedControl]";
     static int i = 0;
+
+    if(m_dwell == 0)
+    {
+        i = 0;
+        qDebug() << "[AutoTestHandler::actualSpeedControl]: dwell:" << m_dwell;
+    }
+
     if(i == 0)
     {
         emit signalValueUpdated("StationDwell", QString::number(RUNDWELL));
+        qDebug() << "[AutoTestHandler::actualSpeedControl]: dwell222:" << m_dwell;
         m_distanceToStopPoint = m_currentNode->itsDistanceToStopPoint;
+        emit signalValueUpdated("DepartureStatus", "2");
+        emit signalValueUpdated("DockingStatus", "1");
+        emit signalValueUpdated("ATOModeAvaliability", "3");
+        emit signalValueUpdated("LeftDoorCloseCommandStatus", "0");
+        emit signalValueUpdated("LeftTrainDoorsClosedStatus", "1");
+        m_leftTrainDoorClosed = 1;
+        m_rightTrainDoorClosed = 1;
+        m_leftPsdCloseAndLockedStatus = 1;
+        m_rightPsdCloseAndLockedStatus = 1;
+        m_nextStationId = m_currentNode->itsStationid;
+        m_skipStatus = m_currentNode->itsSkipStatus;
+        m_holdStatus = m_currentNode->itsHoldStatus;
+        m_platformDoorSides = m_currentNode->itsPlatformDoorSides;
+        m_leftTrainDoorEnabled = m_currentNode->itsLeftTrainDoorEnabled;
+        m_rightTrainDoorEnabled = m_currentNode->itsRightTrainDoorEnabled;
+        m_dwell = m_currentNode->itsDwell;
         emitChangeNodeSignal();
     }
+
     ++i;
 
     if(m_actualSpeed > MAXRUN_SPEED)
@@ -182,24 +269,27 @@ void AutoTestHandler::actualSpeedControl()
         m_variableSpeedRunTimer->stop();
         m_isaccelerate = true;
         i = 0;
+
+
     }
 
     emit signalValueUpdated("ActualSpeed", QString::number(m_actualSpeed));
 
     if(m_isaccelerate)
     {
-         m_actualSpeed += 3;
+         ++m_actualSpeed;
          if(m_distanceToStopPoint >= 2000000)
-            m_distanceToStopPoint -= i * 10000;
+            m_distanceToStopPoint -= i * 1000;
     }
     else
     {
-        m_actualSpeed -= 3;
-        m_distanceToStopPoint -= (20 - i%20) * 1000;
+        --m_actualSpeed;
+        m_distanceToStopPoint -= (60 - i % 60) * 700;
 
         if(m_distanceToStopPoint < 0)
         {
             m_distanceToStopPoint = 0;
+
         }
 
     }
@@ -209,14 +299,69 @@ void AutoTestHandler::actualSpeedControl()
 
 void AutoTestHandler::dwellControl()
 {
-    qDebug() << "[AutoTestHandler::dwellControl()]";
     emit signalValueUpdated("StationDwell", QString::number(m_dwell));
+    emit signalValueUpdated("DepartureStatus", "1");
+    emit signalValueUpdated("DockingStatus", "2");
+    emit signalValueUpdated("ATOModeAvaliability", "2");
 
     if(m_dwell > 0)
     {
+        if(m_dwell == m_currentNode->itsDwell)
+        {
+
+            if(m_platformDoorSides == 1)
+            {
+                m_leftTrainDoorClosed = 0;
+                m_rightTrainDoorClosed = 1;
+                m_leftPsdCloseAndLockedStatus = 0;
+                m_rightPsdCloseAndLockedStatus = 1;
+            }
+            else if(m_platformDoorSides == 2)
+            {
+                m_leftTrainDoorClosed = 1;
+                m_rightTrainDoorClosed = 0;
+                m_leftPsdCloseAndLockedStatus = 1;
+                m_rightPsdCloseAndLockedStatus = 0;
+            }
+            else if(m_platformDoorSides == 3)
+            {
+                m_leftTrainDoorClosed = 0;
+                m_rightTrainDoorClosed = 0;
+                m_leftPsdCloseAndLockedStatus = 0;
+                m_rightPsdCloseAndLockedStatus = 0;
+            }
+
+            emit signalValueUpdated("LeftTrainDoorsClosedStatus", QString::number(m_leftTrainDoorClosed));
+            emit signalValueUpdated("RightTrainDoorsClosedStatus", QString::number(m_rightTrainDoorClosed));
+            emit signalValueUpdated("LeftPSDClosedAndLockedStatus", QString::number(m_leftPsdCloseAndLockedStatus));
+            emit signalValueUpdated("RightPSDClosedAndLockedStatus", QString::number(m_rightPsdCloseAndLockedStatus));
+        }
        --m_dwell;
+
+        if(m_dwell == 2)
+        {
+            if(m_platformDoorSides == 1)
+            {
+               m_leftDoorCloseCommandStatus = 1;
+            }
+            else if(m_platformDoorSides == 2)
+            {
+               m_rightDoorCloseCommandStatus = 1;
+            }
+            else if(m_platformDoorSides == 3)
+            {
+               m_rightDoorCloseCommandStatus = 1;
+               m_leftDoorCloseCommandStatus = 1;
+            }
+
+            emit signalValueUpdated("LeftDoorCloseCommandStatus", QString::number(m_leftDoorCloseCommandStatus));
+            emit signalValueUpdated("RightDoorCloseCommandStatus", QString::number(m_rightDoorCloseCommandStatus));
+            m_rightDoorCloseCommandStatus = 0;
+            m_leftDoorCloseCommandStatus = 0;
+
+        }
     }
-    else
+    else  if(m_dwell == 0)
     {
         m_dwellTimer->stop();
         m_variableSpeedRunTimer->start(INTERVAL1);
@@ -227,9 +372,24 @@ void AutoTestHandler::dwellControl()
 
 void AutoTestHandler::stableRunControl()
 {
+
     m_isaccelerate = false;
-    m_variableSpeedRunTimer->start(INTERVAL1);
-    m_stableRunTimer->stop();
+    if(m_skipStatus == 1)
+    {
+        m_variableSpeedRunTimer->start(INTERVAL1);
+        m_stableRunTimer->stop();
+        m_distanceToStopPoint = 1200000;
+
+        emit signalValueUpdated("DistanceToStoppingPoint", QString::number(m_distanceToStopPoint));
+    }
+    else if(m_skipStatus == 2)
+    {
+        changeCurrentStationNode();
+        emit signalValueUpdated("StationSkipStatus", QString::number(m_skipStatus));
+        emit signalValueUpdated("StationHoldStatus", QString::number(m_holdStatus));
+        emit signalValueUpdated("NextPlatformDoorSide", QString::number(m_platformDoorSides));
+        emit signalValueUpdated("NextPlatformID", QString::number(m_nextStationId));
+    }
 
 }
 
