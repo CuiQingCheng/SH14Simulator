@@ -204,11 +204,7 @@
     <station id="1" >
         <param StationSkipStatus="1" />
         <param StationHoldStatus="2" />
-<<<<<<< HEAD
         <param StationDwell="8" />
-=======
-        <param StationDwell="25" />
->>>>>>> master
         <param PlatformDoorSides="1" />
         <param DistanceToStoppingPoint="5000000" />
         <param TrainDoorsEnableLeftStatus="1" />
@@ -224,7 +220,6 @@
     <station id="3" >
         <param StationSkipStatus="1" />
         <param StationHoldStatus="2" />
-<<<<<<< HEAD
         <param StationDwell="8" />
         <param PlatformDoorSides="2" />
         <param DistanceToStoppingPoint="5000000" />
@@ -235,29 +230,13 @@
         <param LeftDoorCloseCommandStatus="0" />
         <param RightDoorCloseCommandStatus="1" />
 		<param LeftPSDClosedAndLockedStatus="1" />
-=======
-        <param StationDwell="25" />
-        <param PlatformDoorSides="3" />
-        <param DistanceToStoppingPoint="5000000" />
-        <param TrainDoorsEnableLeftStatus="1" />
-        <param TrainDoorsEnableRightStatus="1" />
-        <param LeftTrainDoorsClosedStatus="0" />
-        <param RightTrainDoorsClosedStatus="0" />
-        <param LeftDoorCloseCommandStatus="1" />
-        <param RightDoorCloseCommandStatus="1" />
-	<param LeftPSDClosedAndLockedStatus="0" />
->>>>>>> master
         <param RightPSDClosedAndLockedStatus="0" />
         <param NextStationId="5" />
     </station>
     <station id="5" >
         <param StationSkipStatus="1" />
         <param StationHoldStatus="2" />
-<<<<<<< HEAD
         <param StationDwell="8" />
-=======
-        <param StationDwell="25" />
->>>>>>> master
         <param PlatformDoorSides="1" />
         <param DistanceToStoppingPoint="5000000" />
         <param TrainDoorsEnableLeftStatus="1" />
@@ -273,11 +252,7 @@
     <station id="9" >
         <param StationSkipStatus="1" />
         <param StationHoldStatus="2" />
-<<<<<<< HEAD
         <param StationDwell="8" />
-=======
-        <param StationDwell="25" />
->>>>>>> master
         <param PlatformDoorSides="1" />
         <param DistanceToStoppingPoint="5000000" />
         <param TrainDoorsEnableLeftStatus="1" />
@@ -293,11 +268,7 @@
     <station id="13" >
         <param StationSkipStatus="1" />
         <param StationHoldStatus="2" />
-<<<<<<< HEAD
         <param StationDwell="5" />
-=======
-        <param StationDwell="25" />
->>>>>>> master
         <param PlatformDoorSides="1" />
         <param DistanceToStoppingPoint="5000000" />
         <param TrainDoorsEnableLeftStatus="1" />
