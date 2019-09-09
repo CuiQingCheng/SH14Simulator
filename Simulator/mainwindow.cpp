@@ -398,7 +398,6 @@ bool MainWindow::openConfigurationFile()
 
 void MainWindow::parseConfigurationFile()
 {
-
     m_widgetHandler->clear();
     m_autoTestHandler->clear();
     (m_factory->get<Telegram>("Telegram"))->clear();
@@ -406,17 +405,15 @@ void MainWindow::parseConfigurationFile()
     m_parserPtr->setConfigFile(m_configFileName);
     int ret = m_parserPtr->parse(m_factory);
 
-
     if(ret != 0)
     {
         qDebug("Failed to parse configuration file, application abort.");
         exit(1);
     }
+
     QStringList Path = m_configFileName.split("/");
     QString fileName = Path.at(Path.size() - 1);
     this->setStatusTip(fileName);
-
-
 }
 
 void MainWindow::sendTableWidgetValue()
