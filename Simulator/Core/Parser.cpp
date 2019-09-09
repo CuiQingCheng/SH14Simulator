@@ -64,6 +64,7 @@ int Parser::parse(Factory *factory)
     WidgetHandler* widgetHandler = factory->get<WidgetHandler>("WidgetHandler");
     AutoTestHandler* autoTestHandler = factory->get<AutoTestHandler>("AutoTestHandler");
 
+    static bool findCheckBoxlist = false;
 
     while(!node.isNull())
     {
@@ -114,6 +115,7 @@ int Parser::parse(Factory *factory)
 
         if(node.tagName() == "checkboxList"&& node.hasAttribute("elemtype") && node.hasAttribute("id"))
         {
+            findCheckBoxlist = true;
             QString id = node.attributeNode("id").value();
             QDomElement objNode = node.firstChildElement();
 
@@ -138,6 +140,7 @@ int Parser::parse(Factory *factory)
                 objNode = objNode.nextSiblingElement();
             }
         }
+
 
         if(node.tagName() == "station")
         {
@@ -183,6 +186,15 @@ int Parser::parse(Factory *factory)
         }
 
         node = node.nextSiblingElement();
+    }
+
+    if(findCheckBoxlist)
+    {
+        widgetHandler->getWidgetMap()->value("checkBoxWidget")->show();
+    }
+    else
+    {
+        widgetHandler->getWidgetMap()->value("checkBoxWidget")->hide();
     }
 
     file.close();
