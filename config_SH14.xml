@@ -34,12 +34,12 @@
 		<signal fieldName="WheelCalibrationStatus" type="UNSIGNED.8" byteOffset="44" bitOffset="0" defaultValue="255"/>
 		<signal fieldName="MotorBrakingStatus" type="UNSIGNED.8" byteOffset="45" bitOffset="0" defaultValue="255"/>
 		<signal fieldName="PunctualityStatus" type="UNSIGNED.8" byteOffset="46" bitOffset="0" defaultValue="255"/>
-		<signal fieldName="LabelCharacter1" type="UNSIGNED.8" byteOffset="47" bitOffset="0" defaultValue="255"/>
-		<signal fieldName="LabelCharacter2" type="UNSIGNED.8" byteOffset="48" bitOffset="0" defaultValue="255"/>
-		<signal fieldName="LabelCharacter3" type="UNSIGNED.8" byteOffset="49" bitOffset="0" defaultValue="255"/>
-		<signal fieldName="LabelCharacter4" type="UNSIGNED.8" byteOffset="50" bitOffset="0" defaultValue="255"/>
-		<signal fieldName="LabelCharacter5" type="UNSIGNED.8" byteOffset="51" bitOffset="0" defaultValue="255"/>
-		<signal fieldName="LabelCharacter6" type="UNSIGNED.8" byteOffset="52" bitOffset="0" defaultValue="255"/>
+		<signal fieldName="LabelCharacter1" type="UNSIGNED.8" byteOffset="47" bitOffset="0" defaultValue="47"/>
+		<signal fieldName="LabelCharacter2" type="UNSIGNED.8" byteOffset="48" bitOffset="0" defaultValue="31"/>
+		<signal fieldName="LabelCharacter3" type="UNSIGNED.8" byteOffset="49" bitOffset="0" defaultValue="32"/>
+		<signal fieldName="LabelCharacter4" type="UNSIGNED.8" byteOffset="50" bitOffset="0" defaultValue="33"/>
+		<signal fieldName="LabelCharacter5" type="UNSIGNED.8" byteOffset="51" bitOffset="0" defaultValue="34"/>
+		<signal fieldName="LabelCharacter6" type="UNSIGNED.8" byteOffset="52" bitOffset="0" defaultValue="35"/>
 		<signal fieldName="LabelCharacter7" type="UNSIGNED.8" byteOffset="53" bitOffset="0" defaultValue="255"/>
 		<signal fieldName="LabelCharacter8" type="UNSIGNED.8" byteOffset="54" bitOffset="0" defaultValue="255"/>
 		<signal fieldName="LabelCharacter9" type="UNSIGNED.8" byteOffset="55" bitOffset="0" defaultValue="255"/>
@@ -220,16 +220,17 @@
     <station id="3" >
         <param StationSkipStatus="1" />
         <param StationHoldStatus="2" />
-        <param StationDwell="8" />
-        <param PlatformDoorSides="2" />
+        <param StationDwell="25" />
+        <param PlatformDoorSides="3" />
         <param DistanceToStoppingPoint="5000000" />
         <param TrainDoorsEnableLeftStatus="1" />
         <param TrainDoorsEnableRightStatus="1" />
-        <param LeftTrainDoorsClosedStatus="1" />
+        <param LeftTrainDoorsClosedStatus="0" />
         <param RightTrainDoorsClosedStatus="0" />
-        <param LeftDoorCloseCommandStatus="0" />
+        <param LeftDoorCloseCommandStatus="1" />
         <param RightDoorCloseCommandStatus="1" />
-		<param LeftPSDClosedAndLockedStatus="1" />
+	<param LeftPSDClosedAndLockedStatus="0" />
+
         <param RightPSDClosedAndLockedStatus="0" />
         <param NextStationId="5" />
     </station>
@@ -249,7 +250,7 @@
         <param RightPSDClosedAndLockedStatus="1" />
         <param NextStationId="7" />
     </station>
-    <station id="7" >
+    <station id="9" >
         <param StationSkipStatus="1" />
         <param StationHoldStatus="2" />
         <param StationDwell="8" />
@@ -263,12 +264,13 @@
         <param RightDoorCloseCommandStatus="0" />
 		<param LeftPSDClosedAndLockedStatus="0" />
         <param RightPSDClosedAndLockedStatus="1" />
-        <param NextStationId="9" />
+        <param NextStationId="13" />
     </station>
-    <station id="9" >
+    <station id="13" >
         <param StationSkipStatus="1" />
         <param StationHoldStatus="2" />
         <param StationDwell="5" />
+
         <param PlatformDoorSides="1" />
         <param DistanceToStoppingPoint="5000000" />
         <param TrainDoorsEnableLeftStatus="1" />
@@ -279,7 +281,7 @@
         <param RightDoorCloseCommandStatus="0" />
 		<param LeftPSDClosedAndLockedStatus="0" />
         <param RightPSDClosedAndLockedStatus="1" />
-        <param NextStationId="9" />
+        <param NextStationId="13" />
     </station>
 
     <!-- StationName>
