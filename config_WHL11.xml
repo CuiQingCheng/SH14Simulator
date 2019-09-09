@@ -150,6 +150,86 @@
 			<signal fieldName="Braking Effort" byteOffset="39" bitOffset="0" type="UNSIGNED.16" valueType="Dec"/>
 		</communication>
 		
+	  <station id="1" >
+        <param StationSkipStatus="1" />
+        <param StationHoldStatus="2" />
+        <param StationDwell="8" />
+        <param PlatformDoorSides="1" />
+        <param DistanceToStoppingPoint="5000000" />
+        <param TrainDoorsEnableLeftStatus="1" />
+        <param TrainDoorsEnableRightStatus="1" />
+        <param LeftTrainDoorsClosedStatus="0" />
+        <param RightTrainDoorsClosedStatus="1" />
+        <param LeftDoorCloseCommandStatus="1" />
+        <param RightDoorCloseCommandStatus="0" />
+		<param LeftPSDClosedAndLockedStatus="0" />
+        <param RightPSDClosedAndLockedStatus="1" />
+        <param NextStationId="3" />
+    </station>
+    <station id="3" >
+        <param StationSkipStatus="1" />
+        <param StationHoldStatus="2" />
+        <param StationDwell="8" />
+        <param PlatformDoorSides="2" />
+        <param DistanceToStoppingPoint="5000000" />
+        <param TrainDoorsEnableLeftStatus="1" />
+        <param TrainDoorsEnableRightStatus="1" />
+        <param LeftTrainDoorsClosedStatus="1" />
+        <param RightTrainDoorsClosedStatus="0" />
+        <param LeftDoorCloseCommandStatus="0" />
+        <param RightDoorCloseCommandStatus="1" />
+		<param LeftPSDClosedAndLockedStatus="1" />
+        <param RightPSDClosedAndLockedStatus="0" />
+        <param NextStationId="5" />
+    </station>
+    <station id="5" >
+        <param StationSkipStatus="1" />
+        <param StationHoldStatus="2" />
+        <param StationDwell="8" />
+        <param PlatformDoorSides="1" />
+        <param DistanceToStoppingPoint="5000000" />
+        <param TrainDoorsEnableLeftStatus="1" />
+        <param TrainDoorsEnableRightStatus="1" />
+        <param LeftTrainDoorsClosedStatus="0" />
+        <param RightTrainDoorsClosedStatus="1" />
+        <param LeftDoorCloseCommandStatus="1" />
+        <param RightDoorCloseCommandStatus="0" />
+		<param LeftPSDClosedAndLockedStatus="0" />
+        <param RightPSDClosedAndLockedStatus="1" />
+        <param NextStationId="7" />
+    </station>
+    <station id="9" >
+        <param StationSkipStatus="1" />
+        <param StationHoldStatus="2" />
+        <param StationDwell="8" />
+        <param PlatformDoorSides="1" />
+        <param DistanceToStoppingPoint="5000000" />
+        <param TrainDoorsEnableLeftStatus="1" />
+        <param TrainDoorsEnableRightStatus="1" />
+        <param LeftTrainDoorsClosedStatus="0" />
+        <param RightTrainDoorsClosedStatus="1" />
+        <param LeftDoorCloseCommandStatus="1" />
+        <param RightDoorCloseCommandStatus="0" />
+		<param LeftPSDClosedAndLockedStatus="0" />
+        <param RightPSDClosedAndLockedStatus="1" />
+        <param NextStationId="13" />
+    </station>
+    <station id="13" >
+        <param StationSkipStatus="1" />
+        <param StationHoldStatus="2" />
+        <param StationDwell="5" />
+        <param PlatformDoorSides="1" />
+        <param DistanceToStoppingPoint="5000000" />
+        <param TrainDoorsEnableLeftStatus="1" />
+        <param TrainDoorsEnableRightStatus="1" />
+        <param LeftTrainDoorsClosedStatus="0" />
+        <param RightTrainDoorsClosedStatus="1" />
+        <param LeftDoorCloseCommandStatus="1" />
+        <param RightDoorCloseCommandStatus="0" />
+		<param LeftPSDClosedAndLockedStatus="0" />
+        <param RightPSDClosedAndLockedStatus="1" />
+        <param NextStationId="13" />
+    </station>
 </CommDataDefine>
 
 			
