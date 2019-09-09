@@ -20,7 +20,7 @@ TodVobcChannel::TodVobcChannel(QObject *parent)
     , m_TSN(0)
     , m_comConnectStateFlag(false)
     , m_gap(6)
-    , m_actualDataSize(175)
+    , m_actualDataSize(113)
 {
     clear();
 
@@ -34,7 +34,7 @@ TodVobcChannel::TodVobcChannel(QObject *parent)
 void TodVobcChannel::clear()
 {
     memset(m_pucData, 0, sizeof(m_pucData));
-    m_actualDataSize = 175;
+    m_actualDataSize = 113;
 }
 
 bool TodVobcChannel::open()
