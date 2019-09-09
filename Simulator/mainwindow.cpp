@@ -36,6 +36,7 @@ MainWindow::MainWindow(QWidget *parent) :
     m_widgetHandler->addWidget(QString("sendTcmsTableWidget"), ui->tcmsTableWidget);
     m_widgetHandler->addWidget(QString("receiveTableWidget"), ui->receiveTableWidget);
     m_widgetHandler->addWidget(QString("recTCMSData_TextEdit"), ui->recTCMSData_TextEdit);
+    m_widgetHandler->addWidget(QString("checkBoxWidget"), ui->tabWidget_2);
 
     m_autoTestHandler = m_factory->get<AutoTestHandler>("AutoTestHandler");
     connect(m_parserPtr, SIGNAL(parseFinished()), m_widgetHandler, SLOT(showGuiDefData()));
