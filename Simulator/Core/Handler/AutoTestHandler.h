@@ -108,7 +108,7 @@ private:
     const quint32 DWELLSEC = 1000;
     const quint32 INTERVAL1 = 200;
     const quint32 INTERVAL2 = 20000;
-    const quint32 RUNDWELL = 90000;
+    const quint32 RUNDWELL = 65535;
     const quint16 NUMOFCAR = 6;
 
     enum CurrentOperatingMode{
