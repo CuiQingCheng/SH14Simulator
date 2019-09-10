@@ -17,7 +17,8 @@ WidgetHandler::WidgetHandler()
                          << "EbTriggerSpeed" << "DepartureStatus" << "DockingStatus" << "CurrentOperatingMode" << "NumberOfCars"
                          << "FAMModeAvailability" << "ATOModeAvaliability" << "ATPMModeAvaliability" << "RunTypeIndication"
                          << "NumberOfAvailableVOBCs" << "ActiveCab" << "MotorBrakingStatus" << "TrainDoorsClosedAndLockedStatus"
-                         << "TrainDoorsEnableLeftStatus" << "PlatformDoorEnableStatus" << "PlatformDoorOpenStatus";
+                         << "TrainDoorsEnableLeftStatus" << "PlatformDoorEnableStatus" << "PlatformDoorOpenStatus"
+                         << "status Flags - Train Doors Closed and Locked Status(DCLS)" << "AlignmentStatus";
 }
 
 WidgetHandler::~WidgetHandler()

@@ -194,7 +194,7 @@ void MainWindow::sendPoolData()
     }
 
     WidgetHandler::TrainNumber currentNumber = m_widgetHandler->getTrainNumber();
-    if(currentNumber = WidgetHandler::TrainNumber::Shanghai_14)
+    if(currentNumber == WidgetHandler::TrainNumber::Shanghai_14)
     {
         QStringList lst;
         if(optionalTag)

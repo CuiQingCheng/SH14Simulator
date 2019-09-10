@@ -161,8 +161,12 @@ private:
     int m_leftPsdCloseAndLockedStatus;
     int m_rightPsdCloseAndLockedStatus;
     int m_nextStationId;
+    int m_whPlatformDoorOpenStatus;
 
     TrainNumber m_currentTrainNumber;
+    int m_motorBrakingStatus;
+    int m_trainDoorsClosedAndLockedStatus;
+    int m_whAlignmentStatus;
 };
 
 #endif
