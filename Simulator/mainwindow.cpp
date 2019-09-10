@@ -485,7 +485,7 @@ void MainWindow::on_autotestBtn_clicked()
 
     if(firstclicked)
     {
-        m_autoTestHandler->initDefSignalValue();
+        // m_autoTestHandler->initDefSignalValue();
         firstclicked = true;
     }
 

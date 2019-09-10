@@ -2,18 +2,18 @@
 
 <CommDataDefine protocol="udpSocket" description="vobc-tod_communication">
 	<communication processType="poll" sendType="vobc-tod">
-		<signal fieldName="NumberOfCars" type="UNSIGNED.8" byteOffset="0" bitOffset="0" defaultValue="255" valueType="Dec"/>
-		<signal fieldName="ActiveCab" type="UNSIGNED.8" byteOffset="1" bitOffset="0" defaultValue="255" />
-		<signal fieldName="CurrentOperatingMode" type="UNSIGNED.8" byteOffset="2" bitOffset="0" defaultValue="255"/>
+		<signal fieldName="NumberOfCars" type="UNSIGNED.8" byteOffset="0" bitOffset="0" defaultValue="6" valueType="Dec"/>
+		<signal fieldName="ActiveCab" type="UNSIGNED.8" byteOffset="1" bitOffset="0" defaultValue="1" />
+		<signal fieldName="CurrentOperatingMode" type="UNSIGNED.8" byteOffset="2" bitOffset="0" defaultValue="5"/>
 		<signal fieldName="PersistentModeSelectInput" type="UNSIGNED.8" byteOffset="3" bitOffset="0" defaultValue="255"/>
 		<signal fieldName="ATOModeAvaliability" type="UNSIGNED.8" byteOffset="4" bitOffset="0" defaultValue="255"/>
-		<signal fieldName="ATPMModeAvaliability" type="UNSIGNED.8" byteOffset="5" bitOffset="0" defaultValue="255"/>
+		<signal fieldName="ATPMModeAvaliability" type="UNSIGNED.8" byteOffset="5" bitOffset="0" defaultValue="0"/>
 		<signal fieldName="Direction" type="UNSIGNED.8" byteOffset="6" bitOffset="0" defaultValue="255"/>
 		<signal fieldName="OverspeedAlarm" type="UNSIGNED.8" byteOffset="7" bitOffset="0" defaultValue="0"/>
 		<signal fieldName="ActualSpeed" type="UNSIGNED.16" byteOffset="8" bitOffset="0" defaultValue="0" valueType="Dec"/>
-		<signal fieldName="TargetSpeed" type="UNSIGNED.16" byteOffset="10" bitOffset="0" defaultValue="0" valueType="Dec"/>
-		<signal fieldName="PermittedSpeed" type="UNSIGNED.16" byteOffset="12" bitOffset="0" defaultValue="0" valueType="Dec"/>
-		<signal fieldName="EbTriggerSpeed" type="UNSIGNED.16" byteOffset="14" bitOffset="0" defaultValue="0" valueType="Dec"/>
+		<signal fieldName="TargetSpeed" type="UNSIGNED.16" byteOffset="10" bitOffset="0" defaultValue="65" valueType="Dec"/>
+		<signal fieldName="PermittedSpeed" type="UNSIGNED.16" byteOffset="12" bitOffset="0" defaultValue="75" valueType="Dec"/>
+		<signal fieldName="EbTriggerSpeed" type="UNSIGNED.16" byteOffset="14" bitOffset="0" defaultValue="85" valueType="Dec"/>
 		<signal fieldName="DistanceToStoppingPoint" type="UNSIGNED.32" byteOffset="16" bitOffset="0" defaultValue="0" valueType="Dec"/>
 		<signal fieldName="NextPlatformID" type="UNSIGNED.16" byteOffset="20" bitOffset="0" defaultValue="0" valueType="Dec"/>
 		<signal fieldName="TerminusPlatformID" type="UNSIGNED.16" byteOffset="22" bitOffset="0" defaultValue="0" valueType="Dec"/>
@@ -28,7 +28,7 @@
 		<signal fieldName="AlignmentStatus" type="UNSIGNED.8" byteOffset="35" bitOffset="0" defaultValue="255"/>
 		<signal fieldName="CrawlbackDistance" type="UNSIGNED.32" byteOffset="36" bitOffset="0" defaultValue="0"/>
 		<signal fieldName="StoppingPointType" type="UNSIGNED.8" byteOffset="40" bitOffset="0" defaultValue="0"/>
-		<signal fieldName="NumberOfAvailableVOBCs" type="UNSIGNED.8" byteOffset="41" bitOffset="0" defaultValue="0"/>
+		<signal fieldName="NumberOfAvailableVOBCs" type="UNSIGNED.8" byteOffset="41" bitOffset="0" defaultValue="1"/>
 		<signal fieldName="TrainDoorsMode" type="UNSIGNED.8" byteOffset="42" bitOffset="0" defaultValue="255"/>
 		<signal fieldName="WSPModeAvailability" type="UNSIGNED.8" byteOffset="43" bitOffset="0" defaultValue="255"/>
 		<signal fieldName="WheelCalibrationStatus" type="UNSIGNED.8" byteOffset="44" bitOffset="0" defaultValue="255"/>
@@ -52,10 +52,10 @@
 		<signal fieldName="DTOModeAvailability" type="UNSIGNED.8" byteOffset="62" bitOffset="0" defaultValue="0"/>
 		<signal fieldName="DistanceToTargetSpeed" type="UNSIGNED.32" byteOffset="63" bitOffset="0" defaultValue="0"/>
 		<signal fieldName="PATestCommand" type="UNSIGNED.8" byteOffset="67" bitOffset="0" defaultValue="0"/>
-		<signal fieldName="FAMModeAvailability" type="UNSIGNED.8" byteOffset="68" bitOffset="0" defaultValue="255"/>
+		<signal fieldName="FAMModeAvailability" type="UNSIGNED.8" byteOffset="68" bitOffset="0" defaultValue="0"/>
 		<signal fieldName="UndershootOvershootDistance" type="UNSIGNED.32" byteOffset="69" bitOffset="0" defaultValue="0"/>
 		<signal fieldName="DockingStatus" type="UNSIGNED.8" byteOffset="73" bitOffset="0" defaultValue="0"/>
-		<signal fieldName="RunTypeIndication" type="UNSIGNED.8" byteOffset="74" bitOffset="0" defaultValue="0"/>
+		<signal fieldName="RunTypeIndication" type="UNSIGNED.8" byteOffset="74" bitOffset="0" defaultValue="2"/>
 		<signal fieldName="DateTimeValidity" type="BOOLEAN.1" byteOffset="75" bitOffset="0" defaultValue="0"/>
 		<signal fieldName="VCUActive" type="BOOLEAN.1" byteOffset="75" bitOffset="1" defaultValue="0"/>
 		<signal fieldName="PositionActive" type="BOOLEAN.1" byteOffset="75" bitOffset="2" defaultValue="0"/>

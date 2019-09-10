@@ -16,7 +16,8 @@ WidgetHandler::WidgetHandler()
                          << "NextPlatformID" << "TerminusPlatformID" <<"ActualSpeed" << "TargetSpeed" << "PermittedSpeed"
                          << "EbTriggerSpeed" << "DepartureStatus" << "DockingStatus" << "CurrentOperatingMode" << "NumberOfCars"
                          << "FAMModeAvailability" << "ATOModeAvaliability" << "ATPMModeAvaliability" << "RunTypeIndication"
-                         << "NumberOfAvailableVOBCs" << "ActiveCab";
+                         << "NumberOfAvailableVOBCs" << "ActiveCab" << "MotorBrakingStatus" << "TrainDoorsClosedAndLockedStatus"
+                         << "TrainDoorsEnableLeftStatus" << "PlatformDoorEnableStatus" << "PlatformDoorOpenStatus";
 }
 
 WidgetHandler::~WidgetHandler()
