@@ -3,18 +3,18 @@
 <CommDataDefine protocol="udpSocket" description="vobc-tod_communication">
 	
 		<communication processType="poll" sendType="vobc-tod">
-			<signal fieldName="NumberOfCars" byteOffset="0" bitOffset="0" type="UNSIGNED.8" defaultValue="255" valueType="Dec"/>
-			<signal fieldName="ActiveCab" byteOffset="1" bitOffset="0" type="UNSIGNED.8" defaultValue="255"/> 
-			<signal fieldName="CurrentOperatingMode" byteOffset="2" bitOffset="0" type="UNSIGNED.8"/>   
+			<signal fieldName="NumberOfCars" byteOffset="0" bitOffset="0" type="UNSIGNED.8" defaultValue="6" valueType="Dec"/>
+			<signal fieldName="ActiveCab" byteOffset="1" bitOffset="0" type="UNSIGNED.8" defaultValue="1"/> 
+			<signal fieldName="CurrentOperatingMode" byteOffset="2" bitOffset="0" type="UNSIGNED.8" defaultValue="5"/>   
 			<signal fieldName="PersistentModeSelectInput" byteOffset="3" bitOffset="0" type="UNSIGNED.8" defaultValue="255"/>
 			
 			<signal fieldName="ATOModeAvaliability" byteOffset="4" bitOffset="0" type="UNSIGNED.8" defaultValue="255"/> 
-			<signal fieldName="ATPMModeAvaliability" byteOffset="5" bitOffset="0" type="UNSIGNED.8" defaultValue="255"/>
+			<signal fieldName="ATPMModeAvaliability" byteOffset="5" bitOffset="0" type="UNSIGNED.8" defaultValue="0"/>
 			<signal fieldName="Direction" byteOffset="6" bitOffset="0" type="UNSIGNED.8" defaultValue="255"/>
 			<signal fieldName="OverspeedAlarm" byteOffset="7" bitOffset="0" type="UNSIGNED.8" defaultValue="0"/>
 			<signal fieldName="ActualSpeed" byteOffset="8" bitOffset="0" type="UNSIGNED.16" defaultValue="0" valueType="Dec"/> 
-			<signal fieldName="TargetSpeed" byteOffset="10" bitOffset="0" type="UNSIGNED.16" defaultValue="0" valueType="Dec"/>
-			<signal fieldName="PermittedSpeed" byteOffset="12" bitOffset="0" type="UNSIGNED.16" defaultValue="0" valueType="Dec"/>
+			<signal fieldName="TargetSpeed" byteOffset="10" bitOffset="0" type="UNSIGNED.16" defaultValue="65" valueType="Dec"/>
+			<signal fieldName="PermittedSpeed" byteOffset="12" bitOffset="0" type="UNSIGNED.16" defaultValue="75" valueType="Dec"/>
 			<signal fieldName="DistanceToStoppingPoint" byteOffset="14" bitOffset="0" type="UNSIGNED.32" defaultValue="0" valueType="Dec"/> 
 			<signal fieldName="NextPlatformID" byteOffset="18" bitOffset="0" type="UNSIGNED.16" defaultValue="0" valueType="Dec"/>
 			
@@ -30,10 +30,10 @@
 			
 			<signal fieldName="CrawlbackDistance" byteOffset="33" bitOffset="0" type="UNSIGNED.32" defaultValue="255" valueType="Dec"/> 
 			<signal fieldName="StoppingPointType" byteOffset="37" bitOffset="0" type="UNSIGNED.8" defaultValue="255"/> 
-			<signal fieldName="NumberOfAvailableVOBCs" byteOffset="38" bitOffset="0" type="UNSIGNED.8" defaultValue="255"/>
-			<signal fieldName="TrainDoorsMode" byteOffset="39" bitOffset="0" type="UNSIGNED.8" defaultValue="255"/> 
+			<signal fieldName="NumberOfAvailableVOBCs" byteOffset="38" bitOffset="0" type="UNSIGNED.8" defaultValue="1"/>
+			<signal fieldName="TrainDoorsMode" byteOffset="39" bitOffset="0" type="UNSIGNED.8" defaultValue="3"/> 
 			<signal fieldName="WSPModeAvailability" byteOffset="40" bitOffset="0" type="UNSIGNED.8" defaultValue="255"/> 
-			<signal fieldName="WheelCalibrationStatus" byteOffset="43" bitOffset="0" type="UNSIGNED.8" defaultValue="255"/>
+			<signal fieldName="WheelCalibrationStatus" byteOffset="43" bitOffset="0" type="UNSIGNED.8" defaultValue="2"/>
 			
 			<signal fieldName="MotorBrakingStatus" byteOffset="44" bitOffset="0" type="UNSIGNED.8" defaultValue="255"/>
 			<signal fieldName="DistanceToTargetSpeed" type="UNSIGNED.32" byteOffset="63" bitOffset="0" defaultValue="0" valueType="Dec"/>
@@ -226,15 +226,26 @@
         <param RightTrainDoorsClosedStatus="1" />
         <param LeftDoorCloseCommandStatus="1" />
         <param RightDoorCloseCommandStatus="0" />
-		<param LeftPSDClosedAndLockedStatus="0" />
+	<param LeftPSDClosedAndLockedStatus="0" />
         <param RightPSDClosedAndLockedStatus="1" />
         <param NextStationId="13" />
     </station>
 </CommDataDefine>
 
-			
-			
-				
+<!--
+CurrentOperatingMode   5
+ATOModeAvaliability    3:运行  2:停止
+PlatformDoorEnableStatus  2：使能 其他：隐藏
+PlatformDoorOpenStatus    1:关 2：开 3：隐藏
+StationSkipStatus（StationHoldStatus）	  0:- 1:隐藏 2:是
+DepartureStatus		1:NO 2:YES
+TrainDoorsMode		3:自动开关
+WheelCalibrationStatus  2:已校准 0：隐藏
+MotorBrakingStatus	1:牵引 2:制动
+TrainDoorsClosedAndLockedStatus		0:开启 1:关闭
+TrainDoorsEnableLeftStatus		0:隐藏 1:使能
+-->
+
 			
 			
 			

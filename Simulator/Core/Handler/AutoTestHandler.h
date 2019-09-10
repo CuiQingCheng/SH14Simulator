@@ -91,6 +91,15 @@ public:
 
     void emitChangeNodeSignal();
 
+    enum TrainNumber{
+        Shanghai_14 = 0,
+        Wuhan_11 = 1
+    };
+    void setTrainNumber(TrainNumber num)
+    {
+        m_currentTrainNumber = num;
+    }
+
  signals:
     void signalValueUpdated(QString signal, QString value);
 
@@ -152,6 +161,8 @@ private:
     int m_leftPsdCloseAndLockedStatus;
     int m_rightPsdCloseAndLockedStatus;
     int m_nextStationId;
+
+    TrainNumber m_currentTrainNumber;
 };
 
 #endif

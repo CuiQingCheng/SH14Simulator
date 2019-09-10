@@ -199,22 +199,28 @@ void AutoTestHandler::changeCurrentStationNode()
 
 void AutoTestHandler::emitChangeNodeSignal()
 {
+    if(m_currentTrainNumber == Shanghai_14)
+    {
+        emit signalValueUpdated("NextPlatformDoorSide", QString::number(m_platformDoorSides));
+
+        emit signalValueUpdated("TrainDoorsEnableLeftStatus", QString::number(m_leftTrainDoorEnabled));
+        emit signalValueUpdated("TrainDoorsEnableRightStatus", QString::number(m_rightTrainDoorEnabled));
+
+        emit signalValueUpdated("LeftTrainDoorsClosedStatus", QString::number(m_leftTrainDoorClosed));
+        emit signalValueUpdated("RightTrainDoorsClosedStatus", QString::number(m_rightTrainDoorClosed));
+        emit signalValueUpdated("LeftDoorCloseCommandStatus", QString::number(m_leftDoorCloseCommandStatus));
+        emit signalValueUpdated("RightDoorCloseCommandStatus", QString::number(m_rightDoorCloseCommandStatus));
+
+        emit signalValueUpdated("LeftPSDClosedAndLockedStatus", QString::number(m_leftPsdCloseAndLockedStatus));
+        emit signalValueUpdated("RightPSDClosedAndLockedStatus", QString::number(m_rightPsdCloseAndLockedStatus));
+    }
+    if(m_currentTrainNumber == Wuhan_11)
+    {
+
+    }
+
     emit signalValueUpdated("StationSkipStatus", QString::number(m_skipStatus));
     emit signalValueUpdated("StationHoldStatus", QString::number(m_holdStatus));
-
-    emit signalValueUpdated("NextPlatformDoorSide", QString::number(m_platformDoorSides));
-
-    emit signalValueUpdated("TrainDoorsEnableLeftStatus", QString::number(m_leftTrainDoorEnabled));
-    emit signalValueUpdated("TrainDoorsEnableRightStatus", QString::number(m_rightTrainDoorEnabled));
-
-    emit signalValueUpdated("LeftTrainDoorsClosedStatus", QString::number(m_leftTrainDoorClosed));
-    emit signalValueUpdated("RightTrainDoorsClosedStatus", QString::number(m_rightTrainDoorClosed));
-    emit signalValueUpdated("LeftDoorCloseCommandStatus", QString::number(m_leftDoorCloseCommandStatus));
-    emit signalValueUpdated("RightDoorCloseCommandStatus", QString::number(m_rightDoorCloseCommandStatus));
-
-    emit signalValueUpdated("LeftPSDClosedAndLockedStatus", QString::number(m_leftPsdCloseAndLockedStatus));
-    emit signalValueUpdated("RightPSDClosedAndLockedStatus", QString::number(m_rightPsdCloseAndLockedStatus));
-
     emit signalValueUpdated("NextPlatformID", QString::number(m_nextStationId));
 }
 
@@ -236,8 +242,6 @@ void AutoTestHandler::actualSpeedControl()
         emit signalValueUpdated("DepartureStatus", "2");
         emit signalValueUpdated("DockingStatus", "1");
         emit signalValueUpdated("ATOModeAvaliability", "3");
-        emit signalValueUpdated("LeftDoorCloseCommandStatus", "0");
-        emit signalValueUpdated("LeftTrainDoorsClosedStatus", "1");
         m_leftTrainDoorClosed = 1;
         m_rightTrainDoorClosed = 1;
         m_leftPsdCloseAndLockedStatus = 1;
