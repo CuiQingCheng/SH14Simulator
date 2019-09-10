@@ -17,6 +17,10 @@ AutoTestHandler::AutoTestHandler()
     , m_leftPsdCloseAndLockedStatus(0)
     , m_rightPsdCloseAndLockedStatus(1)
     , m_nextStationId(1)
+    , m_whPlatformDoorOpenStatus(2)
+    , m_motorBrakingStatus(0)
+    , m_trainDoorsClosedAndLockedStatus(0)
+    , m_whAlignmentStatus(0)
 {
     m_dwellTimer = new QTimer(this);
     m_variableSpeedRunTimer = new QTimer(this);
@@ -101,7 +105,8 @@ void AutoTestHandler::start()
     m_leftPsdCloseAndLockedStatus = m_currentNode->itsLeftPsdCloseAndLockedStatus;
     m_rightPsdCloseAndLockedStatus = m_currentNode->itsRightPsdCloseAndLockedStatus;
     m_nextStationId = m_currentNode->itsStationid;
-
+    m_whAlignmentStatus = 2;
+    m_whPlatformDoorOpenStatus = 2;
     emitChangeNodeSignal();
 }
 
@@ -195,6 +200,7 @@ void AutoTestHandler::changeCurrentStationNode()
     m_holdStatus = m_currentNode->itsHoldStatus;
     m_platformDoorSides = m_currentNode->itsPlatformDoorSides;
     m_nextStationId = m_currentNode->itsStationid;
+
 }
 
 void AutoTestHandler::emitChangeNodeSignal()
@@ -216,7 +222,10 @@ void AutoTestHandler::emitChangeNodeSignal()
     }
     if(m_currentTrainNumber == Wuhan_11)
     {
-
+        emit signalValueUpdated("AlignmentStatus", QString::number(m_whAlignmentStatus));
+        emit signalValueUpdated("PlatformDoorOpenStatus", QString::number(m_whPlatformDoorOpenStatus));
+        emit signalValueUpdated("MotorBrakingStatus", QString::number(m_motorBrakingStatus));
+        emit signalValueUpdated("status Flags - Train Doors Closed and Locked Status(DCLS)", QString::number(m_trainDoorsClosedAndLockedStatus));
     }
 
     emit signalValueUpdated("StationSkipStatus", QString::number(m_skipStatus));
@@ -253,9 +262,13 @@ void AutoTestHandler::actualSpeedControl()
         m_leftTrainDoorEnabled = m_currentNode->itsLeftTrainDoorEnabled;
         m_rightTrainDoorEnabled = m_currentNode->itsRightTrainDoorEnabled;
         m_dwell = m_currentNode->itsDwell;
+        m_whPlatformDoorOpenStatus = 1;
+        m_motorBrakingStatus = 1;
+        m_trainDoorsClosedAndLockedStatus = 1;
+        m_whAlignmentStatus = 1;
         emitChangeNodeSignal();
     }
-
+    emit signalValueUpdated("MotorBrakingStatus", QString::number(m_motorBrakingStatus));
     ++i;
 
     if(m_actualSpeed > MAXRUN_SPEED)
@@ -273,8 +286,6 @@ void AutoTestHandler::actualSpeedControl()
         m_variableSpeedRunTimer->stop();
         m_isaccelerate = true;
         i = 0;
-
-
     }
 
     emit signalValueUpdated("ActualSpeed", QString::number(m_actualSpeed));
@@ -289,25 +300,31 @@ void AutoTestHandler::actualSpeedControl()
     {
         --m_actualSpeed;
         m_distanceToStopPoint -= (60 - i % 60) * 700;
-
+        m_motorBrakingStatus = 2;
         if(m_distanceToStopPoint < 0)
         {
             m_distanceToStopPoint = 0;
-
+            m_whPlatformDoorOpenStatus = 2;
         }
-
     }
+
 
     emit signalValueUpdated("DistanceToStoppingPoint", QString::number(m_distanceToStopPoint));
 }
 
 void AutoTestHandler::dwellControl()
 {
+    m_motorBrakingStatus = 0;
+    m_trainDoorsClosedAndLockedStatus = 0;
+    m_whAlignmentStatus = 2;
+    emit signalValueUpdated("AlignmentStatus", QString::number(m_whAlignmentStatus));
     emit signalValueUpdated("StationDwell", QString::number(m_dwell));
     emit signalValueUpdated("DepartureStatus", "1");
     emit signalValueUpdated("DockingStatus", "2");
     emit signalValueUpdated("ATOModeAvaliability", "2");
-
+    emit signalValueUpdated("PlatformDoorOpenStatus", QString::number(m_whPlatformDoorOpenStatus));
+    emit signalValueUpdated("MotorBrakingStatus", QString::number(m_motorBrakingStatus));
+    emit signalValueUpdated("status Flags - Train Doors Closed and Locked Status(DCLS)", QString::number(m_trainDoorsClosedAndLockedStatus));
     if(m_dwell > 0)
     {
         if(m_dwell == m_currentNode->itsDwell)

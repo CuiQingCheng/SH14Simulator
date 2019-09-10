@@ -22,7 +22,7 @@
 			<signal fieldName="StationDwell" byteOffset="22" bitOffset="0" type="UNSIGNED.32" defaultValue="0" valueType="Dec"/>
 			<signal fieldName="NextPlatformDoorSide" byteOffset="26" bitOffset="0" type="UNSIGNED.8" defaultValue="0"/> 
 			<signal fieldName="PlatformDoorEnableStatus" byteOffset="27" bitOffset="0" type="UNSIGNED.8" defaultValue="255"/>  
-			<signal fieldName="PlatformDoorOpenStatus" byteOffset="28" bitOffset="0" type="UNSIGNED.8" defaultValue="255"/>
+			<signal fieldName="PlatformDoorOpenStatus" byteOffset="28" bitOffset="0" type="UNSIGNED.8" defaultValue="2"/>
 			<signal fieldName="StationSkipStatus" byteOffset="29" bitOffset="0" type="UNSIGNED.8" defaultValue="255"/> 
 			<signal fieldName="StationHoldStatus" byteOffset="30" bitOffset="0" type="UNSIGNED.8" defaultValue="255"/>    
 			<signal fieldName="DepartureStatus" byteOffset="31" bitOffset="0" type="UNSIGNED.8" defaultValue="0"/>
@@ -63,8 +63,8 @@
 			<signal fieldName="status Flags - Zero Velocity Command" byteOffset="67" bitOffset="6" type="BOOLEAN.1" defaultValue="0"/>
 			<signal fieldName="status Flags - ATO Door Open Command" byteOffset="67" bitOffset="7" type="BOOLEAN.1" defaultValue="0"/>
 			<signal fieldName="status Flags - Train Doors Closed and Locked Status(DCLS)" byteOffset="68" bitOffset="0" type="BOOLEAN.1" defaultValue="0"/> 
-			<signal fieldName="status Flags - Train Door Enable Left Status" byteOffset="68" bitOffset="1" type="BOOLEAN.1" defaultValue="0"/>
-			<signal fieldName="status Flags - Train Door Enable Right Status" byteOffset="68" bitOffset="2" type="BOOLEAN.1" defaultValue="0"/>
+			<signal fieldName="status Flags - Train Door Enable Left Status" byteOffset="68" bitOffset="1" type="BOOLEAN.1" defaultValue="1"/>
+			<signal fieldName="status Flags - Train Door Enable Right Status" byteOffset="68" bitOffset="2" type="BOOLEAN.1" defaultValue="1"/>
 			<signal fieldName="status Flags - TIU Health Status" byteOffset="68" bitOffset="4" type="BOOLEAN.1" defaultValue="0"/>
 			<signal fieldName="status Flags - ATS Comm Status" byteOffset="68" bitOffset="5" type="BOOLEAN.1" defaultValue="0"/>
 			<signal fieldName="status Flags - MAU Comm Status" byteOffset="68" bitOffset="6" type="BOOLEAN.1" defaultValue="0"/>
@@ -233,7 +233,6 @@
 </CommDataDefine>
 
 <!--
-CurrentOperatingMode   5
 ATOModeAvaliability    3:运行  2:停止
 PlatformDoorEnableStatus  2：使能 其他：隐藏
 PlatformDoorOpenStatus    1:关 2：开 3：隐藏
