@@ -192,14 +192,14 @@ int Parser::parse(Factory *factory)
     {
         widgetHandler->getWidgetMap()->value("checkBoxWidget")->show();
         widgetHandler->setTrainNumber(WidgetHandler::TrainNumber::Shanghai_14);
-        autoTestHandler->setTrainNumber(WidgetHandler::TrainNumber::Shanghai_14);
+        autoTestHandler->setTrainNumber(AutoTestHandler::TrainNumber::Shanghai_14);
         findCheckBoxlist = false;
     }
     else
     {
         widgetHandler->getWidgetMap()->value("checkBoxWidget")->hide();
         widgetHandler->setTrainNumber(WidgetHandler::TrainNumber::Wuhan_11);
-        autoTestHandler->setTrainNumber(WidgetHandler::TrainNumber::Wuhan_11);
+        autoTestHandler->setTrainNumber(AutoTestHandler::TrainNumber::Wuhan_11);
     }
 
     file.close();
