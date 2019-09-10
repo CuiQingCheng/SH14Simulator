@@ -100,8 +100,8 @@ void AutoTestHandler::start()
     m_rightTrainDoorEnabled = m_currentNode->itsRightTrainDoorEnabled;
     m_leftTrainDoorClosed = m_currentNode->itsLeftTrainDoorClosed;
     m_rightTrainDoorClosed = m_currentNode->itsRightTrainDoorClosed;
-    m_leftDoorCloseCommandStatus = m_currentNode->itsLeftDoorCloseCommandStatus;
-    m_rightDoorCloseCommandStatus = m_currentNode->itsRightDoorCloseCommandStatus;
+    m_leftDoorCloseCommandStatus = 0;
+    m_rightDoorCloseCommandStatus = 0;
     m_leftPsdCloseAndLockedStatus = m_currentNode->itsLeftPsdCloseAndLockedStatus;
     m_rightPsdCloseAndLockedStatus = m_currentNode->itsRightPsdCloseAndLockedStatus;
     m_nextStationId = m_currentNode->itsStationid;
@@ -135,6 +135,7 @@ void AutoTestHandler::clear()
         delete m_currentNode;
         m_currentNode = NULL;
     }
+
     QMap<int, Station_Node*>::iterator iter = m_stationNodeMap.begin();
     while(iter != m_stationNodeMap.end())
     {

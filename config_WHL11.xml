@@ -21,7 +21,7 @@
 			<signal fieldName="TerminusPlatformID" byteOffset="20" bitOffset="0" type="UNSIGNED.16" defaultValue="0" valueType="Dec"/>
 			<signal fieldName="StationDwell" byteOffset="22" bitOffset="0" type="UNSIGNED.32" defaultValue="0" valueType="Dec"/>
 			<signal fieldName="NextPlatformDoorSide" byteOffset="26" bitOffset="0" type="UNSIGNED.8" defaultValue="0"/> 
-			<signal fieldName="PlatformDoorEnableStatus" byteOffset="27" bitOffset="0" type="UNSIGNED.8" defaultValue="255"/>  
+			<signal fieldName="PlatformDoorEnableStatus" byteOffset="27" bitOffset="0" type="UNSIGNED.8" defaultValue="2"/>  
 			<signal fieldName="PlatformDoorOpenStatus" byteOffset="28" bitOffset="0" type="UNSIGNED.8" defaultValue="2"/>
 			<signal fieldName="StationSkipStatus" byteOffset="29" bitOffset="0" type="UNSIGNED.8" defaultValue="255"/> 
 			<signal fieldName="StationHoldStatus" byteOffset="30" bitOffset="0" type="UNSIGNED.8" defaultValue="255"/>    
