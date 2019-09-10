@@ -481,14 +481,14 @@ void MainWindow::setInputFrameEnable(bool enable)
 
 void MainWindow::on_autotestBtn_clicked()
 {
-    static bool firstclicked = true;
+//    static bool firstclicked = true;
 
-    if(firstclicked)
-    {
-        // m_autoTestHandler->initDefSignalValue();
-        firstclicked = true;
-    }
-
+//    if(firstclicked)
+//    {
+//        m_autoTestHandler->initDefSignalValue();
+//        firstclicked = true;
+//    }
+    qDebug()<<"on_autotestBtn_clicked:" << m_isExecAutoTest;
     if(m_isExecAutoTest)
     {
         m_autoTestHandler->stop();
@@ -499,4 +499,5 @@ void MainWindow::on_autotestBtn_clicked()
         m_autoTestHandler->start();
         m_isExecAutoTest = true;
     }
+    qDebug()<<"on_autotestBtn_clicked:" << m_isExecAutoTest;
 }

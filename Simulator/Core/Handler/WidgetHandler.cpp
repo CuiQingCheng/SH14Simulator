@@ -104,6 +104,13 @@ void WidgetHandler::clear()
        ++iter;
     }
 
+    QMap<QString, int >::Iterator iter1 = m_signalIndexMap.begin();
+
+    while(iter1 != m_signalIndexMap.end())
+    {
+        iter1 = m_signalIndexMap.erase(iter1);
+    }
+
     m_sendSignalList.clear();
     m_receiveSignalList.clear();
     m_infoIdLst.clear();

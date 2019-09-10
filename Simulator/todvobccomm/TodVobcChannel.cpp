@@ -285,7 +285,7 @@ void TodVobcChannel::sendDataTelegram()
 //        qDebug("-- m_pucData[%d], %d", i, (int)(telegram.data()[i]));
 //    }
 
-    qDebug() << "send telegram size:" << telegram.size();
+//    qDebug() << "send telegram size:" << telegram.size();
     m_socket->writeDatagram(telegram, m_todAddress, m_todPort);
 }
 
@@ -316,7 +316,7 @@ void TodVobcChannel::sendDataTelegramForRFC()
 //        qDebug("-- m_pucData[%d], %d", i, (int)(telegram.data()[i]));
 //    }
 
-    qDebug() << "send RFC telegram size:" << telegram.size();
+//    qDebug() << "send RFC telegram size:" << telegram.size();
     m_socket->writeDatagram(telegram, m_todAddress, m_todPort);
 }
 
