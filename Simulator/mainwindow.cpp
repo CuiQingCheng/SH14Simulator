@@ -389,6 +389,12 @@ bool MainWindow::openConfigurationFile()
 {
     QString configFileName = QFileDialog::getOpenFileName(this,tr("open file"),NULL,tr("xmlFile(*.xml)"));
 
+    if(m_todChannel->getComConnectState())
+    {
+        QMessageBox::warning(this, "Warning", "The simulator is connecting, disconnect it and replace the script file", QMessageBox::Ok);
+        return false;
+    }
+
     if(configFileName.isEmpty())
     {
         qDebug() << "Config file is not exist !!!";
