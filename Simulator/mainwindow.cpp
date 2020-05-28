@@ -6,12 +6,17 @@
 #include <QDebug>
 #include <QMessageBox>
 #include <QSettings>
+#include <QtSerialPort/QSerialPort>
+#include <QSerialPortInfo>
 
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
-    m_isExecAutoTest(false)
+    m_isExecAutoTest(false),
+    m_serialStatus(false),
+    m_currentModeId(0),
+    m_baudRate(0)
 {
     ui->setupUi(this);
     m_todChannel = new TodVobcChannel();
@@ -19,11 +24,13 @@ MainWindow::MainWindow(QWidget *parent) :
     m_checkConnectState =new QTimer(this);
     m_sendPoolDataTimer = new QTimer(this);
     m_receiveDataTimer = new QTimer(this);
+    m_serialDriver = new QSerialPort(this);
 
     connect(m_sendRFCTimer, SIGNAL(timeout()), this, SLOT(sendRTFTimeout()));
     connect(m_checkConnectState, SIGNAL(timeout()), this, SLOT(checkConnectState()));
     connect(m_sendPoolDataTimer, SIGNAL(timeout()), this, SLOT(sendPoolData()));
     connect(m_receiveDataTimer, SIGNAL(timeout()), this, SLOT(receiveData()));
+    connect(m_serialDriver, SIGNAL(readyRead()), this, SLOT(receSerialData()));
 
     m_factory = new Factory;
     m_parserPtr = new Parser;
@@ -42,8 +49,10 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(m_parserPtr, SIGNAL(parseFinished()), m_widgetHandler, SLOT(showGuiDefData()));
     connect(m_autoTestHandler, SIGNAL(signalValueUpdated(QString, QString)), m_widgetHandler, SLOT(updateSignalValue(QString,QString)), Qt::QueuedConnection);
     connect(m_widgetHandler, SIGNAL(sendTelegramUpdated()), this, SLOT(checkConnectAndSendPoolData()));
+    connect(ui->openRadioButton, SIGNAL(clicked(bool)),this, SLOT(openSerialCom(bool)));
 
     initDefaultConfig();
+    initSerialPort();
 
     this->setWindowTitle(QString("VOBC Simulator"));
     ui->autotestBtn->setDisabled(true);
@@ -101,6 +110,18 @@ void MainWindow::setConfig()
     else
         m_sendTelegramType = SendTelegramType::Manual;
     m_sendCycle = cycle;
+}
+
+void MainWindow::initSerialPort()
+{
+    ui->comComboBox->clear();
+    QStringList list;
+    foreach(const QSerialPortInfo &info, QSerialPortInfo::availablePorts())
+    {
+        list << info.portName();
+    }
+    qSort(list.begin(), list.end());
+    ui->comComboBox->addItems(list);
 }
 
 void MainWindow::on_connectBtn_clicked()
@@ -247,7 +268,7 @@ void MainWindow::receiveData()
         if(typeStr == "UNSIGNED.8")
         {
             valueNum = (quint8)(receiveAppData.at(byteOffsetNum));
-            if(NumTypeStr == "hexadecimal")
+            if(NumTypeStr == "Hex")
             {
                 valueStr = QString::number(valueNum, 16);
             }
@@ -285,7 +306,7 @@ void MainWindow::receiveData()
             valueNum3 = (quint8)receiveAppData.at(byteOffsetNum + 2);
             valueNum4 = (quint8)receiveAppData.at(byteOffsetNum + 3);
 
-            if(NumTypeStr == "hexadecimal")
+            if(NumTypeStr == "Hex")
             {
                 valueFourByteNum = (quint16)(valueNum1 | (valueNum2 << 8) | (valueNum3 << 16) | (valueNum4 << 24));
                 valueStr = QString::number(valueFourByteNum, 16);
@@ -301,10 +322,18 @@ void MainWindow::receiveData()
         lastValueItem->setText(valueStr);
     }
 
-    QByteArray tmcsData = receiveAppData.mid(FIX_REC_DATASIZE, REC_TCMS_DATASIZE);
+    QByteArray tmcsData;
 
+    tmcsData = receiveAppData.mid(FIX_REC_DATASIZE, REC_TCMS_DATASIZE);
     TextEdit* textEdit= ui->recTCMSData_TextEdit;
-    textEdit->setShowData(tmcsData);
+    QStringList tcmsPortLst = m_widgetHandler->getTcmsPort();
+    int tcmsDataSize = 0;
+    for(int i = 0; i < tcmsPortLst.size(); ++i)
+    {
+        tcmsDataSize += tcmsPortLst.at(i).toInt();
+    }
+    tmcsData = receiveAppData.mid(FIX_REC_DATASIZE, tcmsDataSize);
+    textEdit->setShowData(tmcsData, tcmsPortLst);
 
     m_checkConnectState->start(3000);
 }
@@ -324,7 +353,7 @@ void MainWindow::initDefaultConfig()
 
     ui->todIpLineEdit->setValidator(new QRegExpValidator(rx, this));
     ui->todIpLineEdit->setPlaceholderText("000.000.000.000");
-    m_theSettingsPtr = new QSettings("../Simulator.conf", QSettings::IniFormat, this);
+    m_theSettingsPtr = new QSettings("Simulator.conf", QSettings::IniFormat, this);
     QString ipStr = m_theSettingsPtr->value("IP", QString("192.168.30.110")).toString();
     ui->todIpLineEdit->setText(ipStr);
 
@@ -344,6 +373,9 @@ void MainWindow::initDefaultConfig()
     ui->sendCycleLineEdit->setText(cycleStr);
     ui->sendCycleLineEdit->setValidator(new QIntValidator(0, 3000, this));
     ui->sendCycleLineEdit->setPlaceholderText("< 3000");
+
+    QString baud_Rate_Str = m_theSettingsPtr->value("Baud_RATE", 0).toString();
+    ui->rateLineEdit->setText(baud_Rate_Str);
 
     m_todChannel->setTodPort(portStr.toInt());
     m_todChannel->setTodAdress(ipStr);
@@ -377,7 +409,7 @@ void MainWindow::modifyDefaultConfig()
 }
 
 
-void MainWindow::on_action_Open_triggered()
+void MainWindow::on_action_open_triggered()
 {
     if (openConfigurationFile())
     {
@@ -487,13 +519,6 @@ void MainWindow::setInputFrameEnable(bool enable)
 
 void MainWindow::on_autotestBtn_clicked()
 {
-//    static bool firstclicked = true;
-
-//    if(firstclicked)
-//    {
-//        m_autoTestHandler->initDefSignalValue();
-//        firstclicked = true;
-//    }
     qDebug()<<"on_autotestBtn_clicked:" << m_isExecAutoTest;
     if(m_isExecAutoTest)
     {
@@ -506,4 +531,133 @@ void MainWindow::on_autotestBtn_clicked()
         m_isExecAutoTest = true;
     }
     qDebug()<<"on_autotestBtn_clicked:" << m_isExecAutoTest;
+}
+
+void MainWindow::on_action_udp_triggered()
+{
+    if(Udp != ui->stackedWidget->currentIndex())
+    {
+        ui->stackedWidget->setCurrentIndex(Udp);
+        m_currentModeId = Udp;
+    }
+}
+
+void MainWindow::on_action_Serial_triggered()
+{
+
+    if(Serial != ui->stackedWidget->currentIndex())
+    {
+        ui->stackedWidget->setCurrentIndex(Serial);
+        m_currentModeId = Serial;
+    }
+}
+
+
+void MainWindow::on_action_about_triggered()
+{
+    QMessageBox::information(this, "About", "The emulator supports UDP and Serial communication!", QMessageBox::Ok);
+}
+
+void MainWindow::openSerialCom(bool isOpen)
+{
+    m_comName = ui->comComboBox->currentText();
+    m_baudRate = ui->rateLineEdit->text().toInt();
+    m_serialDriver->setPortName(m_comName);
+    if(isOpen)
+    {
+        if(m_serialDriver->open(QIODevice::ReadWrite))
+        {
+            m_serialDriver->setBaudRate(m_baudRate, QSerialPort::AllDirections);
+            m_serialDriver->setDataBits(QSerialPort::Data8);
+            m_serialDriver->setParity(QSerialPort::NoParity);
+            m_serialDriver->setStopBits(QSerialPort::OneStop);
+            m_serialStatus = true;
+            ui->comStatusLabel->setStyleSheet("color:green");
+            ui->comStatusLabel->setText("Open success!");
+        }
+        else
+        {
+            m_serialStatus = false;
+            ui->comStatusLabel->setStyleSheet("color:red");
+            QMessageBox::warning(NULL, QString(tr("error")), QString(tr("open faild!")));
+            ui->comStatusLabel->setText("Open faild!");
+        }
+    }
+    else
+    {
+        if(m_serialDriver->isOpen())
+        {
+            m_serialDriver->close();
+        }
+        m_serialStatus = false;
+        ui->comStatusLabel->setText("");
+    }
+}
+
+
+void MainWindow::on_cleanBtn_clicked()
+{
+    ui->recvTextEdit->clear();
+}
+
+void MainWindow::on_sendBtn_clicked()
+{
+    if(!m_serialDriver->isOpen())
+    {
+        return;
+    }
+
+    QString contentStr = ui->sendDataTextEdit->toPlainText();
+    QStringList lst = contentStr.split(',');
+
+    QByteArray array;
+
+    for(int i = 0; i < lst.size(); ++i)
+    {
+        bool ok;
+        QString tmpStr = (lst[i]);
+        array.append(tmpStr.toInt(&ok,16));
+    }
+    qDebug() << array;
+    m_serialDriver->write(array.data(),16);
+}
+
+void MainWindow::receSerialData()
+{
+    QByteArray data = m_serialDriver->readAll();
+
+    if(data.size() <= 0)
+    {
+        return;
+    }
+
+    quint8 valueNum = 0;
+    QString valueStr = "";
+    QString tempStr = "";
+
+    for(int i = 0; i < data.size(); ++i)
+    {
+        valueNum = (quint8)(data.at(i));
+        valueStr = QString::number(valueNum, 16);
+        tempStr += valueStr;
+
+        if(i + 1 < data.size())
+        {
+            if((i + 1) == 15)
+            {
+                tempStr += ";";
+                tempStr += "\n";
+            }
+            else
+                tempStr += ",";
+        }
+        else
+        {
+            tempStr += ";";
+            tempStr += "\n";
+        }
+    }
+
+    ui->recvTextEdit->moveCursor(QTextCursor::End);
+    ui->recvTextEdit->append(tempStr);
 }

@@ -53,6 +53,8 @@ public:
     void addWidget( QString key, QWidget* widget);
     WidgetMap* getWidgetMap();
 
+    void registerTcmsPort(QStringList& tcmsLst);
+    QStringList getTcmsPort();
     void setTelegram(Telegram* telegram);
     void clear();
 
@@ -85,11 +87,11 @@ private:
     QList<CheckBox*> m_infoCheckBoxList;
     QList<CheckBox*> m_faultCheckBoxList;
 
-
     QStringList m_sendSignalList;
     QStringList m_receiveSignalList;
     QStringList m_infoList;
     QStringList m_faultList;
+    QStringList m_tcmsPortLst;
     QList<int> m_infoIdLst;
     QList<int> m_faultIdLst;
 

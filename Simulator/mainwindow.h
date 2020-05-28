@@ -18,6 +18,7 @@
 
 #include <QRegExpValidator>
 #include <QRegExp>
+#include <QSerialPort>
 
 class QTimer;
 
@@ -37,6 +38,14 @@ typedef enum Optional_Frame_Id
     Info_Frame_Id = 2
 }Optional_Frame_Id;
 
+
+typedef enum Communication_Mode
+{
+    Udp = 0,
+    Serial = 1,
+    MVB = 2
+
+}Comm_mode;
 
 class MainWindow : public QMainWindow
 {
@@ -59,8 +68,6 @@ protected:
 
 
 private slots:
-    void on_action_Open_triggered();
-
     void on_setBtn_clicked();
 
     void sendRTFTimeout();
@@ -77,10 +84,27 @@ private slots:
 
     void on_autotestBtn_clicked();
 
+    void on_action_udp_triggered();
+
+    void on_action_Serial_triggered();
+
+    void on_action_open_triggered();
+
+    void on_action_about_triggered();
+
+    void openSerialCom(bool isOpen);
+
+    void on_cleanBtn_clicked();
+
+    void on_sendBtn_clicked();
+
+    void receSerialData();
+
 private:
     void initDefaultConfig();
     void modifyDefaultConfig();
     void setConfig();
+    void initSerialPort();
 
 private:
     Ui::MainWindow *ui;
@@ -89,8 +113,8 @@ private:
     SignalMap m_SendSignalMap;
     SignalMap m_receiveSignalMap;
     SignalMap m_telegramHeaderMap;
-
     TodVobcChannel *m_todChannel;
+    QSerialPort* m_serialDriver;
 
     int m_sendTelegramType;
     int m_sendCycle;
@@ -100,12 +124,15 @@ private:
     QTimer* m_sendPoolDataTimer;
     QTimer* m_receiveDataTimer;
 
-
     QSettings *m_theSettingsPtr;
     Parser* m_parserPtr;
     Factory* m_factory;
     WidgetHandler* m_widgetHandler;
     AutoTestHandler* m_autoTestHandler;
     bool m_isExecAutoTest;
+    int m_currentModeId;
+    bool m_serialStatus;
+    QString m_comName;
+    int m_baudRate;
 };
 #endif // MAINWINDOW_H

@@ -59,6 +59,8 @@ int Parser::parse(Factory *factory)
     QString element;
     QString elementText;
     QString elementId;
+    QStringList tcmsDataLeng;
+    bool tcmsIsExisted = false;
 
     Telegram* telegram = factory->get<Telegram>("Telegram");
     WidgetHandler* widgetHandler = factory->get<WidgetHandler>("WidgetHandler");
@@ -75,6 +77,18 @@ int Parser::parse(Factory *factory)
 
             while(!objNode.isNull())
             {
+                if(objNode.tagName() == "tcmsData")
+                {
+                    tcmsIsExisted = true;
+                    if(objNode.hasAttribute("portSize"))
+                    {
+                        tcmsDataLeng.append(objNode.attributeNode("portSize").value());
+                    }
+                }
+                else
+                {
+                    tcmsIsExisted = false;
+                }
                 if(objNode.hasAttribute("fieldName"))
                     fieldName = objNode.attributeNode("fieldName").value();
                 if(objNode.hasAttribute("type"))
@@ -91,21 +105,30 @@ int Parser::parse(Factory *factory)
                 }
                 else
                 {
-                    valueType = "hexadecimal";
+                    valueType = "Hex";
                 }
-
-                SignalValue* signalValue = new SignalValue(fieldName, dataType, byteOffset, bitOffset, defaultValue, valueType);
+                SignalValue* signalValue = NULL;
+                if(!tcmsIsExisted)
+                {
+                     signalValue = new SignalValue(fieldName, dataType, byteOffset, bitOffset, defaultValue, valueType);
+                }
 
                 if(sendType == "vobc-tod")
                 {
-                    telegram->setSendSignalMap(signalValue);
-                    widgetHandler->addEleNameList(signalValue->getName(), WidgetHandler::Send_Signal);
+                    if(signalValue != NULL)
+                    {
+                        telegram->setSendSignalMap(signalValue);
+                        widgetHandler->addEleNameList(signalValue->getName(), WidgetHandler::Send_Signal);
+                    }
                 }
 
                 if(sendType == "tod-vobc")
                 {
-                    telegram->setReceiveSignalMap(signalValue);
-                    widgetHandler->addEleNameList(signalValue->getName(), WidgetHandler::Receiver_Signal);
+                    if(signalValue != NULL)
+                    {
+                        telegram->setReceiveSignalMap(signalValue);
+                        widgetHandler->addEleNameList(signalValue->getName(), WidgetHandler::Receiver_Signal);
+                    }
                 }
 
                 objNode = objNode.nextSiblingElement();
@@ -186,6 +209,11 @@ int Parser::parse(Factory *factory)
         }
 
         node = node.nextSiblingElement();
+    }
+
+    if(tcmsDataLeng.size()!=0)
+    {
+        widgetHandler->registerTcmsPort(tcmsDataLeng);
     }
 
     if(findCheckBoxlist)

@@ -78,6 +78,18 @@ WidgetMap* WidgetHandler::getWidgetMap()
     return &m_widgetMap;
 }
 
+void WidgetHandler::registerTcmsPort(QStringList& tcmsLst)
+{
+    m_tcmsPortLst.clear();
+    m_tcmsPortLst = tcmsLst;
+}
+
+QStringList WidgetHandler::getTcmsPort()
+{
+    return m_tcmsPortLst;
+}
+
+
 void WidgetHandler::setTelegram(Telegram* telegram)
 {
     m_telegram = telegram;

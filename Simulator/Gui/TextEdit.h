@@ -4,6 +4,7 @@
 #include<QTextEdit>
 #include<QByteArray>
 #include<QString>
+#include<QStringList>
 
 class TextEdit : public QTextEdit
 {
@@ -14,11 +15,12 @@ public:
     static const int MAX_REC_TCMS_SIZE = 502;
 //    static const int MAX_SEND_VARIABLE_SIZE = 178;
 
-    void setShowData(QByteArray& input);
+    void setShowData(QByteArray& input, QStringList& tcmsPortLst);
     QString getShowData();
 
     void setEditCount(int count);
     int getEditCount();
+
 
 private:
     QString m_showStr;

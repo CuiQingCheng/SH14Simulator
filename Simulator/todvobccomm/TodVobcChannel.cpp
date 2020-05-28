@@ -154,7 +154,7 @@ void TodVobcChannel::setDataByByteSize(const QString& byteOffset,const QString& 
     //make it different between hex and dec.
     quint64 valueNum;  // quint32
 
-    if(numType == "hexadecimal")
+    if(numType == "Hex")
     {
         valueNum = value.toLongLong(&turnOk, 16);
     }
@@ -218,7 +218,7 @@ void TodVobcChannel::setDataByByteSize(const QString& byteOffset,const QString& 
         }
     }
 
-    //qDebug("setDataByByteSize: byteOffNum-%d,bitOffNum-%d,m_pucData[70]-0x%2x",byteOffNum,bitOffNum,m_pucData[70]);
+//    qDebug("setDataByByteSize: byteOffNum-%d,bitOffNum-%d,m_pucData[70]-0x%2x",byteOffNum,bitOffNum,m_pucData[70]);
 }
 
 void TodVobcChannel::setOptionTag(int tag)
@@ -280,12 +280,12 @@ void TodVobcChannel::sendDataTelegram()
     telegram.updateCRC();
 
 
-//    for (int i = 0; i < 34 + m_actualDataSize; i++)
-//    {
-//        qDebug("-- m_pucData[%d], %d", i, (int)(telegram.data()[i]));
-//    }
+    for (int i = 0; i < 34 + m_actualDataSize; i++)
+    {
+        qDebug("-- m_pucData[%d], %d", i, (int)(telegram.data()[i]));
+    }
 
-//    qDebug() << "send telegram size:" << telegram.size();
+    qDebug() << "send telegram size:" << telegram.size();
     m_socket->writeDatagram(telegram, m_todAddress, m_todPort);
 }
 
@@ -311,12 +311,13 @@ void TodVobcChannel::sendDataTelegramForRFC()
     telegram.setAppData(bg);
     telegram.updateCRC();
 
-//    for (int i = 0; i < 34 + m_actualDataSize; i++)
-//    {
-//        qDebug("-- m_pucData[%d], %d", i, (int)(telegram.data()[i]));
-//    }
+    for (int i = 0; i < 34 + m_actualDataSize; i++)
+    {
+        qDebug("-- m_pucData[%d], %d", i, (int)(telegram.data()[i]));
+    }
 
-//    qDebug() << "send RFC telegram size:" << telegram.size();
+    qDebug() << "send RFC telegram size:" << telegram.size();
+
     m_socket->writeDatagram(telegram, m_todAddress, m_todPort);
 }
 
