@@ -78,15 +78,30 @@ WidgetMap* WidgetHandler::getWidgetMap()
     return &m_widgetMap;
 }
 
-void WidgetHandler::registerTcmsPort(QStringList& tcmsLst)
+void WidgetHandler::registerTcmsPort(QString cmd, QStringList& tcmsLst)
 {
-    m_tcmsPortLst.clear();
-    m_tcmsPortLst = tcmsLst;
+    if(cmd == "recvTcms")
+    {
+        m_recvTcmsPortLst.clear();
+        m_recvTcmsPortLst = tcmsLst;
+    }
+    else if(cmd == "sendTcms")
+    {
+        m_sendTcmsPortLst.clear();
+        m_sendTcmsPortLst = tcmsLst;
+    }
 }
 
-QStringList WidgetHandler::getTcmsPort()
+QStringList WidgetHandler::getTcmsPort(QString cmd)
 {
-    return m_tcmsPortLst;
+    if(cmd == "recvTcms")
+    {
+        return m_recvTcmsPortLst;
+    }
+    else if(cmd == "sendTcms")
+    {
+        return m_sendTcmsPortLst;
+    }
 }
 
 

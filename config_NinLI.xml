@@ -2,7 +2,7 @@
 
 <CommDataDefine protocol="udpSocket" description="vobc-tod_communication">
 	
-		<communication processType="poll" sendType="vobc-tod">
+		<communication processType="poll" sendType="Vobc-Tod">
 			<signal fieldName="VOBCSoftwareVersion" byteOffset="0" bitOffset="0" type="UNSIGNED.24" defaultValue="6" valueType="Dec"/>
 			<signal fieldName="PLCCSoftwareVersion" byteOffset="3" bitOffset="0" type="UNSIGNED.24" defaultValue="1"/> 
 			<signal fieldName="NumberofCars" byteOffset="6" bitOffset="0" type="UNSIGNED.8" defaultValue="5"/>   
@@ -49,7 +49,7 @@
 
 		</communication>
 	
-		<communication processType="Response" sendType="tod-vobc">
+		<communication processType="Response" sendType="Tod-Vobc">
 			<signal fieldName="TodSelfTestStatus" byteOffset="0" bitOffset="0" type="UNSIGNED.8"/>
 			<signal fieldName="TODFaultCode" byteOffset="1" bitOffset="0" type="UNSIGNED.8"/> 
 			<signal fieldName="ConfirmedMsgLineNumber" byteOffset="2" bitOffset="0" type="UNSIGNED.8"/>   

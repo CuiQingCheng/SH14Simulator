@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <CommDataDefine protocol="udpSocket" description="vobc-tod_communication">
-		<communication processType="poll" sendType="vobc-tod">
+		<communication processType="poll" sendType="Vobc-Tod">
 			<signal fieldName="NumberOfCars" type="UNSIGNED.8" byteOffset="0" bitOffset="0" defaultValue="255" valueType="Dec"/>
 			<signal fieldName="ActiveCab" type="UNSIGNED.8" byteOffset="1" bitOffset="0" defaultValue="255" valueType="Dec"/>
 			<signal fieldName="CurrentOperatingMode" type="UNSIGNED.8" byteOffset="2" bitOffset="0" defaultValue="0" valueType="Hex"/>
@@ -90,7 +90,7 @@
 			<signal fieldName="DPIInputFailed" type="BOOLEAN.1" byteOffset="57" bitOffset="1" defaultValue="0" valueType="Dec"/>
 		</communication>
 
-		<communication processType="Response" sendType="tod-vobc">
+		<communication processType="Response" sendType="Tod-Vobc">
 			<signal fieldName="TodSelfTestStatus" type="UNSIGNED.8" byteOffset="0" bitOffset="0" defaultValue="0" valueType="Hex"/>
 			<signal fieldName="TodFaultCode" type="UNSIGNED.8" byteOffset="1" bitOffset="0" defaultValue="0" valueType="Hex"/>
 			<signal fieldName="ConfirmedMsgLineNumber" type="UNSIGNED.8" byteOffset="2" bitOffset="0" defaultValue="0" property="queued" valueType="Dec"/>

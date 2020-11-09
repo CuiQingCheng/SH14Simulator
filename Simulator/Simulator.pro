@@ -31,7 +31,6 @@ SOURCES += \
         mainwindow.cpp \
     Signal/SignalValue.cpp \
     Telegram/Telegram.cpp \
-    todvobccomm/TodVobcChannel.cpp \
     todvobccomm/Todvobctelegram.cpp \
     Gui/CheckBox.cpp \
     Gui/TextEdit.cpp \
@@ -39,13 +38,15 @@ SOURCES += \
     Core/Parser.cpp \
     Core/Factory/Factory.cpp \
     Core/Handler/AutoTestHandler.cpp \
-    Core/Handler/WidgetHandler.cpp
+    Core/Handler/WidgetHandler.cpp \
+    Core/TodCommChannel/TodCommChannel.cpp \
+    todtcmsccomm/Todtcmstelegram.cpp \
+    CRC/mycrc.cpp
 
 HEADERS += \
         mainwindow.h \
     Signal/SignalValue.h \
     Telegram/Telegram.h \
-    todvobccomm/TodVobcChannel.h \
     todvobccomm/Todvobctelegram.h \
     Gui/CheckBox.h \
     Gui/TextEdit.h \
@@ -53,7 +54,10 @@ HEADERS += \
     Core/Parser.h \
     Core/Factory/Factory.h \
     Core/Handler/AutoTestHandler.h \
-    Core/Handler/WidgetHandler.h
+    Core/Handler/WidgetHandler.h \
+    Core/TodCommChannel/TodCommChannel.h \
+    todtcmsccomm/Todtcmstelegram.h \
+    CRC/mycrc.h
 
 FORMS += \
         mainwindow.ui

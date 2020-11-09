@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<CommDataDefine protocol="serial" description="vobc-tod_communication">
+	<!--
+		<telegram sendType="Tcms-Tod" id="header">	
+			<param name="deviceAddress" type="UNSIGNED.8" byteOffset="0" bitOffset="0" defaultValue="0"/>
+			<param name="commType" type="UNSIGNED.8" byteOffset="0" bitOffset="0" defaultValue="0"/>
+		</telegram>
+	-->
+		<communication processType="poll" sendType="Tcms-Tod" fixedSignalSize="43" >
+			<signal fieldName="SO_TIM_ATC_TBE" byteOffset="0" bitOffset="0" type="UNSIGNED.8" defaultValue="0"/>  
+			<signal fieldName="SO_TIM_ATC_TC" byteOffset="1" bitOffset="0" type="BOOLEAN.1" defaultValue="0"/>
+			<signal fieldName="SO_TIM_ATC_BC" byteOffset="1" bitOffset="1" type="BOOLEAN.1" defaultValue="0"/>
+			<signal fieldName="SO_TIM_ATC_FBF" byteOffset="2" bitOffset="2" type="BOOLEAN.1" defaultValue="0"/>
+			<signal fieldName="SO_TIM_ATC_EBF" byteOffset="2" bitOffset="4" type="BOOLEAN.1" defaultValue="0"/>
+			<signal fieldName="SO_TIM_ATC_PF" byteOffset="2" bitOffset="5" type="BOOLEAN.1" defaultValue="0"/>
+			<signal fieldName="SO_TIM_ATC_MRP" byteOffset="3" bitOffset="0" type="UNSIGNED.8" defaultValue="0"/>
+			<signal fieldName="SO_TIM_ATC_EBD" byteOffset="4" bitOffset="1" type="BOOLEAN.1" defaultValue="0"/>
+			<signal fieldName="SO_TIM_ATC_EBMBUT" byteOffset="4" bitOffset="3" type="BOOLEAN.1" defaultValue="0"/>
+			<signal fieldName="SO_TIM_ATC_EBDSD" byteOffset="4" bitOffset="5" type="BOOLEAN.1" defaultValue="0"/>
+			<signal fieldName="SO_TIM_ATC_EBMRP" byteOffset="4" bitOffset="6" type="BOOLEAN.1" defaultValue="0"/>
+			<signal fieldName="SO_TIM_ATC_CW_MC1" byteOffset="5" bitOffset="0" type="UNSIGNED.8" defaultValue="0"/>
+			<signal fieldName="SO_TIM_ATC_CW_MP1" byteOffset="6" bitOffset="0" type="UNSIGNED.8" defaultValue="0"/>
+			<signal fieldName="SO_TIM_ATC_CW_MP2" byteOffset="9" bitOffset="0" type="UNSIGNED.8" defaultValue="0"/>
+			<signal fieldName="SO_TIM_ATC_CW_MC2" byteOffset="10" bitOffset="0" type="UNSIGNED.8" defaultValue="0"/>		
+			<signal fieldName="SO_TIM_ATC_ACL" byteOffset="13" bitOffset="0" type="BOOLEAN.1" defaultValue="0"/>
+			<signal fieldName="SO_TIM_ATC_ACR" byteOffset="14" bitOffset="1" type="BOOLEAN.1" defaultValue="0"/>
+			<signal fieldName="SO_TIM_ATC_Slip_slide_active" byteOffset="14" bitOffset="2" type="BOOLEAN.1" defaultValue="0"/>
+			<signal fieldName="SO_TIM_ATC_Ref_Velocity" byteOffset="15" bitOffset="0" type="UNSIGNED.16" defaultValue="0"/>
+			<signal fieldName="SO_TIM_ATC_Train_speed_limit" byteOffset="16" bitOffset="0" type="UNSIGNED.8" defaultValue="0"/>  
+			<signal fieldName="SO_TIM_ATC_ATP" byteOffset="17" bitOffset="0" type="BOOLEAN.1" defaultValue="0"/>
+			<signal fieldName="SO_TIM_ATC_RM" byteOffset="17" bitOffset="1" type="BOOLEAN.1" defaultValue="0"/>
+			<signal fieldName="SO_TIM_ATC_DTB" byteOffset="17" bitOffset="2" type="BOOLEAN.1" defaultValue="0"/>
+			<signal fieldName="SO_TIM_ATC_ATO" byteOffset="17" bitOffset="3" type="BOOLEAN.1" defaultValue="0"/>
+			<signal fieldName="SO_TIM_ATC_DOOR_AA" byteOffset="18" bitOffset="0" type="BOOLEAN.1" defaultValue="0"/>
+			<signal fieldName="SO_TIM_ATC_DOOR_MM" byteOffset="18" bitOffset="1" type="BOOLEAN.1" defaultValue="0"/>
+			<signal fieldName="SO_TIM_ATC_DOOR_AM" byteOffset="18" bitOffset="2" type="BOOLEAN.1" defaultValue="0"/>
+			<signal fieldName="SO_TIM_ATC_LDE" byteOffset="18" bitOffset="4" type="BOOLEAN.1" defaultValue="0"/>
+			<signal fieldName="SO_TIM_ATC_RDE" byteOffset="18" bitOffset="5" type="BOOLEAN.1" defaultValue="0"/>
+			<signal fieldName="SO_TIM_ATC_PB_Door_close_left_A1" byteOffset="19" bitOffset="0" type="BOOLEAN.1" defaultValue="0"/>
+			<signal fieldName="SO_TIM_ATC_PB_Door_close_right_A1" byteOffset="19" bitOffset="1" type="BOOLEAN.1" defaultValue="0"/>
+			<signal fieldName="SO_TIM_ATC_PB_Door_open_left_A1" byteOffset="19" bitOffset="2" type="BOOLEAN.1" defaultValue="0"/>
+			<signal fieldName="SO_TIM_ATC_PB_Door_open_right_A1" byteOffset="19" bitOffset="3" type="BOOLEAN.1" defaultValue="0"/>
+			<signal fieldName="SO_TIM_ATC_PB_Door_close_left_A2" byteOffset="19" bitOffset="4" type="BOOLEAN.1" defaultValue="0"/>
+			<signal fieldName="SO_TIM_ATC_PB_Door_close_right_A2" byteOffset="19" bitOffset="5" type="BOOLEAN.1" defaultValue="0"/>
+			<signal fieldName="SO_TIM_ATC_PB_Door_open_left_A2" byteOffset="19" bitOffset="6" type="BOOLEAN.1" defaultValue="0"/>
+			<signal fieldName="SO_TIM_ATC_PB_Door_open_right_A2" byteOffset="19" bitOffset="7" type="BOOLEAN.1" defaultValue="0"/>
+			<signal fieldName="SO_TIM_ATC_DCLS_left" byteOffset="21" bitOffset="0" type="BOOLEAN.1" defaultValue="0"/>
+			<signal fieldName="SO_TIM_ATC_DCLS_right" byteOffset="21" bitOffset="1" type="BOOLEAN.1" defaultValue="0"/>
+			<signal fieldName="SO_TIM_ATC_DPI_ALL" byteOffset="21" bitOffset="2" type="BOOLEAN.1" defaultValue="0"/>
+			<signal fieldName="SO_TIM_ATC_EH_ALL" byteOffset="21" bitOffset="3" type="BOOLEAN.1" defaultValue="0"/>
+			<signal fieldName="SO_TIM_ATC_ODC_ALL" byteOffset="21" bitOffset="4" type="BOOLEAN.1" defaultValue="0"/>
+			<signal fieldName="SO_TIM_ATC_MAF_ALL" byteOffset="21" bitOffset="5" type="BOOLEAN.1" defaultValue="0"/>
+			<signal fieldName="SO_TIM_ATC_Forward" byteOffset="24" bitOffset="0" type="BOOLEAN.1" defaultValue="0"/>
+			<signal fieldName="SO_TIM_ATC_Reverse" byteOffset="24" bitOffset="1" type="BOOLEAN.1" defaultValue="0"/>
+			<signal fieldName="SO_TIM_ATC_DSD_Button_Status" byteOffset="24" bitOffset="2" type="BOOLEAN.1" defaultValue="0"/>
+			<signal fieldName="SO_TIM_ATC_FSB" byteOffset="25" bitOffset="1" type="BOOLEAN.1" defaultValue="0"/>
+			<signal fieldName="SO_TIM_ATC_Holding_Brake_Force" byteOffset="25" bitOffset="2" type="BOOLEAN.1" defaultValue="0"/>
+			<signal fieldName="SO_TIM_ATC_Parking_Brake_Force" byteOffset="25" bitOffset="3" type="BOOLEAN.1" defaultValue="0"/>
+			<signal fieldName="SO_TIM_ATC_Electric_Brake_Effort" byteOffset="26" bitOffset="0" type="UNSIGNED.16" defaultValue="0"/>
+			<signal fieldName="SO_TIM_ATC_Full_Load" byteOffset="28" bitOffset="0" type="UNSIGNED.8" defaultValue="0"/>
+			<signal fieldName="SO_TIM_ATC_km_Count" byteOffset="29" bitOffset="0" type="UNSIGNED.24" defaultValue="0"/>
+		</communication>
+	
+	<!--
+		<telegram sendType="Tod-Tcms" id="header">	
+			<param name="deviceAddress" type="UNSIGNED.8" byteOffset="0" bitOffset="0" defaultValue="1"/>
+			<param name="commType" type="UNSIGNED.8" byteOffset="0" bitOffset="0" defaultValue="0"/>
+		</telegram>
+	-->
+	
+		<communication processType="Response" sendType="Tod-Tcms" fixedSignalSize="43">
+			<signal fieldName="SI_ATC_TIM_VOBC_ID" byteOffset="0" bitOffset="0" type="UNSIGNED.16" defaultValue="0"/>
+			<signal fieldName="SI_ATC_TIM_Train_ID" byteOffset="2" bitOffset="0" type="UNSIGNED.8" defaultValue="0"/>
+			<signal fieldName="SI_ATC_TIM_ACTIVE" byteOffset="12" bitOffset="0" type="BOOLEAN.1" defaultValue="0"/>
+			<signal fieldName="SI_ATC_TIM_CAB1ACTIV" byteOffset="12" bitOffset="4" type="BOOLEAN.1" defaultValue="0"/>
+			<signal fieldName="SI_ATC_TIM_CAB2ACTIV" byteOffset="12" bitOffset="5" type="BOOLEAN.1" defaultValue="0"/>
+			<signal fieldName="SI_ATC_TIM_PM" byteOffset="13" bitOffset="1" type="BOOLEAN.1" defaultValue="0"/>
+			<signal fieldName="SI_ATC_TIM_RM" byteOffset="13" bitOffset="2" type="BOOLEAN.1" defaultValue="0"/>
+			<signal fieldName="SI_ATC_TIM_ATO" byteOffset="13" bitOffset="3" type="BOOLEAN.1" defaultValue="0"/>
+			<signal fieldName="SI_ATC_TIM_DTB" byteOffset="13" bitOffset="4" type="BOOLEAN.1" defaultValue="0"/>
+			<signal fieldName="SI_ATC_TIM_ADOORLOK" byteOffset="14" bitOffset="4" type="BOOLEAN.1" defaultValue="0"/>
+			<signal fieldName="SI_ATC_TIM_ADOORROK" byteOffset="14" bitOffset="4" type="BOOLEAN.1" defaultValue="0"/>
+			<signal fieldName="SI_ATC_TIM_ST_CURRENT" byteOffset="16" bitOffset="0" type="UNSIGNED.8" defaultValue="0"/>
+			<signal fieldName="SI_ATC_TIM_ST_NEXT" byteOffset="17" bitOffset="0" type="UNSIGNED.8" defaultValue="0"/>
+			<signal fieldName="SI_ATC_TIM_ST_FINAL" byteOffset="18" bitOffset="0" type="UNSIGNED.8" defaultValue="0"/>
+			<signal fieldName="SI_ATC_TIM_DEP_TRIG" byteOffset="21" bitOffset="0" type="BOOLEAN.1" defaultValue="0"/>
+			<signal fieldName="SI_ATC_TIM_ARR_TRIG" byteOffset="21" bitOffset="1" type="BOOLEAN.1" defaultValue="0"/>
+			<signal fieldName="SI_ATC_TIM_ST_SKIP" byteOffset="21" bitOffset="4" type="BOOLEAN.1" defaultValue="0"/>
+			<signal fieldName="SI_ATC_TIM_VALIDCLK" byteOffset="21" bitOffset="7" type="BOOLEAN.1" defaultValue="0"/>
+			<signal fieldName="SI_ATC_TIM_DATE_Y" byteOffset="22" bitOffset="0" type="UNSIGNED.8" defaultValue="0"/>
+			<signal fieldName="I_ATC_TIM_DATE_M" byteOffset="23" bitOffset="0" type="UNSIGNED.8" defaultValue="0"/>
+			<signal fieldName="SI_ATC_TIM_DATE_D" byteOffset="24" bitOffset="0" type="UNSIGNED.8" defaultValue="0"/>
+			<signal fieldName="SI_ATC_TIM_TIME_H" byteOffset="25" bitOffset="0" type="UNSIGNED.8" defaultValue="0"/>
+			<signal fieldName="SI_ATC_TIM_TIME_M" byteOffset="26" bitOffset="0" type="UNSIGNED.8" defaultValue="0"/>
+			<signal fieldName="SI_ATC_TIM_TIME_S" byteOffset="27" bitOffset="0" type="UNSIGNED.8" defaultValue="0"/>
+			<signal fieldName="S1_ATC1_TIM_Position_Segment" byteOffset="28" bitOffset="0" type="UNSIGNED.16" defaultValue="0"/>
+			<signal fieldName="SI_ATC1_TIM_Position_ Offset" byteOffset="30" bitOffset="0" type="UNSIGNED.32" defaultValue="0"/>
+		</communication>
+</CommDataDefine>
+
+
+			
+			
+			

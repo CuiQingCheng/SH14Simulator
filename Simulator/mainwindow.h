@@ -6,11 +6,11 @@
 #include "Telegram/Telegram.h"
 #include "Gui/CheckBox.h"
 #include "Gui/TextEdit.h"
-#include "todvobccomm/TodVobcChannel.h"
 #include "Core/Parser.h"
 #include "Core/Factory/Factory.h"
 #include "Core/Handler/WidgetHandler.h"
 #include "Core/Handler/AutoTestHandler.h"
+#include "Core/TodCommChannel/TodCommChannel.h"
 
 #include <QtXml>
 #include <QDomDocument>
@@ -18,7 +18,6 @@
 
 #include <QRegExpValidator>
 #include <QRegExp>
-#include <QSerialPort>
 
 class QTimer;
 
@@ -43,7 +42,8 @@ typedef enum Communication_Mode
 {
     Udp = 0,
     Serial = 1,
-    MVB = 2
+    MVB = 2,
+    Empty = 3
 
 }Comm_mode;
 
@@ -54,9 +54,6 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
-
-    static const int FIX_REC_DATASIZE = 10;
-    static const int REC_TCMS_DATASIZE = 208;
 
 signals:
 
@@ -94,11 +91,7 @@ private slots:
 
     void openSerialCom(bool isOpen);
 
-    void on_cleanBtn_clicked();
-
     void on_sendBtn_clicked();
-
-    void receSerialData();
 
 private:
     void initDefaultConfig();
@@ -113,8 +106,7 @@ private:
     SignalMap m_SendSignalMap;
     SignalMap m_receiveSignalMap;
     SignalMap m_telegramHeaderMap;
-    TodVobcChannel *m_todChannel;
-    QSerialPort* m_serialDriver;
+    TodCommChannel *m_todChannel;
 
     int m_sendTelegramType;
     int m_sendCycle;
@@ -130,7 +122,8 @@ private:
     WidgetHandler* m_widgetHandler;
     AutoTestHandler* m_autoTestHandler;
     bool m_isExecAutoTest;
-    int m_currentModeId;
+    int m_currentComnMode;
+    int m_choseComnMode;
     bool m_serialStatus;
     QString m_comName;
     int m_baudRate;

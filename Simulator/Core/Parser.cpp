@@ -9,7 +9,7 @@
 #include <QDomDocument>
 
 
-Parser::Parser()
+Parser::Parser():m_protocolType("udpSocket")
 {
 
 }
@@ -49,7 +49,7 @@ int Parser::parse(Factory *factory)
 
     QDomElement root = doc.documentElement();
     QDomElement node = root.firstChildElement();
-
+    m_protocolType = root.attributeNode("protocol").value();
     QString fieldName;
     QString dataType;
     quint16 byteOffset;
@@ -59,7 +59,8 @@ int Parser::parse(Factory *factory)
     QString element;
     QString elementText;
     QString elementId;
-    QStringList tcmsDataLeng;
+    QStringList recvTcmsDataLeng;
+    QStringList sendTcmsDataLeng;
     bool tcmsIsExisted = false;
 
     Telegram* telegram = factory->get<Telegram>("Telegram");
@@ -67,12 +68,33 @@ int Parser::parse(Factory *factory)
     AutoTestHandler* autoTestHandler = factory->get<AutoTestHandler>("AutoTestHandler");
 
     static bool findCheckBoxlist = false;
+    QString processType;
+    QString sendType;
 
     while(!node.isNull())
     {
         if(node.tagName() == "communication" && node.hasAttribute("processType") && node.hasAttribute("sendType"))
         {
-            QString sendType = node.attributeNode("sendType").value();
+            sendType = node.attributeNode("sendType").value();
+            if(processType != node.attributeNode("processType").value())
+            {
+                processType = node.attributeNode("processType").value();
+                int fixedDataSize = node.attributeNode("fixedSignalSize").value().toInt();
+                if(processType == "poll" )
+                {
+                    QStringList sendLst = sendType.split("-");
+                    if(sendLst.size() == 2)
+                    {
+                        m_deviceName = sendLst[0];
+                    }
+                    m_pollFixedSignalSize = fixedDataSize;
+                }
+                else
+                {
+                    m_recvFixedSignalSize = fixedDataSize;
+                }
+            }
+
             QDomElement objNode = node.firstChildElement();
 
             while(!objNode.isNull())
@@ -80,9 +102,22 @@ int Parser::parse(Factory *factory)
                 if(objNode.tagName() == "tcmsData")
                 {
                     tcmsIsExisted = true;
+
                     if(objNode.hasAttribute("portSize"))
                     {
-                        tcmsDataLeng.append(objNode.attributeNode("portSize").value());
+
+                        QString size = objNode.attributeNode("portSize").value();
+                        QString portName = objNode.attributeNode("fieldName").value();
+                        if (sendType == "Tod-Vobc")
+                        {
+                            QString strValue = portName + ":";
+                            strValue += size;
+                            recvTcmsDataLeng.append(strValue);
+                        }
+                        else if(sendType == "Vobc-Tod")
+                        {
+                            sendTcmsDataLeng.append(size);
+                        }
                     }
                 }
                 else
@@ -113,7 +148,7 @@ int Parser::parse(Factory *factory)
                      signalValue = new SignalValue(fieldName, dataType, byteOffset, bitOffset, defaultValue, valueType);
                 }
 
-                if(sendType == "vobc-tod")
+                if(processType == "poll")
                 {
                     if(signalValue != NULL)
                     {
@@ -122,7 +157,7 @@ int Parser::parse(Factory *factory)
                     }
                 }
 
-                if(sendType == "tod-vobc")
+                if(processType == "Response")
                 {
                     if(signalValue != NULL)
                     {
@@ -134,7 +169,6 @@ int Parser::parse(Factory *factory)
                 objNode = objNode.nextSiblingElement();
             }
         }
-
 
         if(node.tagName() == "checkboxList"&& node.hasAttribute("elemtype") && node.hasAttribute("id"))
         {
@@ -207,13 +241,26 @@ int Parser::parse(Factory *factory)
             }
             autoTestHandler->addStationId(QString::number(stationNode->itsStationid), stationNode);
         }
-
         node = node.nextSiblingElement();
     }
 
-    if(tcmsDataLeng.size()!=0)
+    widgetHandler->registerTcmsPort("recvTcms",recvTcmsDataLeng);
+    if(recvTcmsDataLeng.size()!=0)
     {
-        widgetHandler->registerTcmsPort(tcmsDataLeng);
+        widgetHandler->getWidgetMap()->value("recTcmsWidget")->show();
+    }
+    else
+    {
+        widgetHandler->getWidgetMap()->value("recTcmsWidget")->hide();
+    }
+    widgetHandler->registerTcmsPort("sendTcms", sendTcmsDataLeng);
+    if(sendTcmsDataLeng.size()!=0)
+    {
+        widgetHandler->getWidgetMap()->value("sendTcmsWidget")->show();
+    }
+    else
+    {
+        widgetHandler->getWidgetMap()->value("sendTcmsWidget")->hide();
     }
 
     if(findCheckBoxlist)
@@ -234,5 +281,27 @@ int Parser::parse(Factory *factory)
     emit parseFinished();
 
     return 0;
+}
+
+QString Parser::getProtocolType()
+{
+    return m_protocolType;
+}
+
+int Parser::getFixSignalSize(QString cmd)
+{
+    if(cmd == "poll")
+    {
+        return m_pollFixedSignalSize;
+    }
+    else if(cmd == "Response")
+    {
+        return m_recvFixedSignalSize;
+    }
+}
+
+QString Parser::getDeviceName()
+{
+    return m_deviceName;
 }
 
