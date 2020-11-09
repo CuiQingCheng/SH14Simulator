@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<CommDataDefine protocol="udpSocket" description="vobc-tod_communication">
+		
+	<telegram type="udpSocket" id="header">	
+		<param name="InterfaceType" type="UNSIGNED.16" byteOffset="0" bitOffset="0" defaultValue="1004"/>
+		<param name="InterfaceVersion" type="UNSIGNED.8" byteOffset="2" bitOffset="0" defaultValue="0"/>
+		<param name="TelegramType" type="UNSIGNED.8" byteOffset="3" bitOffset="0" defaultValue="0"/>
+		<param name="ReceiverClass" type="UNSIGNED.16" byteOffset="4" bitOffset="0" defaultValue="0"/>
+		<param name="ReceiverId" type="UNSIGNED.16" byteOffset="6" bitOffset="0" defaultValue="0"/>
+		<param name="TransmitterClass" type="UNSIGNED.16" byteOffset="8" bitOffset="0" defaultValue="0"/>
+		<param name="TransmitterId" type="UNSIGNED.16" byteOffset="10" bitOffset="0" defaultValue="0"/>
+		<param name="Year" type="UNSIGNED.16" byteOffset="12" bitOffset="0" defaultValue="0"/>
+		<param name="Month" type="UNSIGNED.16" byteOffset="14" bitOffset="0" defaultValue="0"/>
+		<param name="Day" type="UNSIGNED.16" byteOffset="16" bitOffset="0" defaultValue="0"/>
+		<param name="Hour" type="UNSIGNED.16" byteOffset="18" bitOffset="0" defaultValue="0"/>
+		<param name="Minute" type="UNSIGNED.16" byteOffset="20" bitOffset="0" defaultValue="0"/>
+		<param name="Second" type="UNSIGNED.16" byteOffset="22" bitOffset="0" defaultValue="0"/>
+		<param name="Millisecond" type="UNSIGNED.16" byteOffset="24" bitOffset="0" defaultValue="0"/>
+		<param name="ReceiverSequenceNumber" type="UNSIGNED.16" byteOffset="26" bitOffset="0" defaultValue="0"/>
+		<param name="TransmitterSequenceNumber" type="UNSIGNED.16" byteOffset="28" bitOffset="0" defaultValue="0"/>   
+		<param name="Length" type="UNSIGNED.16" byteOffset="30" bitOffset="0" defaultValue="113"/>
+	</telegram>
+	
+	<communication processType="poll" sendType="Vobc-Tod" fixedSignalSize="58">
+		<signal fieldName="NumberOfCars" type="UNSIGNED.8" byteOffset="0" bitOffset="0" defaultValue="255" valueType="Dec"/>
+		<signal fieldName="ActiveCab" type="UNSIGNED.8" byteOffset="1" bitOffset="0" defaultValue="255" valueType="Dec"/>
+		<signal fieldName="CurrentOperatingMode" type="UNSIGNED.8" byteOffset="2" bitOffset="0" defaultValue="0" valueType="Hex"/>
+		<signal fieldName="PersistentModeSelectInput" type="UNSIGNED.8" byteOffset="3" bitOffset="0" defaultValue="255" valueType="Hex"/>
+		<signal fieldName="ATOModeAvailability" type="UNSIGNED.8" byteOffset="4" bitOffset="0" defaultValue="255" valueType="Hex"/>
+		<signal fieldName="ATPMModeAvailability" type="UNSIGNED.8" byteOffset="5" bitOffset="0" defaultValue="255" valueType="Hex"/>
+		<signal fieldName="Direction" type="UNSIGNED.8" byteOffset="6" bitOffset="0" defaultValue="255" valueType="Hex"/>
+		<signal fieldName="OverspeedAlarm" type="UNSIGNED.8" byteOffset="7" bitOffset="0" defaultValue="0" valueType="Dec"/>
+		<signal fieldName="ActualSpeed" type="UNSIGNED.16" byteOffset="8" bitOffset="0" defaultValue="0" valueType="Dec"/>
+		<signal fieldName="TargetSpeed" type="UNSIGNED.16" byteOffset="10" bitOffset="0" defaultValue="0" valueType="Dec"/>
+		<signal fieldName="PermittedSpeed" type="UNSIGNED.16" byteOffset="12" bitOffset="0" defaultValue="0" valueType="Dec"/>
+		<signal fieldName="DistanceToStoppingPoint" type="UNSIGNED.32" byteOffset="14" bitOffset="0" defaultValue="0" valueType="Dec"/>
+		<signal fieldName="NextPlatformID" type="UNSIGNED.16" byteOffset="18" bitOffset="0" defaultValue="0" valueType="Dec"/>
+		<signal fieldName="TerminusPlatformID" type="UNSIGNED.16" byteOffset="20" bitOffset="0" defaultValue="0" valueType="Dec"/>
+		<signal fieldName="StationDwell" type="UNSIGNED.32" byteOffset="22" bitOffset="0" defaultValue="255" valueType="Dec"/>
+		<signal fieldName="NextPlatformDoorSide" type="UNSIGNED.8" byteOffset="26" bitOffset="0" defaultValue="255" valueType="Dec"/>
+		<signal fieldName="PlatformDoorEnableStatus" type="UNSIGNED.8" byteOffset="27" bitOffset="0" defaultValue="255" valueType="Dec"/>
+		<signal fieldName="PlatformDoorOpenStatus" type="UNSIGNED.8" byteOffset="28" bitOffset="0" defaultValue="255" valueType="Dec"/>
+		<signal fieldName="StationPlatformSkipStatus" type="UNSIGNED.8" byteOffset="29" bitOffset="0 " defaultValue="255" valueType="Dec"/>
+		<signal fieldName="StationPlatformHoldStatus" type="UNSIGNED.8" byteOffset="30" bitOffset="0" defaultValue="255"valueType="Dec"/>
+		<signal fieldName="DepartureStatus" type="UNSIGNED.8" byteOffset="31" bitOffset="0" defaultValue="255" valueType="Dec"/>
+		<signal fieldName="AlignmentStatus" type="UNSIGNED.8" byteOffset="32" bitOffset="0" defaultValue="255" valueType="Dec"/>
+		<signal fieldName="CrawlbackDistance" type="UNSIGNED.32" byteOffset="33" bitOffset="0" defaultValue="0" valueType="Dec"/>
+		<signal fieldName="StoppingPointType" type="UNSIGNED.8" byteOffset="37" bitOffset="0" defaultValue="0" valueType="Dec"/>
+		<signal fieldName="NumberOfAvailableVOBCs" type="UNSIGNED.8" byteOffset="38" bitOffset="0" defaultValue="255" valueType="Dec"/>
+		<signal fieldName="WSPModeAvailability" type="UNSIGNED.8" byteOffset="40" bitOffset="0" defaultValue="255" valueType="Dec"/>
+		<signal fieldName="WheelCalibrationStatus" type="UNSIGNED.8" byteOffset="41" bitOffset="0" defaultValue="255" valueType="Dec"/>
+		<signal fieldName="MotorBrakingStatus" type="UNSIGNED.8" byteOffset="42" bitOffset="0" defaultValue="255" valueType="Dec"/>
+		<signal fieldName="Train_Label0" type="UNSIGNED.8" byteOffset="43" bitOffset="0" defaultValue="255" valueType="Dec"/>
+		<signal fieldName="Train_Label1" type="UNSIGNED.8" byteOffset="44" bitOffset="0" defaultValue="255" valueType="Dec"/>
+		<signal fieldName="Train_Label2" type="UNSIGNED.8" byteOffset="45" bitOffset="0" defaultValue="255" valueType="Dec"/>
+		<signal fieldName="Train_Label3" type="UNSIGNED.8" byteOffset="46" bitOffset="0" defaultValue="255" valueType="Dec"/>
+		<signal fieldName="Train_Label4" type="UNSIGNED.8" byteOffset="47" bitOffset="0" defaultValue="255" valueType="Dec"/>
+		<signal fieldName="Train_Label5" type="UNSIGNED.8" byteOffset="48" bitOffset="0" defaultValue="255" valueType="Dec"/>
+		<signal fieldName="Train_Label6" type="UNSIGNED.8" byteOffset="49" bitOffset="0" defaultValue="255" valueType="Dec"/>
+		<signal fieldName="DateTimeValidity" type="BOOLEAN.1" byteOffset="50" bitOffset="0" defaultValue="0" valueType="Dec"/>
+		<signal fieldName="VCUActive" type="BOOLEAN.1" byteOffset="50" bitOffset="1" defaultValue="0" valueType="Dec"/>
+		<signal fieldName="PositioningActive" type="BOOLEAN.1" byteOffset="50" bitOffset="2" defaultValue="0" valueType="Dec"/>
+		<signal fieldName="StationaryStatus" type="BOOLEAN.1" byteOffset="50" bitOffset="3" defaultValue="0" valueType="Dec"/>
+		<signal fieldName="EBStatus" type="BOOLEAN.1" byteOffset="50" bitOffset="4" defaultValue="0" valueType="Dec"/>
+		<signal fieldName="EBCommand" type="BOOLEAN.1" byteOffset="50" bitOffset="5" defaultValue="0" valueType="Dec"/>
+		<signal fieldName="ZeroVelocityCommand" type="BOOLEAN.1" byteOffset="50" bitOffset="6" defaultValue="0" valueType="Dec"/>
+		<signal fieldName="ATODoorOpenCommand" type="BOOLEAN.1" byteOffset="50" bitOffset="7" defaultValue="0" valueType="Dec"/>
+		<signal fieldName="TrainDoorsClosedAndLockedStatus" type="BOOLEAN.1" byteOffset="51" bitOffset="0" defaultValue="0" valueType="Dec"/>
+		<signal fieldName="TrainDoorsEnableLeftStatus" type="BOOLEAN.1" byteOffset="51" bitOffset="1" defaultValue="0" valueType="Dec"/>
+		<signal fieldName="TrainDoorsEnableRightStatus" type="BOOLEAN.1" byteOffset="51" bitOffset="2" defaultValue="0" valueType="Dec"/>
+		<signal fieldName="TrainDoorOpeningMode" type="BOOLEAN.1" byteOffset="51" bitOffset="3" defaultValue="0" valueType="Dec"/>
+		<signal fieldName="TIUHealthStatus" type="BOOLEAN.1" byteOffset="51" bitOffset="4" defaultValue="0" valueType="Dec"/>
+		<signal fieldName="ATSCommStatus" type="BOOLEAN.1" byteOffset="51" bitOffset="5" defaultValue="0" valueType="Dec"/>
+		<signal fieldName="MAUCommStatus" type="BOOLEAN.1" byteOffset="51" bitOffset="6" defaultValue="0" valueType="Dec"/>
+		<signal fieldName="PSDOverrideStatus" type="BOOLEAN.1" byteOffset="52" bitOffset="0" defaultValue="0" valueType="Dec"/>
+		<signal fieldName="DTBAvailable" type="BOOLEAN.1" byteOffset="52" bitOffset="1" defaultValue="0" valueType="Dec"/>
+		<signal fieldName="CrawlbackAvailable" type="BOOLEAN.1" byteOffset="52" bitOffset="2" defaultValue="0" valueType="Dec"/>
+		<signal fieldName="CrawlbackActive" type="BOOLEAN.1" byteOffset="52" bitOffset="3" defaultValue="0" valueType="Dec"/>
+		<signal fieldName="ProceedDarkSig" type="BOOLEAN.1" byteOffset="52" bitOffset="4" defaultValue="0" valueType="Dec"/>
+		<signal fieldName="ArrivedAtDest" type="BOOLEAN.1" byteOffset="52" bitOffset="5" defaultValue="0" valueType="Dec"/>
+		<signal fieldName="TestsBegin" type="BOOLEAN.1" byteOffset="52" bitOffset="6" defaultValue="0" valueType="Dec"/>
+		<signal fieldName="TestsEnd" type="BOOLEAN.1" byteOffset="52" bitOffset="7" defaultValue="0" valueType="Dec"/>
+		<signal fieldName="DPIStatus" type="BOOLEAN.1" byteOffset="53" bitOffset="0" defaultValue="0" valueType="Dec"/>
+		<signal fieldName="DisplayPSDClosed" type="BOOLEAN.1" byteOffset="53" bitOffset="1" defaultValue="0" valueType="Dec"/>
+		<signal fieldName="DisplayConfirmATPM" type="BOOLEAN.1" byteOffset="53" bitOffset="2" defaultValue="0" valueType="Dec"/>
+		<signal fieldName="DepartureAnnouncementTrigger" type="BOOLEAN.1" byteOffset="53" bitOffset="5" defaultValue="0" valueType="Dec"/>
+		<signal fieldName="ArrivalAnnouncementTrigger" type="BOOLEAN.1" byteOffset="53" bitOffset="6" defaultValue="0" valueType="Dec"/>
+		<signal fieldName="ChangeToRMF" type="BOOLEAN.1" byteOffset="53" bitOffset="7" defaultValue="0" valueType="Dec"/>
+		<signal fieldName="VOBCNonRecoverableFault" type="BOOLEAN.1" byteOffset="54" bitOffset="0" defaultValue="0" valueType="Dec"/>
+		<signal fieldName="ATONonRecoverableFault" type="BOOLEAN.1" byteOffset="54" bitOffset="1" defaultValue="0" valueType="Dec"/>
+		<signal fieldName="MovingModeChange" type="BOOLEAN.1" byteOffset="54" bitOffset="2" defaultValue="0" valueType="Dec"/>
+		<signal fieldName="InvalidMode" type="BOOLEAN.1" byteOffset="54" bitOffset="3" defaultValue="0" valueType="Dec"/>
+		<signal fieldName="InvalidReversal" type="BOOLEAN.1" byteOffset="54" bitOffset="5" defaultValue="0" valueType="Dec"/>
+		<signal fieldName="ActiveCabFault" type="BOOLEAN.1" byteOffset="54" bitOffset="6" defaultValue="0" valueType="Dec"/>
+		<signal fieldName="TrainIntegrityLost" type="BOOLEAN.1" byteOffset="54" bitOffset="7" defaultValue="0" valueType="Dec"/>
+		<signal fieldName="AlignmentFault" type="BOOLEAN.1" byteOffset="55" bitOffset="0" defaultValue="0" valueType="Dec"/>
+		<signal fieldName="Rollback" type="BOOLEAN.1" byteOffset="55" bitOffset="1" defaultValue="0" valueType="Dec"/>
+		<signal fieldName="UncommandedLossOfDCLS" type="BOOLEAN.1" byteOffset="55" bitOffset="2" defaultValue="0" valueType="Dec"/>
+		<signal fieldName="MotionObstructed" type="BOOLEAN.1" byteOffset="55" bitOffset="3" defaultValue="0" valueType="Dec"/>
+		<signal fieldName="DoorsDoNotOpenFault" type="BOOLEAN.1" byteOffset="55" bitOffset="4" defaultValue="0" valueType="Dec"/>
+		<signal fieldName="DoorsDoNotCloseFault" type="BOOLEAN.1" byteOffset="55" bitOffset="5" defaultValue="0" valueType="Dec"/>
+		<signal fieldName="UncommandedMotionFault" type="BOOLEAN.1" byteOffset="55" bitOffset="6" defaultValue="0" valueType="Dec"/>
+		<signal fieldName="ProximitySensorFault" type="BOOLEAN.1" byteOffset="55" bitOffset="7" defaultValue="0" valueType="Dec"/>
+		<signal fieldName="SpeedSensorFault" type="BOOLEAN.1" byteOffset="56" bitOffset="0" defaultValue="0" valueType="Dec"/>
+		<signal fieldName="UnauthorizedCrawlbackFault" type="BOOLEAN.1" byteOffset="56" bitOffset="1" defaultValue="0" valueType="Dec"/>
+		<signal fieldName="InvalidDirection" type="BOOLEAN.1" byteOffset="56" bitOffset="3" defaultValue="0" valueType="Dec"/>
+		<signal fieldName="SignalViolation" type="BOOLEAN.1" byteOffset="56" bitOffset="4" defaultValue="0" valueType="Dec"/>
+		<signal fieldName="RunButtonStuck" type="BOOLEAN.1" byteOffset="56" bitOffset="7" defaultValue="0" valueType="Dec"/>
+		<signal fieldName="TrainCreeping" type="BOOLEAN.1" byteOffset="57" bitOffset="0" defaultValue="0" valueType="Dec"/>
+		<signal fieldName="DPIInputFailed" type="BOOLEAN.1" byteOffset="57" bitOffset="1" defaultValue="0" valueType="Dec"/>
+	</communication>
+
+	<communication processType="Response" sendType="Tod-Vobc" fixedSignalSize="36">
+		<signal fieldName="TodSelfTestStatus" type="UNSIGNED.8" byteOffset="0" bitOffset="0" defaultValue="0" valueType="Hex"/>
+		<signal fieldName="TodFaultCode" type="UNSIGNED.8" byteOffset="1" bitOffset="0" defaultValue="0" valueType="Hex"/>
+		<signal fieldName="ConfirmedMsgLineNumber" type="UNSIGNED.8" byteOffset="2" bitOffset="0" defaultValue="0" property="queued" valueType="Dec"/>
+		<signal fieldName="ConfirmedMsgNumber" type="UNSIGNED.8" byteOffset="3" bitOffset="0" defaultValue="0" property="queued" valueType="Dec"/>
+		<signal fieldName="TrainId" type="UNSIGNED.16" byteOffset="4" bitOffset="0" defaultValue="0" valueType="Dec"/>
+		<signal fieldName="CrewId" type="UNSIGNED.16" byteOffset="6" bitOffset="0" defaultValue="0" valueType="Dec"/>
+		<signal fieldName="TODTCMSCommunicationStatus" type="UNSIGNED.8" byteOffset="8" bitOffset="0" defaultValue="0" valueType="Hex"/>
+		<signal fieldName="DoorTc1MajorFailure" type="BOOLEAN.1" byteOffset="9" bitOffset="5" defaultValue="0" valueType="Dec"/>
+		<signal fieldName="DoorMp1MajorFailure" type="BOOLEAN.1" byteOffset="9" bitOffset="6" defaultValue="0" valueType="Dec"/>
+		<signal fieldName="DoorM1MajorFailure" type="BOOLEAN.1" byteOffset="9" bitOffset="7" defaultValue="0" valueType="Dec"/>
+		<signal fieldName="DoorM2MajorFailure" type="BOOLEAN.1" byteOffset="10" bitOffset="0" defaultValue="0" valueType="Dec"/>
+		<signal fieldName="DoorMp2MajorFailure" type="BOOLEAN.1" byteOffset="10" bitOffset="1" defaultValue="0" valueType="Dec"/>
+		<signal fieldName="DoorTc2MajorFailure" type="BOOLEAN.1" byteOffset="10" bitOffset="2" defaultValue="0" valueType="Dec"/>
+		<signal fieldName="LeftDoorCloseStatus" type="BOOLEAN.1" byteOffset="10" bitOffset="5" defaultValue="0" valueType="Dec"/>
+		<signal fieldName="RightDoorCloseStatus" type="BOOLEAN.1" byteOffset="10" bitOffset="6" defaultValue="0" valueType="Dec"/>
+
+		<signal fieldName="ReferenceVelocityValid" type="BOOLEAN.1" byteOffset="11" bitOffset="0" defaultValue="0" valueType="Dec"/>
+		<signal fieldName="TrainSpeedLimitValid" type="BOOLEAN.1" byteOffset="11" bitOffset="1" defaultValue="0" valueType="Dec"/>
+		<signal fieldName="SlipSlideActive" type="BOOLEAN.1" byteOffset="11" bitOffset="2" defaultValue="0" valueType="Dec"/>
+		<signal fieldName="ATOPropulsionCommandFeedback " type="BOOLEAN.1" byteOffset="11" bitOffset="3" defaultValue="0" valueType="Dec"/>
+		<signal fieldName="BrakeCommandFeedback " type="BOOLEAN.1" byteOffset="11" bitOffset="4" defaultValue="0" valueType="Dec"/>
+		<signal fieldName="AllEPBrakesApplied" type="BOOLEAN.1" byteOffset="11" bitOffset="5" defaultValue="0" valueType="Dec"/>
+		<signal fieldName="EBNotApplied" type="BOOLEAN.1" byteOffset="11" bitOffset="7" defaultValue="0" valueType="Dec"/>
+		<signal fieldName="CAB1LeftCloseDoorPushbuttonTrigger" type="BOOLEAN.1" byteOffset="12" bitOffset="0" defaultValue="0" valueType="Hex"/>
+		<signal fieldName="CAB1RightCloseDoorPushbuttonTrigger" type="BOOLEAN.1" byteOffset="12" bitOffset="1" defaultValue="0" valueType="Hex"/>
+		<signal fieldName="CAB1LeftOpenDoorPushbuttonTrigger" type="BOOLEAN.1" byteOffset="12" bitOffset="2" defaultValue="0" valueType="Hex"/>
+		<signal fieldName="CAB1RightOpenDoorPushbuttonTrigger" type="BOOLEAN.1" byteOffset="12" bitOffset="3" defaultValue="0" valueType="Hex"/>
+		<signal fieldName="CAB2LeftCloseDoorPushbuttonTrigger" type="BOOLEAN.1" byteOffset="12" bitOffset="4" defaultValue="0" valueType="Hex"/>
+		<signal fieldName="CAB2RightCloseDoorPushbuttonTrigger" type="BOOLEAN.1" byteOffset="12" bitOffset="5" defaultValue="0" valueType="Hex"/>
+		<signal fieldName="CAB2LeftOpenDoorPushbuttonTrigger" type="BOOLEAN.1" byteOffset="12" bitOffset="6" defaultValue="0" valueType="Hex"/>
+		<signal fieldName="CAB2RightOpenDoorPushbuttonTrigger" type="BOOLEAN.1" byteOffset="12" bitOffset="7" defaultValue="0" valueType="Hex"/>
+		<signal fieldName="TCMSKilometreCount" type="UNSIGNED.32" byteOffset="13" bitOffset="0" defaultValue="0" valueType="Hex"/>
+		<signal fieldName="TCMSActualTrainSpeed" type="UNSIGNED.16" byteOffset="17" bitOffset="0" defaultValue="0" valueType="Hex"/>
+		<signal fieldName="TCMSTrainSpeedLimitationValue" type="UNSIGNED.16" byteOffset="19" bitOffset="0" defaultValue="0" valueType="Hex"/>
+		<signal fieldName="CarWeightTc1" type="UNSIGNED.16" byteOffset="21" bitOffset="0" defaultValue="0" valueType="Hex"/>
+		<signal fieldName="CarWeightMp1" type="UNSIGNED.16" byteOffset="23" bitOffset="0" defaultValue="0" valueType="Hex"/>
+		<signal fieldName="CarWeightM1" type="UNSIGNED.16" byteOffset="25" bitOffset="0" defaultValue="0" valueType="Hex"/>
+		<signal fieldName="CarWeightM2" type="UNSIGNED.16" byteOffset="27" bitOffset="0" defaultValue="0" valueType="Hex"/>
+		<signal fieldName="CarWeightMp2" type="UNSIGNED.16" byteOffset="29" bitOffset="0" defaultValue="0" valueType="Hex"/>
+		<signal fieldName="CarWeightTc2" type="UNSIGNED.16" byteOffset="31" bitOffset="0" defaultValue="0" valueType="Hex"/>
+		<signal fieldName="TractionEffort" type="UNSIGNED.16" byteOffset="33" bitOffset="0" defaultValue="0" valueType="Hex"/>
+		<signal fieldName="BrakingEffort" type="UNSIGNED.16" byteOffset="35" bitOffset="0" defaultValue="0" valueType="Hex"/>
+	</communication>
+	
+</CommDataDefine>
+

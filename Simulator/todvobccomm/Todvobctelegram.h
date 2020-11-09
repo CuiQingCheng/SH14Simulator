@@ -55,7 +55,6 @@ public:
     void setAppData(const QByteArray &srceData);
 
     void updateCRC();
-    static unsigned short calculate(const char *data, int len);
 
     static TodVobcTelegram createTelegram(quint16 appDataLength);
     static TodVobcTelegram createTelegram(const QByteArray &appDate);

@@ -78,6 +78,33 @@ WidgetMap* WidgetHandler::getWidgetMap()
     return &m_widgetMap;
 }
 
+void WidgetHandler::registerTcmsPort(QString cmd, QStringList& tcmsLst)
+{
+    if(cmd == "recvTcms")
+    {
+        m_recvTcmsPortLst.clear();
+        m_recvTcmsPortLst = tcmsLst;
+    }
+    else if(cmd == "sendTcms")
+    {
+        m_sendTcmsPortLst.clear();
+        m_sendTcmsPortLst = tcmsLst;
+    }
+}
+
+QStringList WidgetHandler::getTcmsPort(QString cmd)
+{
+    if(cmd == "recvTcms")
+    {
+        return m_recvTcmsPortLst;
+    }
+    else if(cmd == "sendTcms")
+    {
+        return m_sendTcmsPortLst;
+    }
+}
+
+
 void WidgetHandler::setTelegram(Telegram* telegram)
 {
     m_telegram = telegram;

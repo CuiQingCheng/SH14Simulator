@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<CommDataDefine protocol="udpSocket" description="vobc-tod_communication">
+	
+		<communication processType="poll" sendType="Vobc-Tod">
+			<signal fieldName="VOBCSoftwareVersion" byteOffset="0" bitOffset="0" type="UNSIGNED.24" defaultValue="6" valueType="Dec"/>
+			<signal fieldName="PLCCSoftwareVersion" byteOffset="3" bitOffset="0" type="UNSIGNED.24" defaultValue="1"/> 
+			<signal fieldName="NumberofCars" byteOffset="6" bitOffset="0" type="UNSIGNED.8" defaultValue="5"/>   
+			<signal fieldName="ActiveCab" byteOffset="7" bitOffset="0" type="UNSIGNED.8" defaultValue="255"/>
+			
+			<signal fieldName="CurrentOperatingMode" byteOffset="8" bitOffset="0" type="UNSIGNED.8" defaultValue="255"/> 
+			<signal fieldName="PersistentModeSelectInput" byteOffset="9" bitOffset="0" type="UNSIGNED.8" defaultValue="0"/>
+			<signal fieldName="ATOModeAvailability" byteOffset="10" bitOffset="0" type="UNSIGNED.8" defaultValue="255"/>
+			<signal fieldName="ATPMModeAvailability" byteOffset="11" bitOffset="0" type="UNSIGNED.8" defaultValue="0"/>
+			<signal fieldName="Orientation" byteOffset="12" bitOffset="0" type="UNSIGNED.8" defaultValue="0" valueType="Dec"/> 
+			<signal fieldName="Direction" byteOffset="13" bitOffset="0" type="UNSIGNED.8" defaultValue="65" valueType="Dec"/>
+			<signal fieldName="OverspeedAlarm" byteOffset="14" bitOffset="0" type="UNSIGNED.8" defaultValue="0" valueType="Dec"/>
+			<signal fieldName="ActualSpeed" byteOffset="15" bitOffset="0" type="UNSIGNED.16" defaultValue="0" valueType="Dec"/> 
+			<signal fieldName="TargetSpeed" byteOffset="17" bitOffset="0" type="UNSIGNED.16" defaultValue="0" valueType="Dec"/>
+			
+			<signal fieldName="PermittedSpeed" byteOffset="19" bitOffset="0" type="UNSIGNED.16" defaultValue="0" valueType="Dec"/>
+			<signal fieldName="DistancetoStoppingPoint" byteOffset="21" bitOffset="0" type="UNSIGNED.32" defaultValue="0" valueType="Dec"/>
+			<signal fieldName="NextPlatformID" byteOffset="25" bitOffset="0" type="UNSIGNED.16" defaultValue="0"/> 
+			<signal fieldName="TerminusPlatformID" byteOffset="27" bitOffset="0" type="UNSIGNED.16" defaultValue="2"/>  
+			<signal fieldName="StationDwell " byteOffset="29" bitOffset="0" type="UNSIGNED.32" defaultValue="2"/>
+			<signal fieldName="NextPlatformDoorSide(s)" byteOffset="33" bitOffset="0" type="UNSIGNED.8" defaultValue="255"/> 
+			<signal fieldName="PlatformDoorEnableStatus" byteOffset="34" bitOffset="0" type="UNSIGNED.8" defaultValue="255"/>    
+			<signal fieldName="PlatformDoorOpenStatus" byteOffset="35" bitOffset="0" type="UNSIGNED.8" defaultValue="0"/>
+			<signal fieldName="Station/PlatformSkipStatus" byteOffset="36" bitOffset="0" type="UNSIGNED.8" defaultValue="255"/>
+			
+			<signal fieldName="Station/PlatformHoldStatus" byteOffset="37" bitOffset="0" type="UNSIGNED.8" defaultValue="255" valueType="Dec"/> 
+			<signal fieldName="DepartureStatus" byteOffset="38" bitOffset="0" type="UNSIGNED.8" defaultValue="255"/> 
+			<signal fieldName="AlignmentStatus" byteOffset="39" bitOffset="0" type="UNSIGNED.8" defaultValue="1"/>
+			<signal fieldName="CrawlbackDistance " byteOffset="40" bitOffset="0" type="UNSIGNED.32" defaultValue="3"/> 
+			<signal fieldName="StoppingPointType" byteOffset="44" bitOffset="0" type="UNSIGNED.8" defaultValue="255"/> 
+			<signal fieldName="TrainLabel1" byteOffset="45" bitOffset="0" type="UNSIGNED.8" defaultValue="2"/>
+		    <signal fieldName="TrainLabel2" byteOffset="46" bitOffset="0" type="UNSIGNED.8" defaultValue="42"/>
+			<signal fieldName="TrainLabel3" byteOffset="47" bitOffset="0" type="UNSIGNED.8" defaultValue="43"/> 
+			<signal fieldName="TrainLabel4" byteOffset="48" bitOffset="0" type="UNSIGNED.8" defaultValue="44"/> 
+			<signal fieldName="TrainLabel5" byteOffset="49" bitOffset="0" type="UNSIGNED.8" defaultValue="45"/> 
+			<signal fieldName="TrainLabel6" byteOffset="50" bitOffset="0" type="UNSIGNED.8" defaultValue="46"/>
+			<signal fieldName="TrainLabel7" byteOffset="51" bitOffset="0" type="UNSIGNED.8" defaultValue="0"/> 
+			<signal fieldName="WSPModeAvailability" byteOffset="52" bitOffset="0" type="UNSIGNED.8" defaultValue="255"/>
+			<signal fieldName="WheelCalibrationState" byteOffset="53" bitOffset="0" type="UNSIGNED.8" defaultValue="0" valueType="Dec"/>
+			<signal fieldName="Motor/BrakingStatus" byteOffset="54" bitOffset="0" type="UNSIGNED.8" defaultValue="32"/> 
+
+			<signal fieldName="StatusFlags" byteOffset="55" bitOffset="0" type="UNSIGNED.32" defaultValue="0"/>
+			<signal fieldName="TrainLabel9" byteOffset="59" bitOffset="0" type="UNSIGNED.32" defaultValue="0"/> 
+
+		</communication>
+	
+		<communication processType="Response" sendType="Tod-Vobc">
+			<signal fieldName="TodSelfTestStatus" byteOffset="0" bitOffset="0" type="UNSIGNED.8"/>
+			<signal fieldName="TODFaultCode" byteOffset="1" bitOffset="0" type="UNSIGNED.8"/> 
+			<signal fieldName="ConfirmedMsgLineNumber" byteOffset="2" bitOffset="0" type="UNSIGNED.8"/>   
+			<signal fieldName="ConfirmedMsgNumber" byteOffset="3" bitOffset="0" type="UNSIGNED.8"/>
+			<signal fieldName="TrainId" byteOffset="4" bitOffset="0" type="UNSIGNED.16" valueType="Dec"/> 
+			<signal fieldName="CrewId" byteOffset="6" bitOffset="0" type="UNSIGNED.16" valueType="Dec"/>
+			
+			<signal fieldName="ATOManualDoorOpenButtonStatus" byteOffset="8" bitOffset="0" type="UNSIGNED.8"/>
+			<signal fieldName="CDU-TODCommunicationsStatus" byteOffset="9" bitOffset="0" type="UNSIGNED.8"/>
+			
+			<signal fieldName="CDUHealthStatus" byteOffset="10" bitOffset="0" type="UNSIGNED.8"/> 
+			<signal fieldName="CDU-PSDCDUCommunicationsStatus" byteOffset="11" bitOffset="0" type="UNSIGNED.8" valueType="Dec"/> 
+			<signal fieldName="PSDCDUHealthStatus" byteOffset="12" bitOffset="0" type="UNSIGNED.8" valueType="Dec"/>
+			<signal fieldName="TOD-TCMSCommunicationStatus" byteOffset="13" bitOffset="0" type="UNSIGNED.8" valueType="Dec"/>
+			<signal fieldName="TCMSFaultStatus" byteOffset="14" bitOffset="0" type="UNSIGNED.32" valueType="Dec"/> 
+			<signal fieldName="TCMSKilometreCount" byteOffset="18" bitOffset="0" type="UNSIGNED.32" valueType="Dec"/>   
+			<signal fieldName="CarWeightMc1" byteOffset="26" bitOffset="0" type="UNSIGNED.16" valueType="Dec"/>
+			<signal fieldName="CarWeightMp1" byteOffset="28" bitOffset="0" type="UNSIGNED.16" valueType="Dec"/> 
+			<signal fieldName="CarWeightMp2" byteOffset="34" bitOffset="0" type="UNSIGNED.16" valueType="Dec"/>
+			<signal fieldName="CarWeightMc2" byteOffset="36" bitOffset="0" type="UNSIGNED.16" valueType="Dec"/> 
+			<signal fieldName="TractionEffort" byteOffset="38" bitOffset="0" type="UNSIGNED.16" valueType="Dec"/>
+			<signal fieldName="BrakingEffort" byteOffset="40" bitOffset="0" type="UNSIGNED.16" valueType="Dec"/>
+		</communication>
+
+</CommDataDefine>
+
+			
+			

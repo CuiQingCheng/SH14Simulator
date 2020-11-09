@@ -12,37 +12,51 @@ TextEdit::~TextEdit()
 
 }
 
-void TextEdit::setShowData(QByteArray &input)
+void TextEdit::setShowData(QByteArray &input,QStringList& tcmsPortLst)
 {
-    if(input.size() > MAX_REC_TCMS_SIZE)
-    {
-        qDebug() << "receive data is too large";
-        return;
-    }
     quint8 valueNum = 0;
     QString valueStr = "";
-    QString tempStr = "";
-    for(int i = 0; i < input.size(); i++)
+    quint8 portNum = tcmsPortLst.size();
+    QStringList lst0 = tcmsPortLst.at(0).split(":");
+    int costlineNum = (lst0.at(1)).toInt();
+    QString tempStr = lst0.at(0) + "\n";
+    int linecount = costlineNum;
+    int portcount = costlineNum;
+    int i =0, j = 0;
+    for(; (j < portNum)&&(i < input.size()); i++)
     {
         valueNum = (quint8)(input.at(i));
-        valueStr = QString::number(valueNum, 16);
+        valueStr = QString::number(valueNum, 16);//Hex
         tempStr += valueStr;
         if(i + 1 < input.size())
         {
-            if((i - 15) % 32 == 0)
+            if((i + 1) == linecount)
             {
                 tempStr += ";";
                 tempStr += "\n";
+                linecount += costlineNum;
+                if(i + 1 == portcount)
+                {
+                    tempStr += "\n";
+                    ++j;
+                    QStringList lstJ = tcmsPortLst.at(j).split(":");
+                    tempStr += lstJ.at(0);
+                    tempStr += "\n";
+                    portcount += lstJ.at(1).toInt();
+                }
             }
             else
+            {
                 tempStr += ",";
+            }
+
         }
         else
         {
             tempStr += ";";
+            tempStr += "\n";
         }
     }
-
 
     if(0 != tempStr.compare(m_showStr))
     {

@@ -104,7 +104,7 @@ SignalValue::SignalValue(const QString& signalName)
     m_isQueued = false;
     m_isValueChanged = false;
     m_isSignalValid = false;
-    m_valueType = "hexadecimal";
+    m_valueType = "Hex";
     m_dataType = "UNSIGNED.8";
 }
 
@@ -120,7 +120,7 @@ SignalValue::SignalValue()
     m_isQueued = false;
     m_isValueChanged = false;
     m_isSignalValid = false;
-    m_valueType = "hexadecimal";
+    m_valueType = "Hex";
     m_dataType = "UNSIGNED.8";
 }
 

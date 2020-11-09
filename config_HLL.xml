@@ -2,7 +2,27 @@
 
 <CommDataDefine protocol="udpSocket" description="vobc-tod_communication">
 	
-		<communication processType="poll" sendType="vobc-tod">
+	<telegram type="udpSocket" id="header">	
+		<param name="InterfaceType" type="UNSIGNED.16" byteOffset="0" bitOffset="0" defaultValue="1004"/>
+		<param name="InterfaceVersion" type="UNSIGNED.8" byteOffset="2" bitOffset="0" defaultValue="0"/>
+		<param name="TelegramType" type="UNSIGNED.8" byteOffset="3" bitOffset="0" defaultValue="0"/>
+		<param name="ReceiverClass" type="UNSIGNED.16" byteOffset="4" bitOffset="0" defaultValue="0"/>
+		<param name="ReceiverId" type="UNSIGNED.16" byteOffset="6" bitOffset="0" defaultValue="0"/>
+		<param name="TransmitterClass" type="UNSIGNED.16" byteOffset="8" bitOffset="0" defaultValue="0"/>
+		<param name="TransmitterId" type="UNSIGNED.16" byteOffset="10" bitOffset="0" defaultValue="0"/>
+		<param name="Year" type="UNSIGNED.16" byteOffset="12" bitOffset="0" defaultValue="0"/>
+		<param name="Month" type="UNSIGNED.16" byteOffset="14" bitOffset="0" defaultValue="0"/>
+		<param name="Day" type="UNSIGNED.16" byteOffset="16" bitOffset="0" defaultValue="0"/>
+		<param name="Hour" type="UNSIGNED.16" byteOffset="18" bitOffset="0" defaultValue="0"/>
+		<param name="Minute" type="UNSIGNED.16" byteOffset="20" bitOffset="0" defaultValue="0"/>
+		<param name="Second" type="UNSIGNED.16" byteOffset="22" bitOffset="0" defaultValue="0"/>
+		<param name="Millisecond" type="UNSIGNED.16" byteOffset="24" bitOffset="0" defaultValue="0"/>
+		<param name="ReceiverSequenceNumber" type="UNSIGNED.16" byteOffset="26" bitOffset="0" defaultValue="0"/>
+		<param name="TransmitterSequenceNumber" type="UNSIGNED.16" byteOffset="28" bitOffset="0" defaultValue="0"/>   
+		<param name="Length" type="UNSIGNED.16" byteOffset="30" bitOffset="0" defaultValue="113"/>
+	</telegram>
+
+	<communication processType="poll" sendType="Vobc-Tod" fixedSignalSize="113" >
 			<signal fieldName="NumberOfCars" byteOffset="0" bitOffset="0" type="UNSIGNED.8" defaultValue="6" valueType="Dec"/>
 			<signal fieldName="ActiveCab" byteOffset="1" bitOffset="0" type="UNSIGNED.8" defaultValue="1"/> 
 			<signal fieldName="CurrentOperatingMode" byteOffset="2" bitOffset="0" type="UNSIGNED.8" defaultValue="5"/>   
@@ -31,12 +51,16 @@
 			<signal fieldName="CrawlbackDistance" byteOffset="33" bitOffset="0" type="UNSIGNED.32" defaultValue="255" valueType="Dec"/> 
 			<signal fieldName="StoppingPointType" byteOffset="37" bitOffset="0" type="UNSIGNED.8" defaultValue="255"/> 
 			<signal fieldName="NumberOfAvailableVOBCs" byteOffset="38" bitOffset="0" type="UNSIGNED.8" defaultValue="1"/>
-			<signal fieldName="TrainDoorsMode" byteOffset="39" bitOffset="0" type="UNSIGNED.8" defaultValue="3"/> 
-			<signal fieldName="WSPModeAvailability" byteOffset="40" bitOffset="0" type="UNSIGNED.8" defaultValue="255"/> 
+			<signal fieldName="TrainDoorsMode" byteOffset="39" bitOffset="0" type="UNSIGNED.8" defaultValue="3"/>
+			<signal fieldName="Reserve" byteOffset="40" bitOffset="0" type="UNSIGNED.8" defaultValue="3"/>
+			<signal fieldName="IATPModeAvailability" byteOffset="41" bitOffset="0" type="UNSIGNED.8" defaultValue="3"/>
+			<signal fieldName="IATOModeAvailability" byteOffset="42" bitOffset="0" type="UNSIGNED.8" defaultValue="3"/>
 			<signal fieldName="WheelCalibrationStatus" byteOffset="43" bitOffset="0" type="UNSIGNED.8" defaultValue="2"/>
-			
 			<signal fieldName="MotorBrakingStatus" byteOffset="44" bitOffset="0" type="UNSIGNED.8" defaultValue="255"/>
-			<signal fieldName="DistanceToTargetSpeed" type="UNSIGNED.32" byteOffset="63" bitOffset="0" defaultValue="0" valueType="Dec"/>
+			<signal fieldName="RestrictiveSignalReleaseRequestButtonAllowance" byteOffset="45" bitOffset="0" type="UNSIGNED.8" defaultValue="255"/>
+			<signal fieldName="NextSignalStatus" byteOffset="46" bitOffset="0" type="UNSIGNED.8" defaultValue="1"/>
+			<signal fieldName="DistanceToTargetSpeed" byteOffset="47" bitOffset="0" type="UNSIGNED.32" defaultValue="0" valueType="Dec"/>
+			
 			<signal fieldName="TrainLabel1" byteOffset="51" bitOffset="0" type="UNSIGNED.8" defaultValue="32"/> 
 			<signal fieldName="TrainLabel2" byteOffset="52" bitOffset="0" type="UNSIGNED.8" defaultValue="42"/>
 			<signal fieldName="TrainLabel3" byteOffset="53" bitOffset="0" type="UNSIGNED.8" defaultValue="43"/> 
@@ -46,7 +70,6 @@
 			<signal fieldName="TrainLabel7" byteOffset="57" bitOffset="0" type="UNSIGNED.8" defaultValue="0"/> 
 			<signal fieldName="TrainLabel8" byteOffset="58" bitOffset="0" type="UNSIGNED.8" defaultValue="0"/>
 			<signal fieldName="TrainLabel9" byteOffset="59" bitOffset="0" type="UNSIGNED.8" defaultValue="0"/> 
-			
 			<signal fieldName="TrainLabel10" byteOffset="60" bitOffset="0" type="UNSIGNED.8" defaultValue="0"/>
 			<signal fieldName="TrainLabel11" byteOffset="61" bitOffset="0" type="UNSIGNED.8" defaultValue="0"/> 
 			<signal fieldName="TrainLabel12" byteOffset="62" bitOffset="0" type="UNSIGNED.8" defaultValue="0"/> 
@@ -54,6 +77,7 @@
 			<signal fieldName="TrainLabel14" byteOffset="64" bitOffset="0" type="UNSIGNED.8" defaultValue="0"/>
 			<signal fieldName="TrainLabel15" byteOffset="65" bitOffset="0" type="UNSIGNED.8" defaultValue="0"/> 
 			<signal fieldName="TrainLabel16" byteOffset="66" bitOffset="0" type="UNSIGNED.8" defaultValue="0"/>
+			
 			<signal fieldName="status Flags - Date/Time Validity" byteOffset="67" bitOffset="0" type="BOOLEAN.1" defaultValue="0"/>
 			<signal fieldName="status Flags - VCU Active" byteOffset="67" bitOffset="1" type="BOOLEAN.1" defaultValue="0"/>
 			<signal fieldName="status Flags - Positioning Active" byteOffset="67" bitOffset="2" type="BOOLEAN.1" defaultValue="0"/>
@@ -70,23 +94,22 @@
 			<signal fieldName="status Flags - MAU Comm Status" byteOffset="68" bitOffset="6" type="BOOLEAN.1" defaultValue="0"/>
 			<signal fieldName="status Flags - PSD Override Status" byteOffset="69" bitOffset="0" type="BOOLEAN.1" defaultValue="0"/>
 			<signal fieldName="status Flags - DTB Available" byteOffset="69" bitOffset="1" type="BOOLEAN.1" defaultValue="0"/>
-			
 			<signal fieldName="Status Flags - Crawlback Available" byteOffset="69" bitOffset="2" type="BOOLEAN.1" defaultValue="0"/>
 			<signal fieldName="Status Flags - Crawlback Active" byteOffset="69" bitOffset="3" type="BOOLEAN.1" defaultValue="0"/>
 			<signal fieldName="Status Flags - Proceed Dark Sig" byteOffset="69" bitOffset="4" type="BOOLEAN.1" defaultValue="0"/> 
 			<signal fieldName="status Flags - Arrived At Dest" byteOffset="69" bitOffset="5" type="BOOLEAN.1" defaultValue="0"/>
 			<signal fieldName="status Flags - Tests Begin" byteOffset="69" bitOffset="6" type="BOOLEAN.1" defaultValue="0"/>
 			<signal fieldName="status Flags - Tests End" byteOffset="69" bitOffset="7" type="BOOLEAN.1" defaultValue="0"/>
-			<signal fieldName="Status Flags - DPI Status" byteOffset="70" bitOffset="0" type="BOOLEAN.1" defaultValue="0"/>
 			<signal fieldName='Status Flags - Display "PSD CLOSED"' byteOffset="70" bitOffset="1" type="BOOLEAN.1" defaultValue="0"/>
 			<signal fieldName='Status Flags - Display "CONFIRM ATPM?"' byteOffset="70" bitOffset="2" type="BOOLEAN.1" defaultValue="0"/> 
 			<signal fieldName='Status Flags - In Transition Zone' byteOffset="70" bitOffset="4" type="BOOLEAN.1" defaultValue="0"/>
 			<signal fieldName='Status Flags - Departure Announcement Trigger' byteOffset="70" bitOffset="5" type="BOOLEAN.1" defaultValue="0"/> 
 			<signal fieldName="status Flags - Arrival Announcement Trigger" byteOffset="70" bitOffset="6" type="BOOLEAN.1" defaultValue="0"/>
 			<signal fieldName='status Flags - Display "CHANGE TO RMF"' byteOffset="70" bitOffset="7" type="BOOLEAN.1" defaultValue="0"/>
-			<signal fieldName="Status Flags - Display 'CONFIRM DTO DEPT'" byteOffset="71" bitOffset="3" type="BOOLEAN.1" defaultValue="0"/>
-			<signal fieldName='Status Flags - DOMR indicator' byteOffset="71" bitOffset="6" type="BOOLEAN.1" defaultValue="0"/> 
-			<signal fieldName="Status Flags - External EB detected" byteOffset="71" bitOffset="7" type="BOOLEAN.1" defaultValue="0"/>
+			<signal fieldName="Status Flags - Display 'CONFIRM ATO'" byteOffset="71" bitOffset="1" type="BOOLEAN.1" defaultValue="0"/>
+			<signal fieldName="Status Flags - Display 'CONFIRM RMF2'" byteOffset="71" bitOffset="2" type="BOOLEAN.1" defaultValue="0"/>
+			<signal fieldName="Status Flags - Display 'CONFIRM DTO DEPT'" byteOffset="71" bitOffset="3" type="BOOLEAN.1" defaultValue="0"/> 
+			
 			<signal fieldName="Fault/Event Flags - VCU Non-Recoverable Fault" byteOffset="75" bitOffset="0" type="BOOLEAN.1" defaultValue="0"/>
 			<signal fieldName="Fault/Event Flags - AUTO Drive Non-Recoverable Fault" byteOffset="75" bitOffset="1" type="BOOLEAN.1" defaultValue="0"/>
 			<signal fieldName="Fault/Event Flags - Moving Mode Change" byteOffset="75" bitOffset="2" type="BOOLEAN.1" defaultValue="0"/>
@@ -96,7 +119,7 @@
 			<signal fieldName="Fault/Event Flags - Train Integrity Lost" byteOffset="75" bitOffset="7" type="BOOLEAN.1" defaultValue="0"/>
 			<signal fieldName="Fault/Event Flags - Alignment Fault" byteOffset="76" bitOffset="0" type="BOOLEAN.1" defaultValue="0"/>
 			<signal fieldName="Fault/Event Flags - Rollback" byteOffset="76" bitOffset="1" type="BOOLEAN.1" defaultValue="0"/>
-			<signal fieldName="Fault/Event Flags - Uncommanded Loss of DCLS/DCS" byteOffset="76" bitOffset="2" type="BOOLEAN.1" defaultValue="0"/>
+			<signal fieldName="Fault/Event Flags - Uncommanded Loss of DCLS" byteOffset="76" bitOffset="2" type="BOOLEAN.1" defaultValue="0"/>
 			<signal fieldName="Fault/Event Flags - Motion Obstructed" byteOffset="76" bitOffset="3" type="BOOLEAN.1" defaultValue="0"/>
 			<signal fieldName="Fault/Event Flags - Doors Do Not Open Fault" byteOffset="76" bitOffset="4" type="BOOLEAN.1" defaultValue="0"/>
 			<signal fieldName="Fault/Event Flags - Doors Do Not Close Fault" byteOffset="76" bitOffset="5" type="BOOLEAN.1" defaultValue="0"/>
@@ -107,20 +130,23 @@
 			<signal fieldName="Fault/Event Flags - Door Mode Manual" byteOffset="77" bitOffset="2" type="BOOLEAN.1" defaultValue="0"/>
 			<signal fieldName="Fault/Event Flags - Signal Violation" byteOffset="77" bitOffset="4" type="BOOLEAN.1" defaultValue="0"/>
 			<signal fieldName="Fault/Event Flags - Run Button Stuck" byteOffset="77" bitOffset="5" type="BOOLEAN.1" defaultValue="0"/>
-			<signal fieldName="Fault/Event Flags - Remote Run Button Stuck" byteOffset="77" bitOffset="6" type="BOOLEAN.1" defaultValue="0"/>
-			<signal fieldName="Fault/Event Flags - Local Run Button Stuck" byteOffset="77" bitOffset="7" type="BOOLEAN.1" defaultValue="0"/>
 			<signal fieldName="Fault/Event Flags - Train Creeping" byteOffset="78" bitOffset="0" type="BOOLEAN.1" defaultValue="0"/>
-			<signal fieldName="Fault/Event Flags - DPI Input Failed" byteOffset="78" bitOffset="1" type="BOOLEAN.1" defaultValue="0"/>
+			<signal fieldName="Fault/Event Flags - RELB Button Stuck" byteOffset="78" bitOffset="2" type="BOOLEAN.1" defaultValue="0"/>
 			<signal fieldName="Fault/Event Flags - Train unexpected move" byteOffset="78" bitOffset="3" type="BOOLEAN.1" defaultValue="0"/>
+			<signal fieldName="Fault/Event Flags - MSS Not OFF" byteOffset="79" bitOffset="0" type="BOOLEAN.1" defaultValue="0"/>
+			<signal fieldName="Fault/Event Flags - DE RELAY STUCK HIGH" byteOffset="79" bitOffset="1" type="BOOLEAN.1" defaultValue="0"/>
 			<signal fieldName="Fault/Event Flags - PEC RELAY STUCK HIGH" byteOffset="79" bitOffset="2" type="BOOLEAN.1" defaultValue="0"/>
-			<signal fieldName="Fault/Event Flags - RS Critical Failure" byteOffset="79" bitOffset="7" type="BOOLEAN.1" defaultValue="0"/>
-			<signal fieldName="Fault/Event Flags - HB STATUS FAILURE" byteOffset="80" bitOffset="0" type="BOOLEAN.1" defaultValue="0"/>
-			<signal fieldName="Fault/Event Flags - PE STATUS WRONG ACTIVE" byteOffset="80" bitOffset="1" type="BOOLEAN.1" defaultValue="0"/>
+			<signal fieldName="Fault/Event Flags - Passenger Emergency Handle Triggered" byteOffset="79" bitOffset="3" type="BOOLEAN.1" defaultValue="0"/>
+			<signal fieldName="Fault/Event Flags - Passenger Emergency Handle Failed" byteOffset="79" bitOffset="4" type="BOOLEAN.1" defaultValue="0"/>
 			<signal fieldName="Fault/Event Flags - DE STATUS WRONG ACTIVE" byteOffset="80" bitOffset="2" type="BOOLEAN.1" defaultValue="0"/>
-			<signal fieldName="DTOModeAvailability" byteOffset="91" bitOffset="0" type="UNSIGNED.8" defaultValue="0"/>
+			<signal fieldName="Fault/Event Flags - EBC RELAY STUCK HIGH" byteOffset="81" bitOffset="2" type="BOOLEAN.1" defaultValue="0"/>
+			
+			<signal fieldName="Position_Segment" byteOffset="83" bitOffset="0" type="UNSIGNED.16" defaultValue="0" /> 
+			<signal fieldName="Position_Offset" byteOffset="85" bitOffset="0" type="UNSIGNED.32" defaultValue="0" />
+			<signal fieldName="DTO_Mode_Availability" byteOffset="91" bitOffset="0" type="UNSIGNED.8" defaultValue="0"/>			
 		</communication>
 	
-		<communication processType="Response" sendType="tod-vobc">
+	<communication processType="Response" sendType="Tod-Vobc" fixedSignalSize="81">
 			<signal fieldName="TodSelfTestStatus" byteOffset="0" bitOffset="0" type="UNSIGNED.8"/>
 			<signal fieldName="TODFaultCode" byteOffset="1" bitOffset="0" type="UNSIGNED.8"/> 
 			<signal fieldName="ConfirmedMsgLineNumber" byteOffset="2" bitOffset="0" type="UNSIGNED.8"/>   
@@ -128,122 +154,46 @@
 			<signal fieldName="TrainId" byteOffset="4" bitOffset="0" type="UNSIGNED.16" valueType="Dec"/> 
 			<signal fieldName="CrewId" byteOffset="6" bitOffset="0" type="UNSIGNED.16" valueType="Dec"/>
 			<signal fieldName="TODTCMSCommunicationStatus" byteOffset="8" bitOffset="0" type="UNSIGNED.8"/>
+			
 			<signal fieldName="TCMS Fault - Friction Brake Fault" byteOffset="9" bitOffset="0" type="BOOLEAN.1"/>
-			<signal fieldName="TCMS Fault - Friction Brake Locked" byteOffset="9" bitOffset="1" type="BOOLEAN.1"/>
 			<signal fieldName="TCMS Fault - electrical Brake Fault" byteOffset="9" bitOffset="2" type="BOOLEAN.1"/>
 			<signal fieldName="TCMS Fault - Propulsion Failure" byteOffset="9" bitOffset="3" type="BOOLEAN.1"/>
-			<signal fieldName="TCMS Fault - VOBC Active Fault" byteOffset="9" bitOffset="4" type="BOOLEAN.1"/>
-			<signal fieldName="TCMS Fault - Door Tc1 Major Failure" byteOffset="9" bitOffset="5" type="BOOLEAN.1"/>
-			<signal fieldName="TCMS Fault - Door Mp1 Major Failure" byteOffset="9" bitOffset="6" type="BOOLEAN.1"/>
-			<signal fieldName="TCMS Fault - Door M1 Major Failure" byteOffset="9" bitOffset="7" type="BOOLEAN.1"/>
-			<signal fieldName="TCMS Fault - Door M2 Major Failure" byteOffset="10" bitOffset="0" type="BOOLEAN.1"/>
-			<signal fieldName="TCMS Fault - Door Mp2 Major Failure" byteOffset="10" bitOffset="1" type="BOOLEAN.1"/>
-			<signal fieldName="TCMS Fault - Door Tc2 Major Failure" byteOffset="10" bitOffset="2" type="BOOLEAN.1"/>
-			<signal fieldName="TCMS Kilometre Count" byteOffset="17" bitOffset="0" type="UNSIGNED.32"/> 
-			<signal fieldName="Car Weight Tc1" byteOffset="25" bitOffset="0" type="UNSIGNED.16" valueType="Dec"/> 
-			<signal fieldName="Car Weight Mp1" byteOffset="27" bitOffset="0" type="UNSIGNED.16" valueType="Dec"/>
-			<signal fieldName="Car Weight M1" byteOffset="29" bitOffset="0" type="UNSIGNED.16" valueType="Dec"/>
-			<signal fieldName="Car Weight M2" byteOffset="31" bitOffset="0" type="UNSIGNED.16" valueType="Dec"/> 
-			<signal fieldName="Car Weight Mp2" byteOffset="33" bitOffset="0" type="UNSIGNED.16" valueType="Dec"/>   
-			<signal fieldName="Car Weight Tc2" byteOffset="35" bitOffset="0" type="UNSIGNED.16" valueType="Dec"/>
-			<signal fieldName="Traction Effort" byteOffset="37" bitOffset="0" type="UNSIGNED.16" valueType="Dec"/> 
-			<signal fieldName="Braking Effort" byteOffset="39" bitOffset="0" type="UNSIGNED.16" valueType="Dec"/>
+			<signal fieldName="TCMS Fault - Emergency Braking Safe Loop" byteOffset="10" bitOffset="3" type="BOOLEAN.1"/>
+			<signal fieldName="TCMS Fault - Left Door Closed Status" byteOffset="10" bitOffset="5" type="BOOLEAN.1"/>
+			<signal fieldName="TCMS Fault - Right Door Closed Status" byteOffset="10" bitOffset="6" type="BOOLEAN.1"/>
+			<signal fieldName="TCMS Fault - Slip Slide Active" byteOffset="11" bitOffset="2" type="BOOLEAN.1"/>
+			<signal fieldName="TCMS Fault - ATO Propulsion command feedback" byteOffset="11" bitOffset="3" type="BOOLEAN.1"/>
+			<signal fieldName="TCMS Fault - Brake command feedback" byteOffset="11" bitOffset="4" type="BOOLEAN.1"/>
+			<signal fieldName="TCMS Fault - CAB1 Left Close Door Pushbutton Trigger" byteOffset="12" bitOffset="0" type="BOOLEAN.1"/>
+			<signal fieldName="TCMS Fault - CAB1 Right Close Door Pushbutton Trigger" byteOffset="12" bitOffset="1" type="BOOLEAN.1"/>
+			<signal fieldName="TCMS Fault - CAB1 Left Open Door Pushbutton Trigger" byteOffset="12" bitOffset="2" type="BOOLEAN.1"/>
+			<signal fieldName="TCMS Fault - CAB1 Right Open Door Pushbutton Trigger" byteOffset="12" bitOffset="3" type="BOOLEAN.1"/>
+			<signal fieldName="TCMS Fault - CAB2 Left Close Door Pushbutton Trigger" byteOffset="12" bitOffset="4" type="BOOLEAN.1"/>
+			<signal fieldName="TCMS Fault - CAB2 Right Close Door Pushbutton Trigger" byteOffset="12" bitOffset="5" type="BOOLEAN.1"/>
+			<signal fieldName="TCMS Fault - CAB2 Left Open Door Pushbutton Trigger" byteOffset="12" bitOffset="6" type="BOOLEAN.1"/>
+			<signal fieldName="TCMS Fault - CAB2 Right Open Door Pushbutton Trigger" byteOffset="12" bitOffset="7" type="BOOLEAN.1"/>
+			<signal fieldName="TCMS Fault - EB Applied – Mushroom button - as reported by TCMS" byteOffset="14" bitOffset="1" type="BOOLEAN.1"/>
+			<signal fieldName="TCMS Fault - EB Applied – Driver Safty Device - as reported by TCMS" byteOffset="14" bitOffset="3" type="BOOLEAN.1"/>
+			<signal fieldName="TCMS Fault - EB Applied – Low pressure in MRP - as reported by TCMS" byteOffset="14" bitOffset="4" type="BOOLEAN.1"/>
+			<signal fieldName="TCMS Fault - DPI_All - as reported by TCMS" byteOffset="15" bitOffset="0" type="BOOLEAN.1"/>
+			<signal fieldName="TCMS Fault - PEH Active - as reported by TCMS" byteOffset="15" bitOffset="1" type="BOOLEAN.1"/>
+			<signal fieldName="TCMS Fault - Obstruction detection status - as reported by TCMS" byteOffset="15" bitOffset="2" type="BOOLEAN.1"/>
+			<signal fieldName="TCMS Fault - Door fault - as reported by TCMS" byteOffset="15" bitOffset="3" type="BOOLEAN.1"/>
+			
+			<signal fieldName="TCMS Kilometre Count" byteOffset="17" bitOffset="0" type="UNSIGNED.32"/>
+			<signal fieldName="TCMS Actual Train Speed" byteOffset="21" bitOffset="0" type="UNSIGNED.16"/>
+			<signal fieldName="TCMS Train Speed Limitation Value" byteOffset="23" bitOffset="0" type="UNSIGNED.16"/>
+			<signal fieldName="Car Weight Mc1" byteOffset="25" bitOffset="0" type="UNSIGNED.16"/>
+			<signal fieldName="Car Weight Mp1" byteOffset="27" bitOffset="0" type="UNSIGNED.16"/>
+			<signal fieldName="Car Weight Mp2" byteOffset="33" bitOffset="0" type="UNSIGNED.16"/>
+			<signal fieldName="Car Weight Mc2" byteOffset="35" bitOffset="0" type="UNSIGNED.16"/>
+			<signal fieldName="Traction / Brake Effort" byteOffset="37" bitOffset="0" type="UNSIGNED.16"/>
+			<signal fieldName="MPR in bar" byteOffset="41" bitOffset="0" type="UNSIGNED.16"/>
+			<signal fieldName="Electric Brake Effort" byteOffset="46" bitOffset="0" type="UNSIGNED.16"/>
+			<signal fieldName="Full Load" byteOffset="48" bitOffset="0" type="UNSIGNED.16"/>
 		</communication>
-		
-	  <station id="1" >
-        <param StationSkipStatus="1" />
-        <param StationHoldStatus="2" />
-        <param StationDwell="8" />
-        <param PlatformDoorSides="1" />
-        <param DistanceToStoppingPoint="5000000" />
-        <param TrainDoorsEnableLeftStatus="1" />
-        <param TrainDoorsEnableRightStatus="1" />
-        <param LeftTrainDoorsClosedStatus="0" />
-        <param RightTrainDoorsClosedStatus="1" />
-        <param LeftDoorCloseCommandStatus="1" />
-        <param RightDoorCloseCommandStatus="0" />
-		<param LeftPSDClosedAndLockedStatus="0" />
-        <param RightPSDClosedAndLockedStatus="1" />
-        <param NextStationId="3" />
-    </station>
-    <station id="3" >
-        <param StationSkipStatus="1" />
-        <param StationHoldStatus="2" />
-        <param StationDwell="8" />
-        <param PlatformDoorSides="2" />
-        <param DistanceToStoppingPoint="5000000" />
-        <param TrainDoorsEnableLeftStatus="1" />
-        <param TrainDoorsEnableRightStatus="1" />
-        <param LeftTrainDoorsClosedStatus="1" />
-        <param RightTrainDoorsClosedStatus="0" />
-        <param LeftDoorCloseCommandStatus="0" />
-        <param RightDoorCloseCommandStatus="1" />
-		<param LeftPSDClosedAndLockedStatus="1" />
-        <param RightPSDClosedAndLockedStatus="0" />
-        <param NextStationId="5" />
-    </station>
-    <station id="5" >
-        <param StationSkipStatus="1" />
-        <param StationHoldStatus="2" />
-        <param StationDwell="8" />
-        <param PlatformDoorSides="1" />
-        <param DistanceToStoppingPoint="5000000" />
-        <param TrainDoorsEnableLeftStatus="1" />
-        <param TrainDoorsEnableRightStatus="1" />
-        <param LeftTrainDoorsClosedStatus="0" />
-        <param RightTrainDoorsClosedStatus="1" />
-        <param LeftDoorCloseCommandStatus="1" />
-        <param RightDoorCloseCommandStatus="0" />
-		<param LeftPSDClosedAndLockedStatus="0" />
-        <param RightPSDClosedAndLockedStatus="1" />
-        <param NextStationId="7" />
-    </station>
-    <station id="9" >
-        <param StationSkipStatus="1" />
-        <param StationHoldStatus="2" />
-        <param StationDwell="8" />
-        <param PlatformDoorSides="1" />
-        <param DistanceToStoppingPoint="5000000" />
-        <param TrainDoorsEnableLeftStatus="1" />
-        <param TrainDoorsEnableRightStatus="1" />
-        <param LeftTrainDoorsClosedStatus="0" />
-        <param RightTrainDoorsClosedStatus="1" />
-        <param LeftDoorCloseCommandStatus="1" />
-        <param RightDoorCloseCommandStatus="0" />
-		<param LeftPSDClosedAndLockedStatus="0" />
-        <param RightPSDClosedAndLockedStatus="1" />
-        <param NextStationId="13" />
-    </station>
-    <station id="13" >
-        <param StationSkipStatus="1" />
-        <param StationHoldStatus="2" />
-        <param StationDwell="5" />
-        <param PlatformDoorSides="1" />
-        <param DistanceToStoppingPoint="5000000" />
-        <param TrainDoorsEnableLeftStatus="1" />
-        <param TrainDoorsEnableRightStatus="1" />
-        <param LeftTrainDoorsClosedStatus="0" />
-        <param RightTrainDoorsClosedStatus="1" />
-        <param LeftDoorCloseCommandStatus="1" />
-        <param RightDoorCloseCommandStatus="0" />
-	 	<param LeftPSDClosedAndLockedStatus="0" />
-        <param RightPSDClosedAndLockedStatus="1" />
-        <param NextStationId="13" />
-    </station>
 </CommDataDefine>
 
-<!--
-ATOModeAvaliability    3:运行  2:停止
-PlatformDoorEnableStatus  2：使能 其他：隐藏
-PlatformDoorOpenStatus    1:关 2：开 3：隐藏
-StationSkipStatus（StationHoldStatus）	  0:- 1:隐藏 2:是
-DepartureStatus		1:NO 2:YES
-TrainDoorsMode		3:自动开关
-WheelCalibrationStatus  2:已校准 0：隐藏
-MotorBrakingStatus	1:牵引 2:制动
-TrainDoorsClosedAndLockedStatus		0:开启 1:关闭
-TrainDoorsEnableLeftStatus		0:隐藏 1:使能
--->
 
 			
 			

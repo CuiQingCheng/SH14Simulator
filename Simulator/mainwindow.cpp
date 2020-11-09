@@ -6,25 +6,32 @@
 #include <QDebug>
 #include <QMessageBox>
 #include <QSettings>
+#include <QtSerialPort/QSerialPort>
+#include <QSerialPortInfo>
 
+const int SHL14_FIXOFFSET = 79;
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
-    m_isExecAutoTest(false)
+    m_isExecAutoTest(false),
+    m_serialStatus(false),
+    m_baudRate(0)
 {
     ui->setupUi(this);
-    m_todChannel = new TodVobcChannel();
+    m_todChannel = new TodCommChannel();
     m_sendRFCTimer = new QTimer(this);
     m_checkConnectState =new QTimer(this);
     m_sendPoolDataTimer = new QTimer(this);
     m_receiveDataTimer = new QTimer(this);
-
+    m_choseComnMode = Udp;
+    m_currentComnMode = Empty;
     connect(m_sendRFCTimer, SIGNAL(timeout()), this, SLOT(sendRTFTimeout()));
     connect(m_checkConnectState, SIGNAL(timeout()), this, SLOT(checkConnectState()));
     connect(m_sendPoolDataTimer, SIGNAL(timeout()), this, SLOT(sendPoolData()));
     connect(m_receiveDataTimer, SIGNAL(timeout()), this, SLOT(receiveData()));
 
+    this->setWindowTitle(QString("Communication Simulator"));
     m_factory = new Factory;
     m_parserPtr = new Parser;
 
@@ -37,23 +44,25 @@ MainWindow::MainWindow(QWidget *parent) :
     m_widgetHandler->addWidget(QString("receiveTableWidget"), ui->receiveTableWidget);
     m_widgetHandler->addWidget(QString("recTCMSData_TextEdit"), ui->recTCMSData_TextEdit);
     m_widgetHandler->addWidget(QString("checkBoxWidget"), ui->tabWidget_2);
+    m_widgetHandler->addWidget(QString("sendTcmsWidget"), ui->sendTcmsWidget);
+    m_widgetHandler->addWidget(QString("recTcmsWidget"),ui->receiveTcmsWidget);
 
     m_autoTestHandler = m_factory->get<AutoTestHandler>("AutoTestHandler");
     connect(m_parserPtr, SIGNAL(parseFinished()), m_widgetHandler, SLOT(showGuiDefData()));
     connect(m_autoTestHandler, SIGNAL(signalValueUpdated(QString, QString)), m_widgetHandler, SLOT(updateSignalValue(QString,QString)), Qt::QueuedConnection);
+    connect(m_todChannel, SIGNAL(updateRecvWidgetData()),this, SLOT(receiveData()));
     connect(m_widgetHandler, SIGNAL(sendTelegramUpdated()), this, SLOT(checkConnectAndSendPoolData()));
+    connect(ui->openRadioButton, SIGNAL(clicked(bool)),this, SLOT(openSerialCom(bool)));
 
     initDefaultConfig();
+    initSerialPort();
 
-    this->setWindowTitle(QString("VOBC Simulator"));
     ui->autotestBtn->setDisabled(true);
 }
 
 MainWindow::~MainWindow()
 {
-    qDebug() << "MainWindow::~MainWindow()";
     delete ui;
-
 
     if(m_todChannel != NULL)
     {
@@ -79,12 +88,14 @@ void MainWindow::on_setBtn_clicked()
     setConfig();
 
     modifyDefaultConfig();
+
+    m_sendCycle = ui->sendCycleLineEdit->text().toInt();
 }
 
 void MainWindow::setConfig()
 {
     int cycle = ui->sendCycleLineEdit->text().toInt();
-    if(cycle >= 3000)
+    if(cycle >= 4000)
     {
         QMessageBox::warning(this, "Warning", "cycle time should be less than 3000.", QMessageBox::Ok);
         return;
@@ -99,36 +110,78 @@ void MainWindow::setConfig()
         m_sendTelegramType = SendTelegramType::Auto;
     }
     else
+    {
         m_sendTelegramType = SendTelegramType::Manual;
+    }
+
     m_sendCycle = cycle;
+}
+
+void MainWindow::initSerialPort()
+{
+    ui->comComboBox->clear();
+    QStringList list;
+    foreach(const QSerialPortInfo &info, QSerialPortInfo::availablePorts())
+    {
+        list << info.portName();
+    }
+    qSort(list.begin(), list.end());
+    ui->comComboBox->addItems(list);
 }
 
 void MainWindow::on_connectBtn_clicked()
 {
+
+    m_sendCycle = ui->sendCycleLineEdit->text().toInt();
     if(ui->connectBtn->text() == "Connect")
     {
-        m_todChannel->open();
-        m_todChannel->sendDataTelegramForRFC();
+        ui->connectBtn->setText("End");
         m_sendRFCTimer->start(2000);
         m_checkConnectState->start(3000);
 
-        ui->connectBtn->setText("End");
+        if(m_choseComnMode == Udp && m_currentComnMode == Empty)
+        {
+            m_todChannel->openUdpCom();
+
+            m_currentComnMode = Udp;
+            ui->connectType->setStyleSheet("color:green; background-color: none;");
+            ui->connectType->setText("Current communication is UDP!");
+            m_todChannel->sendDataTelegramForRFC("Udp");
+        }
+        else if(m_choseComnMode == Serial && m_currentComnMode == Empty)
+        {
+            if(!m_todChannel->isSerialPortOpen())
+            {
+                return;
+            }
+            m_currentComnMode = Serial;
+            ui->connectType->setStyleSheet("color:green; background-color: none;");
+            ui->connectType->setText("Current communication is Serial!");
+            m_todChannel->sendDataTelegramForRFC("Serial");
+        }
+
         setInputFrameEnable(false);
     }
     else if(ui->connectBtn->text() == "End")
     {
-        m_todChannel->close();
-
         m_sendRFCTimer->stop();
         m_checkConnectState->stop();
         m_sendPoolDataTimer->stop();
         m_receiveDataTimer->stop();
         m_autoTestHandler->stop();
+
+        if(m_currentComnMode == Udp)
+        {
+            m_todChannel->closeUdpCom();
+        }
+
+        ui->connectType->setText("");
         ui->connectBtn->setText("Connect");
         ui->tipsLabel->setText("End.");
         ui->tipsLabel->setStyleSheet("color:green; font:bold");
         ui->autotestBtn->setDisabled(true);
         setInputFrameEnable(true);
+        m_currentComnMode = Empty;
     }
 }
 
@@ -144,16 +197,28 @@ void MainWindow::sendRTFTimeout()
 
         if(!m_sendPoolDataTimer->isActive())
         {
+            qDebug() << "send Cycle:"<< m_sendCycle;
             m_sendPoolDataTimer->start(m_sendCycle);
         }
-        if(!m_receiveDataTimer->isActive())
+        if(m_currentComnMode == Udp)
         {
-            m_receiveDataTimer->start(m_sendCycle);
+            if(!m_receiveDataTimer->isActive())
+            {
+                m_receiveDataTimer->start(m_sendCycle);
+            }
         }
     }
     else
     {
-        m_todChannel->sendDataTelegramForRFC();
+        if(m_currentComnMode == Udp)
+        {
+            m_todChannel->sendDataTelegramForRFC("Udp");
+        }
+        else if(m_currentComnMode == Serial)
+        {
+            m_todChannel->sendDataTelegramForRFC("Serial");
+        }
+
     }
 }
 
@@ -176,45 +241,66 @@ void MainWindow::sendPoolData()
     int offset = 0;
 
     int optionalTag = 0;
+    bool checkWidgethidden = m_widgetHandler->getWidgetMap()->value("checkBoxWidget")->isHidden();
 
-    QList<int> infoIdLst = m_widgetHandler->getInfoFaultIdLst(true);
-    QList<int> faultIdLst = m_widgetHandler->getInfoFaultIdLst(false);
-
-    if(infoIdLst.size() > 0)
+    if(!checkWidgethidden)
     {
-        m_todChannel->setDataByInfoFault(infoIdLst, 0, Info_Frame_Id);
-        offset = (infoIdLst.size() + 2);
-        ++optionalTag;
-    }
-    if(faultIdLst.size() > 0)
-    {
-        m_todChannel->setDataByInfoFault(faultIdLst, offset, Fault_Frame_Id);
-        offset += (faultIdLst.size() + 2);
-        ++optionalTag;
+        QList<int> infoIdLst = m_widgetHandler->getInfoFaultIdLst(true);
+        QList<int> faultIdLst = m_widgetHandler->getInfoFaultIdLst(false);
+
+        if(infoIdLst.size() > 0)
+        {
+            m_todChannel->setDataByInfoFault(infoIdLst, SHL14_FIXOFFSET, Info_Frame_Id);
+            offset = (infoIdLst.size() + 2);
+            ++optionalTag;
+        }
+        if(faultIdLst.size() > 0)
+        {
+            m_todChannel->setDataByInfoFault(faultIdLst, SHL14_FIXOFFSET + offset, Fault_Frame_Id);
+            offset += (faultIdLst.size() + 2);
+            ++optionalTag;
+        }
     }
 
-    WidgetHandler::TrainNumber currentNumber = m_widgetHandler->getTrainNumber();
-    if(currentNumber == WidgetHandler::TrainNumber::Shanghai_14)
+    bool sendTcmsWidgethidden = m_widgetHandler->getWidgetMap()->value("checkBoxWidget")->isHidden();
+    if(!sendTcmsWidgethidden)
     {
         QStringList lst;
         if(optionalTag)
         {
-            m_todChannel->setOptionTag(optionalTag);
+            m_todChannel->setOptionTag(SHL14_FIXOFFSET - 1 , optionalTag);
         }
         m_widgetHandler->getTcmsValueLst(lst);
 
-        m_todChannel->setDataByTCMS(lst, offset);
+        m_todChannel->setDataByTCMS(lst, SHL14_FIXOFFSET + offset);
     }
 
-    m_todChannel->sendDataTelegram();
+    if(m_currentComnMode == Udp)
+    {
+        m_todChannel->sendDataTelegram("Udp");
+    }
+    else if(m_currentComnMode == Serial)
+    {
+        m_todChannel->sendDataTelegram("Serial");
+    }
+
 }
 
 void MainWindow::receiveData()
 {
+
     QByteArray receiveAppData = m_todChannel->receiveData();
-    if(receiveAppData == NULL || receiveAppData.isNull() || (0 == receiveAppData.size()))
+    int recvFixedSize = m_parserPtr->getFixSignalSize("Response");
+
+    if(receiveAppData == NULL || (0 == receiveAppData.size()) )
     {
         qDebug() << "Error: the receiving polling telegram is NULL!";
+        return;
+    }
+
+    if(receiveAppData.size() + 5 < recvFixedSize)
+    {
+        qDebug() << "AppData size < right Size";
         return;
     }
 
@@ -223,7 +309,7 @@ void MainWindow::receiveData()
     // the size of receiveAppData is looked as the all the lenth of the bytes.
     // start to fill the table by every line.
     QString valueStr = "";
-    quint8 valueNum = 0;
+    int valueNum = 0;
     quint16 valueTwoByteNum = 0;
     quint16 valueFourByteNum = 0;
     quint8 valueBoolNum = 0;
@@ -231,7 +317,7 @@ void MainWindow::receiveData()
     quint8 valueNum2 = 0;
     quint8 valueNum3 = 0;
     quint8 valueNum4 = 0;
-
+    quint8 fixRecSize = 0;
     for(int i=0; i < rowCount; i++)
     {
         QString filedNameStr = ui->receiveTableWidget->item(i, 0)->text();
@@ -239,15 +325,29 @@ void MainWindow::receiveData()
         quint8 bitOffsetNum = ui->receiveTableWidget->item(i, 2)->text().toInt();
         QString typeStr = ui->receiveTableWidget->item(i, 3)->text();
         QString NumTypeStr = ui->receiveTableWidget->item(i, 4)->text();
+        if(i + 1 == rowCount)
+        {
+            fixRecSize = byteOffsetNum + 1;
+            if(typeStr == "UNSIGNED.16")
+            {
+                fixRecSize += 1;
+            }
 
-        if(filedNameStr.contains("Reserved", Qt::CaseInsensitive) || filedNameStr.contains("Not Used", Qt::CaseInsensitive))        {
+            else if(typeStr == "UNSIGNED.32")
+            {
+                fixRecSize += 3;
+            }
+        }
+
+        if(filedNameStr.contains("Reserved", Qt::CaseInsensitive) || filedNameStr.contains("Not Used", Qt::CaseInsensitive))
+        {
             continue;
         }
 
         if(typeStr == "UNSIGNED.8")
         {
             valueNum = (quint8)(receiveAppData.at(byteOffsetNum));
-            if(NumTypeStr == "hexadecimal")
+            if(NumTypeStr == "Hex")
             {
                 valueStr = QString::number(valueNum, 16);
             }
@@ -267,7 +367,7 @@ void MainWindow::receiveData()
             valueNum1 = (quint8)receiveAppData.at(byteOffsetNum);
             valueNum2 = (quint8)receiveAppData.at(byteOffsetNum + 1);
 
-            if(NumTypeStr == "hexadecimal")
+            if(NumTypeStr == "Hex")
             {
                 valueTwoByteNum = (quint16)(valueNum1 | (valueNum2 << 8));
                 valueStr = QString::number(valueTwoByteNum, 16);
@@ -285,7 +385,7 @@ void MainWindow::receiveData()
             valueNum3 = (quint8)receiveAppData.at(byteOffsetNum + 2);
             valueNum4 = (quint8)receiveAppData.at(byteOffsetNum + 3);
 
-            if(NumTypeStr == "hexadecimal")
+            if(NumTypeStr == "Hex")
             {
                 valueFourByteNum = (quint16)(valueNum1 | (valueNum2 << 8) | (valueNum3 << 16) | (valueNum4 << 24));
                 valueStr = QString::number(valueFourByteNum, 16);
@@ -300,13 +400,25 @@ void MainWindow::receiveData()
         QTableWidgetItem *lastValueItem = ui->receiveTableWidget->item(i, 5);
         lastValueItem->setText(valueStr);
     }
+    QStringList tcmsPortLst = m_widgetHandler->getTcmsPort("recvTcms");
+    if(tcmsPortLst.size() > 0)
+    {
+        QByteArray tmcsData;
 
-    QByteArray tmcsData = receiveAppData.mid(FIX_REC_DATASIZE, REC_TCMS_DATASIZE);
+        TextEdit* textEdit= ui->recTCMSData_TextEdit;
 
-    TextEdit* textEdit= ui->recTCMSData_TextEdit;
-    textEdit->setShowData(tmcsData);
+        int tcmsDataSize = 0;
+        for(int i = 0; i < tcmsPortLst.size(); ++i)
+        {
+            QStringList strList =  tcmsPortLst.at(i).split(":");
+            tcmsDataSize += strList[1].toInt();
+        }
+        tmcsData = receiveAppData.mid(fixRecSize, tcmsDataSize);
+        textEdit->setShowData(tmcsData, tcmsPortLst);
+    }
 
     m_checkConnectState->start(3000);
+
 }
 
 void MainWindow::checkConnectAndSendPoolData()
@@ -342,8 +454,11 @@ void MainWindow::initDefaultConfig()
 
     QString cycleStr = m_theSettingsPtr->value("Send_CYCLE", 0).toString();
     ui->sendCycleLineEdit->setText(cycleStr);
-    ui->sendCycleLineEdit->setValidator(new QIntValidator(0, 3000, this));
-    ui->sendCycleLineEdit->setPlaceholderText("< 3000");
+    ui->sendCycleLineEdit->setValidator(new QIntValidator(0, 4000, this));
+    ui->sendCycleLineEdit->setPlaceholderText("< 4000");
+
+    QString baud_Rate_Str = m_theSettingsPtr->value("Baud_RATE", 0).toString();
+    ui->rateLineEdit->setText(baud_Rate_Str);
 
     m_todChannel->setTodPort(portStr.toInt());
     m_todChannel->setTodAdress(ipStr);
@@ -377,7 +492,7 @@ void MainWindow::modifyDefaultConfig()
 }
 
 
-void MainWindow::on_action_Open_triggered()
+void MainWindow::on_action_open_triggered()
 {
     if (openConfigurationFile())
     {
@@ -412,13 +527,34 @@ void MainWindow::parseConfigurationFile()
     m_widgetHandler->clear();
     m_autoTestHandler->clear();
     (m_factory->get<Telegram>("Telegram"))->clear();
-    m_widgetHandler->setTelegram( (m_factory->get<Telegram>("Telegram")));
+    m_widgetHandler->setTelegram((m_factory->get<Telegram>("Telegram")));
     m_parserPtr->setConfigFile(m_configFileName);
     int ret = m_parserPtr->parse(m_factory);
 
+    QString deviceName = m_parserPtr->getDeviceName();
+    QString winTitle = deviceName + QString(" Simulator");
+    this->setWindowTitle(winTitle);
+
+    int defFixedPollSignalSize = m_parserPtr->getFixSignalSize("poll");
+    int defFixedRecvSignalSize = m_parserPtr->getFixSignalSize("Response");
+    m_todChannel->setDefPollDataSize(defFixedPollSignalSize);
+    m_todChannel->setDefRecvDataSize(defFixedRecvSignalSize);
+    QString protocolType = m_parserPtr->getProtocolType();
+
+    if(protocolType == QString("udpSocket"))
+    {
+        ui->stackedWidget->setCurrentIndex(Udp);
+        m_choseComnMode = Udp;
+    }
+    else if(protocolType == QString("serial"))
+    {
+        ui->stackedWidget->setCurrentIndex(Serial);
+        m_choseComnMode = Serial;
+    }
+    m_todChannel->setjudgeInterval(protocolType);
+
     if(ret != 0)
     {
-        qDebug("Failed to parse configuration file, application abort.");
         exit(1);
     }
 
@@ -435,7 +571,6 @@ void MainWindow::sendTableWidgetValue()
     QString sendDataType;
     QString sendDataNumType;
     QString sendDataValue;
-
     QStringList speedNameLst = {"ActualSpeed", "TargetSpeed", "PermittedSpeed", "EbTriggerSpeed"};
 
     // clear the the_pucData before send at next time.
@@ -482,19 +617,12 @@ void MainWindow::setInputFrameEnable(bool enable)
     ui->vobcPortLineEdit->setEnabled(enable);
     ui->sendCycleLineEdit->setEnabled(enable);
     ui->setBtn->setEnabled(enable);
+    ui->sendBtn->setEnabled(enable);
 }
 
 
 void MainWindow::on_autotestBtn_clicked()
 {
-//    static bool firstclicked = true;
-
-//    if(firstclicked)
-//    {
-//        m_autoTestHandler->initDefSignalValue();
-//        firstclicked = true;
-//    }
-    qDebug()<<"on_autotestBtn_clicked:" << m_isExecAutoTest;
     if(m_isExecAutoTest)
     {
         m_autoTestHandler->stop();
@@ -505,5 +633,76 @@ void MainWindow::on_autotestBtn_clicked()
         m_autoTestHandler->start();
         m_isExecAutoTest = true;
     }
-    qDebug()<<"on_autotestBtn_clicked:" << m_isExecAutoTest;
 }
+
+void MainWindow::on_action_udp_triggered()
+{
+    if(Udp != ui->stackedWidget->currentIndex())
+    {
+        ui->stackedWidget->setCurrentIndex(Udp);
+        m_choseComnMode = Udp;
+        m_todChannel->setjudgeInterval("udp");
+    }
+}
+
+void MainWindow::on_action_Serial_triggered()
+{
+    if(Serial != ui->stackedWidget->currentIndex())
+    {
+        ui->stackedWidget->setCurrentIndex(Serial);
+        m_choseComnMode = Serial;
+        m_todChannel->setjudgeInterval("serial");
+    }
+}
+
+
+void MainWindow::on_action_about_triggered()
+{
+    QMessageBox::information(this, "About", "The emulator supports UDP and Serial communication!", QMessageBox::Ok);
+}
+
+void MainWindow::openSerialCom(bool isOpen)
+{
+    m_comName = ui->comComboBox->currentText();
+    m_baudRate = ui->rateLineEdit->text().toInt();
+    m_theSettingsPtr->setValue("Baud_RATE", m_baudRate);
+    m_todChannel->setSerialPortName(m_comName);
+    if(isOpen)
+    {
+        if(m_todChannel->openSerialPort(m_baudRate))
+        {
+            m_serialStatus = true;
+            ui->comStatusLabel->setStyleSheet("color:green; background-color: none;");
+            ui->comStatusLabel->setText("Open success!");
+        }
+        else
+        {
+            m_serialStatus = false;
+            ui->comStatusLabel->setStyleSheet("color:red; background-color:none;");
+            QMessageBox::warning(NULL, QString(tr("error")), QString(tr("open faild!")));
+            ui->comStatusLabel->setText("Open faild!");
+        }
+    }
+    else
+    {
+        if(m_todChannel->isSerialPortOpen())
+        {
+            m_todChannel->closeSerialPort();
+        }
+        m_serialStatus = false;
+        ui->comStatusLabel->setText("");
+    }
+}
+
+void MainWindow::on_sendBtn_clicked()
+{
+    if(!m_todChannel->isSerialPortOpen())
+    {
+        return;
+    }
+    m_currentComnMode = m_choseComnMode;
+    sendPoolData();
+    m_currentComnMode = Empty;
+}
+
+

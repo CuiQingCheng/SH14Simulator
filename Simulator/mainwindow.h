@@ -6,11 +6,11 @@
 #include "Telegram/Telegram.h"
 #include "Gui/CheckBox.h"
 #include "Gui/TextEdit.h"
-#include "todvobccomm/TodVobcChannel.h"
 #include "Core/Parser.h"
 #include "Core/Factory/Factory.h"
 #include "Core/Handler/WidgetHandler.h"
 #include "Core/Handler/AutoTestHandler.h"
+#include "Core/TodCommChannel/TodCommChannel.h"
 
 #include <QtXml>
 #include <QDomDocument>
@@ -38,6 +38,15 @@ typedef enum Optional_Frame_Id
 }Optional_Frame_Id;
 
 
+typedef enum Communication_Mode
+{
+    Udp = 0,
+    Serial = 1,
+    MVB = 2,
+    Empty = 3
+
+}Comm_mode;
+
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -45,9 +54,6 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
-
-    static const int FIX_REC_DATASIZE = 10;
-    static const int REC_TCMS_DATASIZE = 208;
 
 signals:
 
@@ -59,8 +65,6 @@ protected:
 
 
 private slots:
-    void on_action_Open_triggered();
-
     void on_setBtn_clicked();
 
     void sendRTFTimeout();
@@ -77,10 +81,23 @@ private slots:
 
     void on_autotestBtn_clicked();
 
+    void on_action_udp_triggered();
+
+    void on_action_Serial_triggered();
+
+    void on_action_open_triggered();
+
+    void on_action_about_triggered();
+
+    void openSerialCom(bool isOpen);
+
+    void on_sendBtn_clicked();
+
 private:
     void initDefaultConfig();
     void modifyDefaultConfig();
     void setConfig();
+    void initSerialPort();
 
 private:
     Ui::MainWindow *ui;
@@ -89,8 +106,7 @@ private:
     SignalMap m_SendSignalMap;
     SignalMap m_receiveSignalMap;
     SignalMap m_telegramHeaderMap;
-
-    TodVobcChannel *m_todChannel;
+    TodCommChannel *m_todChannel;
 
     int m_sendTelegramType;
     int m_sendCycle;
@@ -100,12 +116,16 @@ private:
     QTimer* m_sendPoolDataTimer;
     QTimer* m_receiveDataTimer;
 
-
     QSettings *m_theSettingsPtr;
     Parser* m_parserPtr;
     Factory* m_factory;
     WidgetHandler* m_widgetHandler;
     AutoTestHandler* m_autoTestHandler;
     bool m_isExecAutoTest;
+    int m_currentComnMode;
+    int m_choseComnMode;
+    bool m_serialStatus;
+    QString m_comName;
+    int m_baudRate;
 };
 #endif // MAINWINDOW_H

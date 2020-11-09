@@ -18,12 +18,19 @@ public:
 
     void setConfigFile(QString& filePath);
     int parse(Factory* factory);
+    QString getProtocolType();
+    int getFixSignalSize(QString cmd);
+    QString getDeviceName();
 
 signals:
     void parseFinished();
 
 private:
     QString m_configFile;
+    QString m_protocolType;
+    QString m_deviceName;
+    int m_pollFixedSignalSize;
+    int m_recvFixedSignalSize;
 };
 
 #endif
